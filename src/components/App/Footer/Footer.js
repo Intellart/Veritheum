@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import logoIcon from '../../../assets/logo/veritheum_logo_white.svg';
-import twitterIcon from '../../../assets/social_icons/twitter-brands.svg';
-import discordIcon from '../../../assets/social_icons/discord-brands.svg';
-import githubIcon from '../../../assets/social_icons/github-brands.svg';
+import { IoLogoTwitter, IoLogoGithub } from "react-icons/io5";
+import { FaDiscord } from "react-icons/fa";
 import './Footer.scss';
 
 class Footer extends React.Component {
@@ -36,13 +35,13 @@ class Footer extends React.Component {
               </div>
               <div className="column-item social-links">
                 <a href="#" target="_blank" rel="noopener noreferrer" title="Twitter">
-                  <img src={twitterIcon} alt='Twitter icon' />
+                  <IoLogoTwitter />
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer" title="Discord">
-                  <img src={discordIcon} alt='Discord icon' />
+                  <FaDiscord />
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer" title="Github">
-                  <img src={githubIcon} alt='Github icon' />
+                  <IoLogoGithub />
                 </a>
               </div>
             </div>

@@ -2,10 +2,10 @@
   display: flex;
   position: relative;
 
-  img {
-    height: 14px;
+  svg {
+    font-size: 14px;
     left: 20px;
-    opacity: 0.5;
+    opacity: 0.3;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

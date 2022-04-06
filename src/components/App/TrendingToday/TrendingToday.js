@@ -1,9 +1,10 @@
 import React from 'react';
-import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
-import GalleryFilters from '../GalleryFilters/GalleryFilters';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import NftItem from '../NftItem/NftItem';
+import './TrendingToday.scss';
 
-class Gallery extends React.Component {
+class TrendingToday extends React.Component {
   render () {
     const fakeNftList = [
       {
@@ -60,32 +61,13 @@ class Gallery extends React.Component {
         liked: true,
         author: 'John Doe'
       },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid system",
-        category: "physics",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Design of molecular water oxidation catalysts with earth-abundant metal ions",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
     ];
-
     return (
-      <>
-        <GallerySideMenu />
-        <div className="gallery-content-area">
-          <GalleryFilters />
-          <div className="nft-list">
+      <div className="trending-today">
+        <Carousel
+          autoPlay
+        >
+          <div className="slide">
             {fakeNftList.map(nft => (
               <NftItem
                 title={nft.title}
@@ -95,13 +77,42 @@ class Gallery extends React.Component {
                 type={nft.type}
                 liked={nft.liked}
                 verifiedUser={nft.verifiedUser}
+                trending
               />
             ))}
           </div>
-        </div>
-      </>
+          <div className="slide">
+            {fakeNftList.map(nft => (
+              <NftItem
+                title={nft.title}
+                category={nft.category}
+                price={nft.price}
+                author={nft.author}
+                type={nft.type}
+                liked={nft.liked}
+                verifiedUser={nft.verifiedUser}
+                trending
+              />
+            ))}
+          </div>
+          <div className="slide">
+            {fakeNftList.map(nft => (
+              <NftItem
+                title={nft.title}
+                category={nft.category}
+                price={nft.price}
+                author={nft.author}
+                type={nft.type}
+                liked={nft.liked}
+                verifiedUser={nft.verifiedUser}
+                trending
+              />
+            ))}
+          </div>
+        </Carousel>
+      </div>
     );
   }
 };
 
-export default Gallery;
+export default TrendingToday;
