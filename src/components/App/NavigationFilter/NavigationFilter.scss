@@ -4,12 +4,16 @@
 
   svg {
     font-size: 14px;
-    left: 20px;
+    left: 12px;
     opacity: 0.3;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: auto;
+
+    @media screen and (max-width: 991px) {
+      font-size: 12px;
+    }
   }
 
   input {
@@ -25,6 +29,15 @@
     min-width: 185px;
     padding: 0 20px 0 45px;
     transition: 0.3s;
+
+    @media screen and (max-width: 991px) {
+      font-size: 12px;
+      padding: 0 12px 0 30px;
+    }
+
+    @media screen and (max-width: 767px) {
+      min-width: 130px;
+    }
 
     &:focus,
     &:focus-visible {

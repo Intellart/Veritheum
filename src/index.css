@@ -49,5 +49,8 @@ code {
 }
 
 .main-content {
+  display: flex;
+  flex-direction: column;
   margin-top: 90px;
+  min-height: calc(100vh - 90px);
 }

@@ -5,7 +5,6 @@ import './HeroCta.scss';
 
 class HeroCta extends React.Component {
   render () {
-
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>

@@ -99,7 +99,7 @@ class Home extends React.Component {
             </div>
             <div className="section-content mt-40">
               <NftListTabs />
-              <div className="nft-list">
+              <div className="homepage-nft-list">
                 {fakeNftList.map(nft => (
                   <NftItem
                     title={nft.title}

@@ -9,6 +9,7 @@ class NftItem extends React.Component {
       title, category, price, author,
       liked, type, verifiedUser, trending,
     } = this.props;
+
     return (
       <>
         {trending ? (

@@ -36,6 +36,18 @@
       }
     }
 
+    .homepage-nft-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: -10px;
+
+      .nft-item {
+        max-width: 315px;
+        min-width: 315px;
+      }
+    }
+
     .info-section {
       align-items: flex-start;
       display: flex;
@@ -196,23 +208,13 @@ section {
       margin-top: 80px;
     }
   }
-
-  .nft-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: -10px;
-  }
 }
 
-.gallery-content-area {
-  padding: 25px 15px 0 15px;
 
-  .nft-list {
-    display: flex;
-    flex-wrap: wrap;
-    overflow: auto;
-    margin: 0 auto;
-    max-width: 1360px;
+.gallery-page {
+  display: flex;
+
+  .gallery-content-area {
+    padding: 25px 15px 0 15px;
   }
 }

@@ -27,6 +27,10 @@ nav {
       display: flex;
       margin-right: 45px;
 
+      @media screen and (max-width: 767px) {
+        margin-right: 20px;
+      }
+
       img {
         height: 50px;
         width: auto;
@@ -46,6 +50,10 @@ nav {
         text-decoration: none;
         transition: 0.3s;
         white-space: nowrap;
+
+        @media screen and (max-width: 991px) {
+          font-size: 12px;
+        }
 
         &:hover {
           color: #475b71;
@@ -97,6 +105,58 @@ nav {
 
             &:last-child {
               margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+
+      @media screen and (max-width: 767px) {
+        align-items: center;
+        display: flex;
+        height: 40px;
+        justify-content: center;
+        margin-right: -14px;
+        width: 40px;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &.menu-open {
+          z-index: 999;
+        }
+      }
+    }
+
+    .mobile-menu {
+      @media screen and (max-width: 767px) {
+        display: none;
+
+        &.show {
+          align-items: center;
+          background: #fff;
+          display: flex;
+          height: 100vh;
+          justify-content: center;
+          left: 0;
+          position: fixed;
+          top: 0;
+          width: 100vw;
+
+          .links-wrapper {
+            flex-direction: column;
+
+            a {
+              margin: 5px 0;
+            }
+
+            .group {
+              display: flex;
+              flex-direction: column;
             }
           }
         }
