@@ -50,6 +50,7 @@ footer {
 
         @media only screen and (max-width: 767px) {
           margin-bottom: 0;
+          margin-left: 20px;
         }
       }
 
@@ -67,17 +68,13 @@ footer {
         line-height: 1.5;
         letter-spacing: 1px;
 
-        @media only screen and (max-width: 910px) {
-          margin-top: 40px;
-        }
-
         &:first-child {
           margin-top: 0;
         }
 
-        @media only screen and (max-width: 991px) {
-          font-size: 18px;
-          margin-bottom: 20px;
+        @media only screen and (max-width: 767px) {
+          font-size: 16px;
+          margin-bottom: 10px;
         }
 
         img {
@@ -100,8 +97,8 @@ footer {
           text-decoration: none;
           transition: 0.2s ease-in 0s;
 
-          @media only screen and (max-width: 991px) {
-            font-size: 14px;
+          @media only screen and (max-width: 767px) {
+            font-size: 12px;
           }
 
           &:hover {

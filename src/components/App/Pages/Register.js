@@ -24,7 +24,7 @@ class Register extends React.Component {
       <>
         <div className="register-page">
           <div className="content-wrapper">
-            <div className="column">
+            <div className="column negative-margin">
               <h1><b>Start creating</b><br/>your <b>osNFTs</b> today</h1>
               <h3>Follow these steps in order to start minting your creations:</h3>
               <div className="minting-instructions-steps">
@@ -79,6 +79,12 @@ class Register extends React.Component {
                       <IoEyeOff />
                     </div>
                   </div>
+                  <div className="input-wrapper">
+                    <label>Confirm password</label>
+                    <div className="password-field-wrapper">
+                      <input placeholder="Please confirm your password" />
+                    </div>
+                  </div>
                   <button>
                     Login
                   </button>
@@ -87,6 +93,11 @@ class Register extends React.Component {
                   Already have an account?
                   &nbsp;
                   <Link to="/sign_in">Sign in</Link>
+                </div>
+              </div>
+              <div className="form-notice">
+                <div className="form-notice-content-wrapper">
+                  By creating an account you agree to our <span>Terms and Conditions</span> and <span>Data Protection Guidelines</span>.
                 </div>
               </div>
             </div>

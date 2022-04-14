@@ -3,6 +3,8 @@
   box-shadow: 3px 0px 5px 0 rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
   font-family: "SoraMedium";
   height: calc(100vh - 90px);
   left: 0;
@@ -11,8 +13,12 @@
   top: 90px;
   z-index: 998;
 
-  &.minimized {
-    min-width: 56px;
+  @media screen and (max-width: 767px) {
+    position: fixed;
+    left: auto;
+    min-width: 100vw;
+    right: calc(100% + 10px);
+    transition: 0.3s;
   }
 
   .gallery-side-menu-toggle {
@@ -20,6 +26,7 @@
     border-bottom: 1px solid rgba(207, 217, 221, 0.6);
     display: flex;
     justify-content: space-between;
+    user-select: none;
     padding: 20px;
     transition: 0.3s;
 
@@ -29,29 +36,66 @@
       transition: 0.3s;
     }
 
+    @media screen and (max-width: 767px) {
+      background: #16375b;
+      border-radius: 10px;
+      bottom: 20px;
+      box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.15);
+      left: 50%;
+      justify-content: center;
+      min-width: 140px;
+      padding: 12px 20px;
+      position: fixed;
+      transform: translateX(-50%);
+
+      .label {
+        font-size: 12px !important;
+      }
+
+      &:hover {
+        background: #16375b;
+      }
+    }
+
     .label {
       align-items: center;
       font-size: 14px;
       color: #16375b;
       display: flex;
 
+      @media screen and (max-width: 767px) {
+        color: rgba(255, 255, 255, 0.84);
+      }
+
       svg {
         margin-right: 12px;
         fill: #16375b;
+
+        @media screen and (max-width: 767px) {
+          fill: rgba(255, 255, 255, 0.84);
+        }
       }
     }
 
     .icon {
       display: flex;
 
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
+
       svg {
         fill: #16375b;
       }
     }
 
-    &.active {
+    &.alt {
       .label {
         display: none;
+
+        @media screen and (max-width: 767px) {
+          display: flex;
+        }
       }
 
       .icon {
@@ -61,67 +105,55 @@
   }
 
   .gallery-side-menu-body {
-    .item {
-      .item-toggle {
+    flex: 1;
+    overflow: auto;
+  }
+
+  &.alt {
+    min-width: 56px;
+
+    .gallery-side-menu-body {
+      display: none;
+    }
+
+    @media screen and (max-width: 767px) {
+      min-width: 100vw;
+      right: 0;
+      transition: 0.3s;
+
+      .gallery-side-menu-body {
+        display: block;
+      }
+
+      .gallery-side-menu-toggle {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
+  .mobile-options-wrapper {
+    display: none;
+
+    @media screen and (max-width: 767px) {
+      align-items: center;
+      box-shadow: 3px 0px 8px 0 rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      user-select: none;
+      padding: 20px;
+      transition: 0.3s;
+      z-index: 3;
+
+      .clear-filters,
+      .toggle-menu {
         align-items: center;
-        border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+        background: #16375b;
+        border-radius: 4px;
+        color: rgba(255, 255, 255, 0.84);
         display: flex;
-        justify-content: space-between;
-        padding: 20px;
-
-        .label {
-          align-items: center;
-          font-size: 14px;
-          color: #16375b;
-          display: flex;
-        }
-
-        .icon {
-          display: flex;
-          transform: rotate(90deg);
-
-          svg {
-            fill: #16375b;
-          }
-        }
-      }
-
-      .item-menu {
-        background: #fbfcfd;
-        border-bottom: 1px solid rgba(207, 217, 221, 0.6);
-        color: #16375b;
-        display: none;
-        font-size: 14px;
-        padding: 20px;
-
-        .item-checkbox {
-          align-items: center;
-          font-size: 12px;
-          display: flex;
-          margin-bottom: 8px;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          svg {
-            fill: #16375b;
-            font-size: 14px;
-            margin-right: 8px;
-          }
-        }
-      }
-
-      &.active {
-        .item-toggle {
-          .icon {
-            transform: rotate(-90deg);
-          }
-        }
-        .item-menu {
-          display: flex;
-          flex-direction: column;
-        }
+        font-size: 12px;
+        padding: 8px 12px;
       }
     }
   }

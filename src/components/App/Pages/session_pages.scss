@@ -24,6 +24,10 @@
       flex-direction: column;
       z-index: 2;
 
+      &.negative-margin {
+        margin-top: -100px;
+      }
+
       &:first-child {
         margin-right: 160px;
 
@@ -381,6 +385,30 @@
 
         @media screen and (max-width: 767px) {
           font-size: 12px;
+        }
+      }
+    }
+
+    .form-notice {
+      margin: 25px auto;
+
+      .form-notice-content-wrapper {
+        color: #16375b;
+        font-size: 12px;
+        letter-spacing: -0.12px;
+        line-height: 1.5;
+        max-width: 320px;
+        text-align: center;
+
+        span {
+          font-family: "SoraBold";
+          transition: 0.3s;
+
+          &:hover {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.3s;
+          }
         }
       }
     }

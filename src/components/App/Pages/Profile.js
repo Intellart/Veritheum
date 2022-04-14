@@ -56,7 +56,7 @@ class Profile extends React.Component {
           </div>
           <GallerySideMenu />
           <div className="profile-content-area">
-            <GalleryFilters />
+            <GalleryFilters profile />
             <NftList />
           </div>
         </div>

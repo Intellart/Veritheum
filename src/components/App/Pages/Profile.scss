@@ -307,6 +307,14 @@
     transform: translateX(-50%);
     z-index: 3;
 
+    @media screen and (max-width: 991px) {
+      top: -72px;
+    }
+
+    @media screen and (max-width: 767px) {
+      top: -62px;
+    }
+
     a {
       align-items: center;
       background: #fff;
@@ -350,5 +358,9 @@
 
   .profile-content-area {
     padding: 50px 15px 0 15px;
+
+    @media screen and (max-width: 991px) {
+      padding: 15px 15px 0 15px;
+    }
   }
 }

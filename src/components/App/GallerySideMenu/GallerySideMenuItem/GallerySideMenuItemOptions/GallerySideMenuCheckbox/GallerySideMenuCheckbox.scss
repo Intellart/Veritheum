@@ -1,0 +1,21 @@
+.gallery-side-menu-checkbox {
+  align-items: center;
+  font-size: 12px;
+  display: flex;
+  margin-bottom: 8px;
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  svg {
+    fill: #16375b;
+    font-size: 14px;
+    margin-right: 8px;
+  }
+}

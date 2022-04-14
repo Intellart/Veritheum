@@ -21,6 +21,10 @@ class Navigation extends React.Component {
     this.setState({ mobileMenuOpen: !this.state.mobileMenuOpen })
   };
 
+  closeMobileMenu = () => {
+    this.setState({ mobileMenuOpen: false })
+  };
+
   render () {
     const { mobileMenuOpen } = this.state;
 
@@ -35,11 +39,11 @@ class Navigation extends React.Component {
           </div>
           <div className={`item-group mobile-menu ${mobileMenuOpen ? 'show' : ''}`}>
             <div className="links-wrapper">
-              <Link to="/">Home</Link>
-              <Link to="/gallery">Explore</Link>
+              <Link to="/" onClick={this.closeMobileMenu}>Home</Link>
+              <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
               <div className="group">
-                <Link to="/" className="outline">Create</Link>
-                <Link to="/sign_in" className="full">Sign in</Link>
+                <Link to="/" className="outline" onClick={this.closeMobileMenu}>Create</Link>
+                <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
               </div>
             </div>
           </div>

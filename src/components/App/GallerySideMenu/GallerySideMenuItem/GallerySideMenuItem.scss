@@ -1,0 +1,49 @@
+.gallery-side-menu-item {
+  .item-toggle {
+    align-items: center;
+    border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+    padding: 20px;
+    transition: 0.3s;
+
+    .label {
+      align-items: center;
+      font-size: 14px;
+      color: #16375b;
+      display: flex;
+
+      @media screen and (max-width: 767px) {
+        font-size: 12px;
+      }
+    }
+
+    .icon {
+      display: flex;
+      transform: rotate(90deg);
+
+      svg {
+        fill: #16375b;
+
+        @media screen and (max-width: 767px) {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &:hover {
+      background: #f9f9f9;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+  }
+
+  &.show {
+    .item-toggle {
+      .icon {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+}

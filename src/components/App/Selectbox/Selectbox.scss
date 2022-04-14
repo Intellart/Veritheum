@@ -1,0 +1,89 @@
+.selectbox {
+  align-items: center;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  color: #11273f;
+  display: flex;
+  font-family: "SoraMedium";
+  font-size: 14px;
+  justify-content: flex-start;
+  letter-spacing: -0.14px;
+  height: 45px;
+  margin: 5px;
+  min-width: 150px;
+  user-select: none;
+  padding: 0 25px;
+  position: relative;
+
+  @media screen and (max-width: 991px) {
+    font-size: 12px;
+    min-width: 100px;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus,
+  &:focus-visible {
+    border: 1px solid rgba(17, 39, 63, 0.2);
+    box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: 0.3s;
+  }
+
+  &.open {
+    border-radius: 4px 4px 0 0;
+  }
+
+  .icon-wrapper {
+    display: flex;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    svg {
+      color: #11273f;
+      top: 50%;
+      transform: rotate(90deg);
+    }
+  }
+
+  .selectbox-options {
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+    border-top: 1px solid rgba(207, 217, 221, 0.6);
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: flex;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 12px;
+        padding: 12px 20px;
+        transition: 0.3s;
+
+        &:hover {
+          background: #f9f9f9;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}

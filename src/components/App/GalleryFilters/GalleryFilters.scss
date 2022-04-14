@@ -5,10 +5,41 @@
   justify-content: space-between;
   margin: 0 5px;
 
+  @media screen and (max-width: 1380px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  @media screen and (max-width: 767px) {
+    margin: 0;
+  }
+
   .group {
     align-items: center;
     display: flex;
+    flex: 1;
     flex-wrap: wrap;
+    width: 100%;
+
+    @media screen and (max-width: 767px) {
+      margin-bottom: 10px;
+
+      &.main-group {
+        border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+        margin: 0 0 10px -15px;
+        padding: 0 0 10px 15px;
+        width: calc(100% + 30px);
+
+        @media screen and (max-width: 450px) {
+          flex-direction: column;
+
+          .tab {
+            width: calc(100% - 40px);
+            margin-left: -25px;
+          }
+        }
+      }
+    }
   }
 
   .tab {
@@ -27,6 +58,11 @@
     transition: 0.3s;
     white-space: nowrap;
     width: 160px;
+
+    @media screen and (max-width: 991px) {
+      font-size: 12px;
+      width: 130px;
+    }
 
     &:hover {
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.4);
@@ -49,8 +85,14 @@
     }
   }
 
+  .item-counter {
+    color: #16375b;
+    font-size: 14px;
+  }
+
   .filter {
     display: flex;
+    flex: 1;
     margin: 5px;
     position: relative;
 
@@ -60,21 +102,35 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
+
+      @media screen and (max-width: 991px) {
+        font-size: 12px;
+      }
     }
 
     input {
       align-items: center;
       background: #dce1e7;
-      border: 1px solid transparent;
+      border: 1px solid #dce1e7;
       border-radius: 4px;
       color: #11273f;
       display: flex;
       font-family: "MontserratRegular";
       font-size: 14px;
-      height: 45px;
+      height: 43px;
+      max-width: 100%;
       min-width: 250px;
       padding: 0 45px 0 20px;
       transition: 0.3s;
+      width: 100%;
+
+      @media screen and (max-width: 991px) {
+        font-size: 12px;
+      }
+
+      @media screen and (max-width: 767px) {
+        min-width: auto;
+      }
 
       &:focus,
       &:focus-visible {
