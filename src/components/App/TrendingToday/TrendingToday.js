@@ -66,10 +66,12 @@ class TrendingToday extends React.Component {
       <div className="trending-today">
         <Carousel
           autoPlay
+          showThumbs={false}
         >
           <div className="slide">
-            {fakeNftList.map(nft => (
+            {fakeNftList.map((nft, i) => (
               <NftItem
+                key={i}
                 title={nft.title}
                 category={nft.category}
                 price={nft.price}
@@ -82,8 +84,9 @@ class TrendingToday extends React.Component {
             ))}
           </div>
           <div className="slide">
-            {fakeNftList.map(nft => (
+            {fakeNftList.map((nft, i) => (
               <NftItem
+              key={i}
                 title={nft.title}
                 category={nft.category}
                 price={nft.price}
@@ -96,8 +99,9 @@ class TrendingToday extends React.Component {
             ))}
           </div>
           <div className="slide">
-            {fakeNftList.map(nft => (
+            {fakeNftList.map((nft, i) => (
               <NftItem
+                key={i}
                 title={nft.title}
                 category={nft.category}
                 price={nft.price}

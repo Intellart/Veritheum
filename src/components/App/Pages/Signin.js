@@ -1,13 +1,42 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { IoEye, IoEyeOff } from 'react-icons/io5';
 import Footer from '../Footer/Footer';
-import { IoEye, IoEyeOff } from "react-icons/io5";
+import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import './session_pages.scss';
 
-class Signin extends React.Component {
+type Props = {
+  dispatch: Function,
+}
+
+type State = {
+  showPassword: boolean,
+}
+
+class Signin extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showPassword: false,
+    };
+  }
+
+  loginUser(e: Event) {
+    e.preventDefault();
+    this.props.dispatch(actions.loginUser('test2@thespian.hr'));
+  }
+
+  togglePasswordVisibility() {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  }
+
   render () {
+    const { showPassword } = this.state;
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -24,7 +53,7 @@ class Signin extends React.Component {
         <div className="signin-page">
           <div className="content-wrapper">
             <div className="column">
-              <h1><b>Create and sell</b><br/>your own unique <b>osNFTs</b></h1>
+              <h1><b>Create and sell</b><br />your own unique <b>osNFTs</b></h1>
               <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</h3>
             </div>
             <div className="column">
@@ -43,14 +72,14 @@ class Signin extends React.Component {
                   <div className="input-wrapper">
                     <label>Password</label>
                     <div className="password-field-wrapper">
-                      <input placeholder="Please input your password" />
-                      <IoEyeOff />
+                      <input placeholder="Please input your password" type={showPassword ? 'text' : 'password'} />
+                      {showPassword ? <IoEye onClick={this.togglePasswordVisibility.bind(this)} /> : <IoEyeOff onClick={this.togglePasswordVisibility.bind(this)} />}
                     </div>
                   </div>
                   <div className="forgot-password-wrapper">
                     <Link to="/">Forgot password?</Link>
                   </div>
-                  <button>
+                  <button onClick={this.loginUser.bind(this)}>
                     Login
                   </button>
                 </form>
@@ -68,6 +97,6 @@ class Signin extends React.Component {
       </>
     );
   }
-};
+}
 
-export default Signin;
+export default connect()(Signin);

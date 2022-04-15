@@ -102,6 +102,7 @@ class Home extends React.Component {
               <div className="homepage-nft-list">
                 {fakeNftList.map(nft => (
                   <NftItem
+                    key={nft.title}
                     title={nft.title}
                     category={nft.category}
                     price={nft.price}
