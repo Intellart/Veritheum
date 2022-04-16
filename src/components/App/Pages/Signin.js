@@ -13,6 +13,8 @@ type Props = {
 }
 
 type State = {
+  email: string,
+  password: string,
   showPassword: boolean,
 }
 
@@ -20,13 +22,15 @@ class Signin extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
+      email: '',
+      password: '',
       showPassword: false,
     };
   }
 
   loginUser(e: Event) {
     e.preventDefault();
-    this.props.dispatch(actions.loginUser('test2@thespian.hr'));
+    this.props.dispatch(actions.loginUser({ email: this.state.email, password: this.state.password }));
   }
 
   togglePasswordVisibility() {
@@ -36,7 +40,7 @@ class Signin extends React.Component<Props, State> {
   }
 
   render () {
-    const { showPassword } = this.state;
+    const { email, password, showPassword } = this.state;
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -67,19 +71,32 @@ class Signin extends React.Component<Props, State> {
                 <form>
                   <div className="input-wrapper">
                     <label>Email</label>
-                    <input placeholder="Please input your email" />
+                    <input
+                      placeholder="Please input your email"
+                      value={email}
+                      onChange={(e) => this.setState({ email: e.target.value })}
+                    />
                   </div>
                   <div className="input-wrapper">
                     <label>Password</label>
                     <div className="password-field-wrapper">
-                      <input placeholder="Please input your password" type={showPassword ? 'text' : 'password'} />
-                      {showPassword ? <IoEye onClick={this.togglePasswordVisibility.bind(this)} /> : <IoEyeOff onClick={this.togglePasswordVisibility.bind(this)} />}
+                      <input
+                        placeholder="Please input your password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => this.setState({ password: e.target.value })}
+                      />
+                      {showPassword ? (
+                        <IoEye onClick={() => this.togglePasswordVisibility()} />
+                      ) : (
+                        <IoEyeOff onClick={() => this.togglePasswordVisibility()} />
+                      )}
                     </div>
                   </div>
                   <div className="forgot-password-wrapper">
                     <Link to="/">Forgot password?</Link>
                   </div>
-                  <button onClick={this.loginUser.bind(this)}>
+                  <button onClick={(e) => this.loginUser(e)}>
                     Login
                   </button>
                 </form>

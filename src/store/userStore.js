@@ -14,16 +14,24 @@ type SocialLinks = {
 
 type Profile = {
   id: string,
-  ORCID?: string,
   email: string,
-  firstName: string,
-  lastName: string,
-  profileImg?: string,
-  fieldOfStudy?: FieldOfStudy,
-  socialLinks?: SocialLinks,
+  first_name: string,
+  last_name: string,
   updatedAt: Date,
   createdAt: Date,
   confirmedAt: Date,
+}
+
+type LoginCredentials = {
+  email: string,
+  password: string,
+}
+
+type RegisterCredentials = {
+  email: string,
+  password: string,
+  first_name: string,
+  last_name: string,
 }
 
 export type State = {
@@ -42,9 +50,13 @@ export const selectors = {
 };
 
 export const actions = {
-  loginUser: (email: string): ReduxAction => ({
+  loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_FETCH_USER,
-    payload: API.getRequest(`users/sign_in?email=${email}`),
+    payload: API.postRequest('users/sign_in', payload),
+  }),
+  registerUser: (payload: RegisterCredentials): ReduxAction => ({
+    type: types.USR_FETCH_USER,
+    payload: API.postRequest('users', payload),
   }),
 };
 

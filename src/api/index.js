@@ -10,7 +10,11 @@ export const getRequest = async (endpoint: string): Promise<any> => {
 export const postRequest = async (endpoint: string, payload: any): Promise<any> => {
   const response: any = await apiClient.post(endpoint, payload);
 
-  return response.data;
+  if (response.status === 200) {
+    return response.data.data;
+  }
+
+  return null;
 };
 
 export const putRequest = async (endpoint: string, payload: any): Promise<any> => {
