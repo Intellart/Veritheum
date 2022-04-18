@@ -1,16 +1,6 @@
 // @flow
-import { merge } from 'lodash';
 import * as API from '../api';
 import type { ReduxAction, ReduxState } from '../types';
-
-type FieldOfStudy = {
-  id: number,
-  fieldsName: string,
-}
-
-type SocialLinks = {
-  [string]: string,
-}
 
 type Profile = {
   id: string,
@@ -39,10 +29,15 @@ export type State = {
 };
 
 export const types = {
-  USR_FETCH_USER: 'USR/FETCH_USER',
-  USR_FETCH_USER_PENDING: 'USR/FETCH_USER_PENDING',
-  USR_FETCH_USER_REJECTED: 'USR/FETCH_USER_REJECTED',
-  USR_FETCH_USER_FULFILLED: 'USR/FETCH_USER_FULFILLED',
+  USR_LOGIN_USER: 'USR/LOGIN_USER',
+  USR_LOGIN_USER_PENDING: 'USR/LOGIN_USER_PENDING',
+  USR_LOGIN_USER_REJECTED: 'USR/LOGIN_USER_REJECTED',
+  USR_LOGIN_USER_FULFILLED: 'USR/LOGIN_USER_FULFILLED',
+
+  USR_REGISTER_USER: 'USR/REGISTER_USER',
+  USR_REGISTER_USER_PENDING: 'USR/REGISTER_USER_PENDING',
+  USR_REGISTER_USER_REJECTED: 'USR/REGISTER_USER_REJECTED',
+  USR_REGISTER_USER_FULFILLED: 'USR/REGISTER_USER_FULFILLED',
 };
 
 export const selectors = {
@@ -51,19 +46,20 @@ export const selectors = {
 
 export const actions = {
   loginUser: (payload: LoginCredentials): ReduxAction => ({
-    type: types.USR_FETCH_USER,
+    type: types.USR_LOGIN_USER,
     payload: API.postRequest('users/sign_in', payload),
   }),
   registerUser: (payload: RegisterCredentials): ReduxAction => ({
-    type: types.USR_FETCH_USER,
+    type: types.USR_REGISTER_USER,
     payload: API.postRequest('users', payload),
   }),
 };
 
 export const reducer = (state: State, action: any): State => {
   switch (action.type) {
-    case types.USR_FETCH_USER_FULFILLED:
-      return merge({}, state, { profile: action.payload });
+    case types.USR_LOGIN_USER_FULFILLED:
+    case types.USR_REGISTER_USER_FULFILLED:
+      return { ...state, ...{ profile: action.payload } };
 
     default:
       return state || {};

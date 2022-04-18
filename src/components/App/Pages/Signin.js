@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
+import { some, isEmpty } from 'lodash';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
@@ -68,10 +69,11 @@ class Signin extends React.Component<Props, State> {
                 <div className="form-header">
                   Sign in
                 </div>
-                <form>
+                <form onSubmit={(e) => this.loginUser(e)}>
                   <div className="input-wrapper">
                     <label>Email</label>
                     <input
+                      autoComplete="email"
                       placeholder="Please input your email"
                       value={email}
                       onChange={(e) => this.setState({ email: e.target.value })}
@@ -81,6 +83,7 @@ class Signin extends React.Component<Props, State> {
                     <label>Password</label>
                     <div className="password-field-wrapper">
                       <input
+                        autoComplete="password"
                         placeholder="Please input your password"
                         type={showPassword ? 'text' : 'password'}
                         value={password}
@@ -96,7 +99,7 @@ class Signin extends React.Component<Props, State> {
                   <div className="forgot-password-wrapper">
                     <Link to="/">Forgot password?</Link>
                   </div>
-                  <button onClick={(e) => this.loginUser(e)}>
+                  <button disabled={some([email, password], isEmpty)}>
                     Login
                   </button>
                 </form>

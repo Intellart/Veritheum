@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { MdChevronRight } from 'react-icons/md';
+import { some, isEmpty } from 'lodash';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
@@ -16,8 +17,9 @@ type Props = {
 type State = {
   email: string,
   password: string,
-  first_name: string,
-  last_name: string,
+  confirmPassword: string,
+  firstName: string,
+  lastName: string,
   showPassword: boolean,
 }
 
@@ -27,8 +29,9 @@ class Register extends React.Component<Props, State> {
     this.state = {
       email: '',
       password: '',
-      first_name: '',
-      last_name: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
       showPassword: false,
     };
   }
@@ -38,8 +41,8 @@ class Register extends React.Component<Props, State> {
     this.props.dispatch(actions.registerUser({
       email: this.state.email,
       password: this.state.password,
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
+      first_name: this.state.firstName,
+      last_name: this.state.lastName,
     }));
   }
 
@@ -51,7 +54,7 @@ class Register extends React.Component<Props, State> {
 
   render () {
     const {
-      email, password, first_name, last_name, showPassword,
+      email, password, confirmPassword, firstName, lastName, showPassword,
     } = this.state;
     const graphics = (
       <div className="graphics-wrapper">
@@ -94,21 +97,23 @@ class Register extends React.Component<Props, State> {
                 <div className="form-header">
                   Register
                 </div>
-                <form>
+                <form onSubmit={(e) => this.registerUser(e)}>
                   <div className="input-wrapper">
                     <label>First name</label>
                     <input
+                      autoComplete="given-name"
                       placeholder="Please input your first name"
-                      value={first_name}
-                      onChange={(e) => this.setState({ first_name: e.target.value })}
+                      value={firstName}
+                      onChange={(e) => this.setState({ firstName: e.target.value })}
                     />
                   </div>
                   <div className="input-wrapper">
                     <label>Last name</label>
                     <input
+                      autoComplete="family-name"
                       placeholder="Please input your last name"
-                      value={last_name}
-                      onChange={(e) => this.setState({ last_name: e.target.value })}
+                      value={lastName}
+                      onChange={(e) => this.setState({ lastName: e.target.value })}
                     />
                   </div>
                   <div className="input-wrapper">
@@ -123,6 +128,7 @@ class Register extends React.Component<Props, State> {
                   <div className="input-wrapper">
                     <label>Email</label>
                     <input
+                      autoComplete="email"
                       placeholder="Please input your email"
                       value={email}
                       onChange={(e) => this.setState({ email: e.target.value })}
@@ -132,6 +138,7 @@ class Register extends React.Component<Props, State> {
                     <label>Password</label>
                     <div className="password-field-wrapper">
                       <input
+                        autoComplete="password"
                         placeholder="Please input your password"
                         type={showPassword ? 'text' : 'password'}
                         value={password}
@@ -147,10 +154,14 @@ class Register extends React.Component<Props, State> {
                   <div className="input-wrapper">
                     <label>Confirm password</label>
                     <div className="password-field-wrapper">
-                      <input placeholder="Please confirm your password" />
+                      <input
+                        placeholder="Please confirm your password"
+                        value={confirmPassword}
+                        onChange={(e) => this.setState({ confirmPassword: e.target.value })}
+                      />
                     </div>
                   </div>
-                  <button onClick={(e) => this.registerUser(e)}>
+                  <button disabled={some([email, password, confirmPassword, firstName, lastName], isEmpty) || password !== confirmPassword}>
                     Register
                   </button>
                 </form>

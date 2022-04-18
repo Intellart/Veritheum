@@ -113,8 +113,8 @@ export const configureStore = (
 
   return createStore(
     combineReducers({
-      user: userStoreReducer,
       global: globalStoreReducer,
+      user: userStoreReducer,
     }),
     initialState,
     middlewareApplier,

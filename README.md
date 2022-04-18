@@ -61,8 +61,6 @@ During development, you can avoid your webpack build failing because of `eslint`
 
     ESLINT_NO_DEV_ERRORS="true"
 
-NOTE that `production` build will fail in case there are `eslint` errors, so before creating a PR make sure there are no `eslint` errors.
-
 To make Redux dev tools skip recording certain actions set
 
     REACT_APP_REDUX_ACTIONS_BLACKLIST="ACTION_ONE,ACTION_TWO"
@@ -71,7 +69,7 @@ To make Redux dev tools stop serializing large chunks of data
 
     REACT_APP_REDUX_SANITIZER="false"
 
-> This can also be achieved by adding `disable_sanitizer=true` to the sessionStorage and then reload the browser window, it will only work until the next window reload
+> This can also be achieved by adding `disable_sanitizer=true` to the sessionStorage and then reload the browser window, it will only work until the end of the browser session
 
 To log Redux store
 
