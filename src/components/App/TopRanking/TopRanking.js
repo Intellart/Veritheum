@@ -58,9 +58,9 @@ class TopRanking extends React.Component {
 
     const getRankings = (lowestIndex, highestIndex) => {
       return (
-        <div class="top-ranking-column">
+        <div className="top-ranking-column">
           {fakeTopRankingList.map((item, i) => (
-            <>
+            <React.Fragment key={i}>
               {i >= lowestIndex && i <= highestIndex && (
                 <div className="top-ranking">
                   <div className="top-ranking-index">
@@ -89,7 +89,7 @@ class TopRanking extends React.Component {
                   </div>
                 </div>
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       );
@@ -97,13 +97,13 @@ class TopRanking extends React.Component {
 
     return (
       <div className="top-ranking-wrapper">
-        <div class="top-ranking-column">
+        <div className="top-ranking-column">
           {getRankings(0, 2)}
         </div>
-        <div class="top-ranking-column">
+        <div className="top-ranking-column">
           {getRankings(3, 5)}
         </div>
-        <div class="top-ranking-column">
+        <div className="top-ranking-column">
           {getRankings(6, 8)}
         </div>
       </div>

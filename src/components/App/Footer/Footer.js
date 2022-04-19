@@ -1,8 +1,7 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { IoLogoTwitter, IoLogoGithub } from 'react-icons/io5';
+import { FaDiscord } from 'react-icons/fa';
 import logoIcon from '../../../assets/logo/veritheum_logo_white.svg';
-import { IoLogoTwitter, IoLogoGithub } from "react-icons/io5";
-import { FaDiscord } from "react-icons/fa";
 import './Footer.scss';
 
 class Footer extends React.Component {

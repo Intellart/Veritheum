@@ -1,16 +1,16 @@
 import React from 'react';
-import Selectbox from '../Selectbox/Selectbox';
 import {
-  MdCollectionsBookmark, MdEdit, IoMdHeart
+  MdCollectionsBookmark, MdEdit,
 } from 'react-icons/md';
 import { IoHeart, IoSearch } from 'react-icons/io5';
+import Selectbox from '../Selectbox/Selectbox';
 import './GalleryFilters.scss';
 
 type Props = {
   profile: boolean,
 }
 
-class GalleryFilters extends React.Component {
+class GalleryFilters extends React.Component<Props> {
   render () {
     const { profile } = this.props;
 
@@ -51,6 +51,6 @@ class GalleryFilters extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default GalleryFilters;
