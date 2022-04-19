@@ -1,13 +1,23 @@
 import React from 'react';
-import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from "react-icons/io5";
+import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from 'react-icons/io5';
 import User from '../../../assets/icons/user.svg';
 import './NftItem.scss';
 
-class NftItem extends React.Component {
+type Props = {
+  categoryId: number,
+  tradeable: boolean,
+  price: number,
+  author: string,
+  verified: boolean,
+  name: string,
+  trending?: boolean,
+}
+
+class NftItem extends React.Component<Props> {
   render () {
     const {
-      id, categoryId, tradeable, price,
-      author, verified, likes, name, trending,
+      categoryId, tradeable, price,
+      author, verified, name, trending,
     } = this.props;
 
     let category;
@@ -17,7 +27,7 @@ class NftItem extends React.Component {
       category = 'physics';
     } else {
       category = 'chemistry';
-    };
+    }
 
     let type;
     if (tradeable === true) {
@@ -29,7 +39,7 @@ class NftItem extends React.Component {
     const liked = false;
 
     return (
-      <>
+      <div className="nft-item-wrapper">
         {trending ? (
           <div className={`trending-nft-item ${category}`}>
             <div className="trending-nft-item-top-info">
@@ -87,7 +97,7 @@ class NftItem extends React.Component {
                     <div className="price-info">
                       {price} ADA
                       <div className="to-dollars">
-                      ≈ $ 12.75
+                        ≈ $ 12.75
                       </div>
                     </div>
                   </div>
@@ -97,7 +107,7 @@ class NftItem extends React.Component {
                     </div>
                     <div className="author">
                       <div className="author-image">
-                        <img src={User} alt="User image" />
+                        <img src={User} alt="User" />
                       </div>
                       {author}
                     </div>
@@ -111,13 +121,13 @@ class NftItem extends React.Component {
                     </div>
                     <div className="endorsed-by-info">
                       <div className="top-endorser">
-                        <img src={User} alt="User image" />
+                        <img src={User} alt="User" />
                       </div>
                       <div className="top-endorser">
-                        <img src={User} alt="User image" />
+                        <img src={User} alt="User" />
                       </div>
                       <div className="top-endorser">
-                        <img src={User} alt="User image" />
+                        <img src={User} alt="User" />
                       </div>
                       <div className="other-endorsers">
                         +27
@@ -134,9 +144,9 @@ class NftItem extends React.Component {
             </div>
           </div>
         )}
-      </>
+      </div>
     );
   }
-};
+}
 
 export default NftItem;

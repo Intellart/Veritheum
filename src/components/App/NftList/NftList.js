@@ -7,9 +7,9 @@ class NftList extends React.Component {
   render () {
     return (
       <div className="nft-list">
-        {nftList.map((nft, i) => (
+        {nftList.map(nft => (
           <NftItem
-            key={i}
+            key={nft.id}
             id={nft.id}
             categoryId={nft.category_id}
             tradeable={nft.tradeable}
@@ -23,6 +23,6 @@ class NftList extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default NftList;

@@ -26,9 +26,9 @@ class Home extends React.Component {
             <div className="section-content mt-40">
               <NftListTabs />
               <div className="homepage-nft-list">
-                {nftList.slice(0, 8).map((nft, i) => (
+                {nftList.slice(0, 8).map(nft => (
                   <NftItem
-                    key={i}
+                    key={nft.id}
                     id={nft.id}
                     categoryId={nft.category_id}
                     tradeable={nft.tradeable}
@@ -113,6 +113,6 @@ class Home extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default Home;
