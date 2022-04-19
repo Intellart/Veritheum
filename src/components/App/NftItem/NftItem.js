@@ -6,17 +6,35 @@ import './NftItem.scss';
 class NftItem extends React.Component {
   render () {
     const {
-      title, category, price, author,
-      liked, type, verifiedUser, trending,
+      id, categoryId, tradeable, price,
+      author, verified, likes, name, trending,
     } = this.props;
+
+    let category;
+    if (categoryId === 1) {
+      category = 'biology';
+    } else if (categoryId === 2) {
+      category = 'physics';
+    } else {
+      category = 'chemistry';
+    };
+
+    let type;
+    if (tradeable === true) {
+      type = 'Tradable';
+    } else {
+      type = 'Endorsable';
+    }
+
+    const liked = false;
 
     return (
       <>
         {trending ? (
           <div className={`trending-nft-item ${category}`}>
             <div className="trending-nft-item-top-info">
-              <div className="title">
-                {title}
+              <div className="name">
+                {name}
               </div>
             </div>
             <div className="trending-nft-item-bottom-info">
@@ -24,7 +42,7 @@ class NftItem extends React.Component {
                 {type}
               </div>
               <div className="group">
-                {verifiedUser && (
+                {verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
@@ -37,9 +55,9 @@ class NftItem extends React.Component {
           </div>
         ) : (
           <div className="nft-item">
-            <div className="nft-item-title-wrapper">
-              <div className="nft-item-title">
-                {title}
+            <div className="nft-item-name-wrapper">
+              <div className="nft-item-name">
+                {name}
               </div>
             </div>
             <div className="nft-item-top-info">
@@ -49,7 +67,7 @@ class NftItem extends React.Component {
                 </div>
               </div>
               <div className="group">
-                {verifiedUser && (
+                {verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
@@ -60,7 +78,32 @@ class NftItem extends React.Component {
               </div>
             </div>
             <div className="nft-item-bottom-info">
-              {type === 'endorsable' ? (
+              {tradeable ? (
+                <>
+                  <div className="group">
+                    <div className="info-label">
+                      Price
+                    </div>
+                    <div className="price-info">
+                      {price} ADA
+                      <div className="to-dollars">
+                      ≈ $ 12.75
+                      </div>
+                    </div>
+                  </div>
+                  <div className="group">
+                    <div className="info-label">
+                      Author
+                    </div>
+                    <div className="author">
+                      <div className="author-image">
+                        <img src={User} alt="User image" />
+                      </div>
+                      {author}
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <>
                   <div className="group">
                     <div className="info-label">
@@ -84,31 +127,6 @@ class NftItem extends React.Component {
                   <div className="group align-end">
                     <div className="endorse-btn">
                       Endorse
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="group">
-                    <div className="info-label">
-                      Price
-                    </div>
-                    <div className="price-info">
-                      {price} ADA
-                      <div className="to-dollars">
-                      ≈ $ 12.75
-                      </div>
-                    </div>
-                  </div>
-                  <div className="group">
-                    <div className="info-label">
-                      Author
-                    </div>
-                    <div className="author">
-                      <div className="author-image">
-                        <img src={User} alt="User image" />
-                      </div>
-                      {author}
                     </div>
                   </div>
                 </>

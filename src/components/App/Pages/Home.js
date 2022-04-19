@@ -9,85 +9,11 @@ import Footer from '../Footer/Footer';
 import WalletIcon from '../../../assets/graphics/wallet.svg';
 import NoteIcon from '../../../assets/graphics/note-plus.svg';
 import WebIcon from '../../../assets/graphics/web.svg';
+import { fakeNftList as nftList } from '../../../utils/fakeNftList';
 import './pages.scss';
 
 class Home extends React.Component {
   render () {
-    const fakeNftList = [
-      {
-        title: "CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Supramolecular strategies in artificial photosynthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Fermi surface transformation at the pseudogap critical point of a cuprate superconductor",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "The Hitchhiker's guide to biocatalysis: recent advances in the use of enzymes in organic synthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid system",
-        category: "physics",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Design of molecular water oxidation catalysts with earth-abundant metal ions",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-    ];
-
     return (
       <div className="home-page-wrapper">
         <HeroCta />
@@ -100,16 +26,17 @@ class Home extends React.Component {
             <div className="section-content mt-40">
               <NftListTabs />
               <div className="homepage-nft-list">
-                {fakeNftList.map(nft => (
+                {nftList.slice(0, 8).map((nft, i) => (
                   <NftItem
-                    key={nft.title}
-                    title={nft.title}
-                    category={nft.category}
+                    key={i}
+                    id={nft.id}
+                    categoryId={nft.category_id}
+                    tradeable={nft.tradeable}
                     price={nft.price}
-                    type={nft.type}
-                    verifiedUser={nft.verifiedUser}
-                    liked={nft.liked}
                     author={nft.author}
+                    verified={nft.verified}
+                    likes={nft.likes}
+                    name={nft.name}
                   />
                 ))}
               </div>

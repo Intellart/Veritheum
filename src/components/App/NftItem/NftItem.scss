@@ -15,14 +15,14 @@
     min-width: 180px;
   }
 
-  .nft-item-title-wrapper {
+  .nft-item-name-wrapper {
     align-items: center;
     display: flex;
     justify-content: center;
     margin-bottom: 16px;
     min-height: 80px;
 
-    .nft-item-title {
+    .nft-item-name {
       color: #11273f;
       display: -webkit-box;
       font-family: "SoraMedium";
@@ -310,7 +310,7 @@
     display: flex;
     height: 80px;
 
-    .title {
+    .name {
       display: -webkit-box;
       -webkit-line-clamp: 3;
       line-clamp: 3;
