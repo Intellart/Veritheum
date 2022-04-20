@@ -1,25 +1,39 @@
 import React from 'react';
 import NftItem from '../NftItem/NftItem';
-import { fakeNftList as nftList } from '../../../utils/fakeNftList';
+import { isEmpty } from 'lodash';
 import './NftList.scss';
 
-class NftList extends React.Component {
+type Props = {
+  nftList: Array<Object>,
+}
+
+class NftList extends React.Component<Props> {
   render () {
+    const { nftList } = this.props;
+
     return (
-      <div className="nft-list">
-        {nftList.map(nft => (
-          <NftItem
-            key={nft.id}
-            id={nft.id}
-            categoryId={nft.category_id}
-            tradeable={nft.tradeable}
-            price={nft.price}
-            author={nft.author}
-            verified={nft.verified}
-            likes={nft.likes}
-            name={nft.name}
-          />
-        ))}
+      <div className="nft-list-wrapper">
+        {isEmpty(nftList) ? (
+          <div className="no-results-message">
+            No items to display...
+          </div>
+        ) : (
+          <div className="nft-list">
+            {nftList.map(nft => (
+              <NftItem
+                key={nft.id}
+                id={nft.id}
+                categoryId={nft.category_id}
+                tradeable={nft.tradeable}
+                price={nft.price}
+                author={nft.author}
+                verified={nft.verified}
+                likes={nft.likes}
+                name={nft.name}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }

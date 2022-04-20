@@ -7,17 +7,30 @@ import Selectbox from '../Selectbox/Selectbox';
 import './GalleryFilters.scss';
 
 type Props = {
-  profile: boolean,
-}
+  filterNftsByName: Function,
+  filterNftsByType: Function,
+  numberOfItems: number,
+  isProfile: boolean,
+};
 
 class GalleryFilters extends React.Component<Props> {
+  handleChange = (e: Event) => {
+    const { filterNftsByName } = this.props;
+    filterNftsByName(e.target.value);
+  };
+
   render () {
-    const { profile } = this.props;
+    const { searchText, filterNftsByType, numberOfItems, isProfile } = this.props;
+    const selectboxOptions = [
+      { value: 0, text: 'All items'},
+      { value: 1, text: 'Tradable items'},
+      { value: 2, text: 'Endorsable items'},
+    ];
 
     return (
       <div className="gallery-filters-wrapper">
         <div className="group main-group">
-          {profile && (
+          {isProfile && (
             <>
               <div className="tab active">
                 <MdCollectionsBookmark /> Collected
@@ -43,10 +56,21 @@ class GalleryFilters extends React.Component<Props> {
 
         <div className="group">
           <div className="filter">
-            <input placeholder="Search..." />
+            <div className="item-count">
+              {numberOfItems} <span>items</span>
+            </div>
+            <input
+              name="search-nfts"
+              onChange={this.handleChange}
+              placeholder="Search..."
+              value={searchText}
+            />
             <IoSearch />
           </div>
-          <Selectbox />
+          <Selectbox
+            filterNftsByType={filterNftsByType}
+            options={selectboxOptions}
+          />
         </div>
       </div>
     );

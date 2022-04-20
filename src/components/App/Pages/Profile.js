@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom';
 import { VscGlobe } from "react-icons/vsc";
 import { IoLogoTwitter, IoSettings } from "react-icons/io5";
 import { FaDiscord } from "react-icons/fa";
-import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
-import GalleryFilters from '../GalleryFilters/GalleryFilters';
-import NftList from '../NftList/NftList';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
 import './Profile.scss';
+import GalleryContent from '../GalleryContent/GalleryContent';
 
 class Profile extends React.Component {
   render () {
@@ -54,11 +52,7 @@ class Profile extends React.Component {
               <IoSettings />
             </Link>
           </div>
-          <GallerySideMenu />
-          <div className="profile-content-area">
-            <GalleryFilters profile />
-            <NftList />
-          </div>
+          <GalleryContent isProfile />
         </div>
       </div>
     );

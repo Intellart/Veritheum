@@ -9,11 +9,12 @@ type State = {
 
 type Props = {
   label: String,
+  filterNftsByCategory: Function,
 }
 
-class GallerySideMenuItem extends React.Component {
-  constructor() {
-    super();
+class GallerySideMenuItem extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
     this.state = {
       menuOpen: false,
     };
@@ -25,7 +26,7 @@ class GallerySideMenuItem extends React.Component {
 
   render () {
     const { menuOpen } = this.state;
-    const { label } = this.props;
+    const { label, filterNftsByCategory } = this.props;
 
     return (
       <div className={`gallery-side-menu-item ${menuOpen ? 'show' : ''}`}>
@@ -33,7 +34,7 @@ class GallerySideMenuItem extends React.Component {
           <div className="label">{label}</div>
           <div className="icon"><MdChevronRight /></div>
         </div>
-        {menuOpen && <GallerySideMenuItemOptions label={label} />}
+        {menuOpen && <GallerySideMenuItemOptions label={label} filterNftsByCategory={filterNftsByCategory} />}
       </div>
     );
   }
