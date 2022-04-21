@@ -71,8 +71,9 @@ class Signin extends React.Component<Props, State> {
                 </div>
                 <form onSubmit={(e) => this.loginUser(e)}>
                   <div className="input-wrapper">
-                    <label>Email</label>
+                    <label htmlFor="signin-email-input">Email</label>
                     <input
+                      id="signin-email-input"
                       autoComplete="email"
                       placeholder="Please input your email"
                       value={email}
@@ -80,9 +81,10 @@ class Signin extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Password</label>
+                    <label htmlFor="signin-password-input">Password</label>
                     <div className="password-field-wrapper">
                       <input
+                        id="signin-password-input"
                         autoComplete="password"
                         placeholder="Please input your password"
                         type={showPassword ? 'text' : 'password'}

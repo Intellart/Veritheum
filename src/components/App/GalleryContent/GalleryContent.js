@@ -23,10 +23,10 @@ class GalleryContent extends React.Component<Props, State> {
       selectedOption: null,
       selectedCategory: [],
     };
-  };
+  }
 
   filterNftsByName = (value) => {
-    this.setState({ searchText: value })
+    this.setState({ searchText: value });
   };
 
   filterNftsByType = (value) => {
@@ -35,14 +35,19 @@ class GalleryContent extends React.Component<Props, State> {
 
   filterNftsByCategory = (value) => {
     const { selectedCategory } = this.state;
-    let array = selectedCategory;
-    if (!array.includes(value)){
+    const array = selectedCategory;
+    if (!array.includes(value)) {
       array.push(value);
     } else {
       array.splice(array.indexOf(value), 1);
     }
 
-    let newList = fakeNftList.filter(nft => array.includes(nft.category_id));
+    let newList;
+    if (array.length > 0) {
+      newList = fakeNftList.filter(nft => array.includes(nft.category_id));
+    } else {
+      newList = fakeNftList;
+    }
 
     this.setState({
       selectedCategory: array,
@@ -84,6 +89,6 @@ class GalleryContent extends React.Component<Props, State> {
       </>
     );
   }
-};
+}
 
 export default GalleryContent;

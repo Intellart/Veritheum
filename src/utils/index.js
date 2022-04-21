@@ -1,4 +1,12 @@
 // @flow
+import { utcToZonedTime } from 'date-fns-tz';
+import { format } from 'date-fns';
+
+export const formatDate = (date) => {
+  if (!date) return null;
+
+  return format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'MMMM') + ' ' + format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'do') + ' ' + format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'yyyy');
+};
 
 // $FlowFixMe
 export const isPromise = (p) => !!p && typeof p.then === 'function';

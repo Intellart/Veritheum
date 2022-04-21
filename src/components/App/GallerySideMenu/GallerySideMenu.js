@@ -1,9 +1,6 @@
 import React from 'react';
+import { MdFilterList, MdArrowBack } from 'react-icons/md';
 import GallerySideMenuItem from './GallerySideMenuItem/GallerySideMenuItem';
-import {
-  MdFilterList, MdArrowBack, MdChevronRight,
-  MdCheckBoxOutlineBlank,
-} from 'react-icons/md';
 import './GallerySideMenu.scss';
 
 type State = {
@@ -61,6 +58,6 @@ class GallerySideMenu extends React.Component<Props, State> {
       </div>
     );
   }
-};
+}
 
 export default GallerySideMenu;

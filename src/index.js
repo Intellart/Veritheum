@@ -6,10 +6,21 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import { configureStore } from './store';
 import type { ReduxState } from './types';
+import { loadState, saveState } from './localStorage';
 import './index.css';
 
 const initialReduxState: ReduxState = {};
-const store = configureStore(initialReduxState);
+const persistedState = loadState();
+const store = configureStore(
+  initialReduxState,
+  persistedState,
+);
+
+store.subscribe(() => {
+  saveState({
+    user: store.getState().user.profile,
+  });
+});
 
 ReactDOM.render(
   <React.StrictMode>

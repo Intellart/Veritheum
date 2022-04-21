@@ -357,6 +357,11 @@
         @media screen and (max-width: 767px) {
           font-size: 12px;
         }
+
+        &:disabled {
+          background: #cfd2d6;
+          cursor: default;
+        }
       }
 
       .form-footer {

@@ -7,6 +7,7 @@ import Selectbox from '../Selectbox/Selectbox';
 import './GalleryFilters.scss';
 
 type Props = {
+  searchText: string,
   filterNftsByName: Function,
   filterNftsByType: Function,
   numberOfItems: number,
@@ -20,11 +21,15 @@ class GalleryFilters extends React.Component<Props> {
   };
 
   render () {
-    const { searchText, filterNftsByType, numberOfItems, isProfile } = this.props;
+    const {
+      searchText, filterNftsByType, numberOfItems,
+      isProfile,
+    } = this.props;
+
     const selectboxOptions = [
-      { value: 0, text: 'All items'},
-      { value: 1, text: 'Tradable items'},
-      { value: 2, text: 'Endorsable items'},
+      { value: 0, text: 'All items' },
+      { value: 1, text: 'Tradable items' },
+      { value: 2, text: 'Endorsable items' },
     ];
 
     return (

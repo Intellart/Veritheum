@@ -31,20 +31,20 @@ class GallerySideMenuCheckbox extends React.Component<Props, State> {
       selectedValue = 3;
     }
 
-    this.setState({ checked: !this.state.checked })
+    this.setState({ checked: !this.state.checked });
     this.props.filterNftsByCategory(selectedValue);
   };
 
   render () {
     const { checked } = this.state;
     const { label } = this.props;
+
     return (
       <div className="gallery-side-menu-checkbox" onClick={this.handleClick}>
         {checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />} {label}
       </div>
     );
-
   }
-};
+}
 
 export default GallerySideMenuCheckbox;

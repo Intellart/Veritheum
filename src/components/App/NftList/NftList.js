@@ -1,6 +1,6 @@
 import React from 'react';
-import NftItem from '../NftItem/NftItem';
 import { isEmpty } from 'lodash';
+import NftItem from '../NftItem/NftItem';
 import './NftList.scss';
 
 type Props = {

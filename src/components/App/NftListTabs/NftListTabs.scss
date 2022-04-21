@@ -16,7 +16,7 @@
     min-width: 100px;
     padding: 15px 20px;
     text-align: center;
-    transition: 0.3s;
+    transition: 0.15s;
 
     @media screen and (max-width: 767px) {
       font-size: 12px;
@@ -27,7 +27,7 @@
     &:hover {
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.15s;
     }
 
     &.all {

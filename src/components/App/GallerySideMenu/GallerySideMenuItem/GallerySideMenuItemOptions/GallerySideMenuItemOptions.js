@@ -2,29 +2,13 @@ import React from 'react';
 import GallerySideMenuCheckbox from './GallerySideMenuCheckbox/GallerySideMenuCheckbox';
 import './GallerySideMenuItemOptions.scss';
 
-type State = {
-  menuOpen: boolean,
-}
-
 type Props = {
   label: String,
   filterNftsByCategory: Function,
 }
 
-class GallerySideMenuItemOptions extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      menuOpen: false,
-    };
-  }
-
-  handleClick = () => {
-    this.setState({ menuOpen: !this.state.menuOpen });
-  };
-
+class GallerySideMenuItemOptions extends React.Component<Props> {
   render () {
-    const { menuOpen } = this.state;
     const { label, filterNftsByCategory } = this.props;
 
     if (label === 'Categories') {
@@ -41,6 +25,6 @@ class GallerySideMenuItemOptions extends React.Component<Props, State> {
       );
     }
   }
-};
+}
 
 export default GallerySideMenuItemOptions;

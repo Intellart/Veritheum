@@ -9,11 +9,37 @@ import Footer from '../Footer/Footer';
 import WalletIcon from '../../../assets/graphics/wallet.svg';
 import NoteIcon from '../../../assets/graphics/note-plus.svg';
 import WebIcon from '../../../assets/graphics/web.svg';
-import { fakeNftList as nftList } from '../../../utils/fakeNftList';
+import { fakeNftList } from '../../../utils/fakeNftList';
 import './pages.scss';
 
-class Home extends React.Component {
+type State = {
+  nftList: Array<Object>,
+  selectedTab: number,
+}
+
+class Home extends React.Component<State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nftList: fakeNftList,
+      selectedTab: null,
+    };
+  }
+
+  handleTabSelect = (value: number) => {
+    this.setState({ selectedTab: value });
+  };
+
   render () {
+    const { nftList, selectedTab } = this.state;
+    const filteredNftList = nftList.filter(nft => {
+      if (selectedTab === null) {
+        return nft;
+      } else {
+        return nft.category_id === selectedTab;
+      }
+    });
+
     return (
       <div className="home-page-wrapper">
         <HeroCta />
@@ -24,9 +50,12 @@ class Home extends React.Component {
               <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h3>
             </div>
             <div className="section-content mt-40">
-              <NftListTabs />
+              <NftListTabs
+                selectedTab={selectedTab}
+                handleTabSelect={this.handleTabSelect}
+              />
               <div className="homepage-nft-list">
-                {nftList.slice(0, 8).map(nft => (
+                {filteredNftList.slice(0, 8).map(nft => (
                   <NftItem
                     key={nft.id}
                     id={nft.id}

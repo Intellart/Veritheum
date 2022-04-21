@@ -58,9 +58,9 @@ export const actions = {
 export const reducer = (state: State, action: any): State => {
   switch (action.type) {
     case types.USR_LOGIN_USER_FULFILLED:
-    case types.USR_REGISTER_USER_FULFILLED:
-      return { ...state, ...{ profile: action.payload } };
+      window.location.replace('profile');
 
+      return { ...state, ...{ profile: action.payload } };
     default:
       return state || {};
   }

@@ -9,6 +9,6 @@ class Gallery extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default Gallery;

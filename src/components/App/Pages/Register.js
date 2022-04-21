@@ -99,8 +99,9 @@ class Register extends React.Component<Props, State> {
                 </div>
                 <form onSubmit={(e) => this.registerUser(e)}>
                   <div className="input-wrapper">
-                    <label>First name</label>
+                    <label htmlFor="first-name-input">First name</label>
                     <input
+                      id="first-name-input"
                       autoComplete="given-name"
                       placeholder="Please input your first name"
                       value={firstName}
@@ -108,8 +109,9 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Last name</label>
+                    <label htmlFor="last-name-input">Last name</label>
                     <input
+                      id="last-name-input"
                       autoComplete="family-name"
                       placeholder="Please input your last name"
                       value={lastName}
@@ -117,8 +119,8 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Field of study</label>
-                    <div className="selectbox-wrapper">
+                    <label htmlFor="field-of-study-input">Field of study</label>
+                    <div className="selectbox-wrapper" id="field-of-study-input">
                       <div className="selected">
                         None
                       </div>
@@ -126,8 +128,9 @@ class Register extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className="input-wrapper">
-                    <label>Email</label>
+                    <label htmlFor="email-input">Email</label>
                     <input
+                      id="email-input"
                       autoComplete="email"
                       placeholder="Please input your email"
                       value={email}
@@ -135,9 +138,10 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Password</label>
+                    <label htmlFor="password-input">Password</label>
                     <div className="password-field-wrapper">
                       <input
+                        id="password-input"
                         autoComplete="password"
                         placeholder="Please input your password"
                         type={showPassword ? 'text' : 'password'}
@@ -152,10 +156,12 @@ class Register extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className="input-wrapper">
-                    <label>Confirm password</label>
+                    <label htmlFor="confirm-password-input">Confirm password</label>
                     <div className="password-field-wrapper">
                       <input
+                        id="confirm-password-input"
                         placeholder="Please confirm your password"
+                        type='password'
                         value={confirmPassword}
                         onChange={(e) => this.setState({ confirmPassword: e.target.value })}
                       />

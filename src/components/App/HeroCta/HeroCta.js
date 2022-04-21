@@ -19,7 +19,10 @@ class HeroCta extends React.Component {
     return (
       <div className="hero-cta">
         <div className="hero-cta-content-wrapper">
-          <h1><b>Create and sell</b><br/>your own unique <b>osNFTs</b></h1>
+          <h1>
+            <b>Create and sell</b>
+            <br />your own unique <b>osNFTs</b>
+          </h1>
           <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</h3>
           <div className="hero-btns-wrapper">
             <Link to="/gallery" className="full">Explore</Link>
@@ -30,6 +33,6 @@ class HeroCta extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default HeroCta;

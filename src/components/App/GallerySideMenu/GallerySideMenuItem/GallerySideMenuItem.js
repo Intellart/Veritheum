@@ -38,6 +38,6 @@ class GallerySideMenuItem extends React.Component<Props, State> {
       </div>
     );
   }
-};
+}
 
 export default GallerySideMenuItem;

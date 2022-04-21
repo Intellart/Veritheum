@@ -9,7 +9,6 @@ type State = {
 };
 
 type Props = {
-  label: String,
   filterNftsByType: Function,
   options: Array<Object>,
 }
@@ -84,8 +83,7 @@ class Selectbox extends React.Component<Props, State> {
         )}
       </div>
     );
-
   }
-};
+}
 
 export default Selectbox;
