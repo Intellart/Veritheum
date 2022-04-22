@@ -1,6 +1,6 @@
 import React from 'react';
 import { MdChevronRight } from 'react-icons/md';
-import { map, isEmpty } from 'lodash';
+import { map } from 'lodash';
 import './Selectbox.scss';
 
 type State = {
@@ -9,8 +9,8 @@ type State = {
 };
 
 type Props = {
-  filterNftsByType: Function,
-  options: Array<Object>,
+  onChange: Function,
+  options: Array,
 }
 
 class Selectbox extends React.Component<Props, State> {
@@ -18,7 +18,7 @@ class Selectbox extends React.Component<Props, State> {
     super(props);
     this.state = {
       isOpen: false,
-      selected: 'All items',
+      selected: this.props.options[0].text,
     };
   }
 
@@ -46,8 +46,8 @@ class Selectbox extends React.Component<Props, State> {
   };
 
   handleSelect = (option: number) => {
-    const { filterNftsByType } = this.props;
-    filterNftsByType(option.value);
+    const { onChange } = this.props;
+    onChange(option.value);
 
     this.setState({ selected: option.text });
   };
@@ -69,7 +69,7 @@ class Selectbox extends React.Component<Props, State> {
     return (
       <div className={`selectbox ${isOpen ? 'open' : ''}`} ref={(node) => { this.selectBoxRef = node; }} onClick={this.handleClick}>
         <div className="selected">
-          {isEmpty(selected) ? 'All items' : selected}
+          {selected}
         </div>
         <div className="icon-wrapper">
           <MdChevronRight />

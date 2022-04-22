@@ -72,10 +72,12 @@ class GalleryFilters extends React.Component<Props> {
             />
             <IoSearch />
           </div>
-          <Selectbox
-            filterNftsByType={filterNftsByType}
-            options={selectboxOptions}
-          />
+          <div className="selectbox-wrapper">
+            <Selectbox
+              onChange={filterNftsByType}
+              options={selectboxOptions}
+            />
+          </div>
         </div>
       </div>
     );

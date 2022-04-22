@@ -1,8 +1,8 @@
 .selectbox {
   align-items: center;
   background: #fff;
+  border: 1px solid #d5d5d5;
   border-radius: 4px;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
   color: #11273f;
   display: flex;
   font-family: "SoraMedium";
@@ -10,7 +10,6 @@
   justify-content: flex-start;
   letter-spacing: -0.14px;
   height: 45px;
-  margin: 5px;
   min-width: 150px;
   user-select: none;
   padding: 0 25px;
@@ -35,6 +34,12 @@
 
   &.open {
     border-radius: 4px 4px 0 0;
+
+    .icon-wrapper {
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
   }
 
   .icon-wrapper {
@@ -54,13 +59,14 @@
   .selectbox-options {
     background: #fff;
     border-radius: 0 0 4px 4px;
-    border-top: 1px solid rgba(207, 217, 221, 0.6);
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);
-    left: 0;
-    overflow: hidden;
+    border: 1px solid rgba(207, 217, 221, 0.6);
+    left: -1px;
+    max-height: 200px;
+    overflow: auto;
     position: absolute;
     top: 100%;
     width: 100%;
+    z-index: 2;
 
     ul {
       list-style: none;

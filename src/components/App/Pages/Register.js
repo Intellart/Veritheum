@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { MdChevronRight } from 'react-icons/md';
 import { some, isEmpty } from 'lodash';
+import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
@@ -20,6 +21,7 @@ type State = {
   confirmPassword: string,
   firstName: string,
   lastName: string,
+  fieldOfStudy: string,
   showPassword: boolean,
 }
 
@@ -32,6 +34,7 @@ class Register extends React.Component<Props, State> {
       confirmPassword: '',
       firstName: '',
       lastName: '',
+      fieldOfStudy: 'None',
       showPassword: false,
     };
   }
@@ -52,10 +55,38 @@ class Register extends React.Component<Props, State> {
     });
   }
 
+  onOptionSelect = (value) => {
+    this.setState({ fieldOfStudy: value });
+  }
+
   render () {
     const {
       email, password, confirmPassword, firstName, lastName, showPassword,
     } = this.state;
+
+    const selectboxOptions = [
+      {
+        text: 'None',
+        value: 0,
+      },
+      {
+        text: 'Biological anthropology',
+        value: 1,
+      },
+      {
+        text: 'Biocultural anthropology',
+        value: 2,
+      },
+      {
+        text: 'Analytical chemistry',
+        value: 3,
+      },
+      {
+        text: 'Physical chemistry',
+        value: 4,
+      },
+    ];
+
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -66,6 +97,8 @@ class Register extends React.Component<Props, State> {
         <div className="circle-graphic gr-4" />
       </div>
     );
+
+    console.log(this.state);
 
     return (
       <>
@@ -121,10 +154,10 @@ class Register extends React.Component<Props, State> {
                   <div className="input-wrapper">
                     <label htmlFor="field-of-study-input">Field of study</label>
                     <div className="selectbox-wrapper" id="field-of-study-input">
-                      <div className="selected">
-                        None
-                      </div>
-                      <MdChevronRight />
+                      <Selectbox
+                        options={selectboxOptions}
+                        onChange={this.onOptionSelect}
+                      />
                     </div>
                   </div>
                   <div className="input-wrapper">
