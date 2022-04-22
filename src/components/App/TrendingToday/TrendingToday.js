@@ -1,12 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import NftItem from '../NftItem/NftItem';
-import { fakeNftList as nftList } from '../../../utils/fakeNftList';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import './TrendingToday.scss';
 
-class TrendingToday extends React.Component {
+type Props = {
+  nftList: Array<Object>,
+}
+
+class TrendingToday extends React.Component<Props> {
   render () {
+    const { nftList } = this.props;
     const getSlide = (lowestIndex, highestIndex) => (
       <div className="slide">
         {nftList.map((nft, i) => (
@@ -45,4 +51,8 @@ class TrendingToday extends React.Component {
   }
 }
 
-export default TrendingToday;
+const mapStateToProps = state => ({
+  nftList: nftSelectors.getNfts(state),
+});
+
+export default connect(mapStateToProps, null)(TrendingToday);

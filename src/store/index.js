@@ -8,6 +8,7 @@ import {
 import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
+import { reducer as nftStoreReducer } from './nftStore';
 import type {
   ReduxAction,
   ReduxState,
@@ -115,6 +116,7 @@ export const configureStore = (
     combineReducers({
       global: globalStoreReducer,
       user: userStoreReducer,
+      nfts: nftStoreReducer,
     }),
     initialState,
     middlewareApplier,

@@ -1,4 +1,22 @@
-export const fakeNftList = [
+// @flow
+
+type Nft = {
+  id: number,
+  category_id: number,
+  tradeable: boolean,
+  nft_collection_id: number,
+  price: number,
+  author: string,
+  owner_id: number,
+  endorsers: Array,
+  verified: boolean,
+  likes: Array,
+  tags: Array,
+  name: string,
+  description: string,
+}
+
+const initialState = [
   {
     id: 1,
     category_id: 1,
@@ -360,3 +378,22 @@ export const fakeNftList = [
     description: null,
   },
 ];
+
+export type State = {
+  nfts: Nft,
+};
+
+export const types: { ... } = {};
+
+export const selectors = {
+  getNfts: (state: ReduxState): Nft => state.nfts,
+};
+
+export const actions: { ... } = {};
+
+export const reducer = (state = initialState, action: any): State => {
+  switch (action.type) {
+    default:
+      return state || {};
+  }
+};

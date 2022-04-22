@@ -1,10 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
 import GalleryFilters from '../GalleryFilters/GalleryFilters';
 import NftList from '../NftList/NftList';
-import { fakeNftList } from '../../../utils/fakeNftList';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 
 type Props = {
+  nftList: Array<Object>,
   isProfile: Boolean,
 }
 
@@ -18,7 +20,6 @@ class GalleryContent extends React.Component<Props, State> {
   constructor() {
     super();
     this.state = {
-      nftList: fakeNftList,
       searchText: '',
       selectedOption: null,
       selectedCategory: [],
@@ -35,30 +36,25 @@ class GalleryContent extends React.Component<Props, State> {
 
   filterNftsByCategory = (value) => {
     const { selectedCategory } = this.state;
-    const array = selectedCategory;
-    if (!array.includes(value)) {
-      array.push(value);
+    const categoryList = selectedCategory;
+    if (!categoryList.includes(value)) {
+      categoryList.push(value);
     } else {
-      array.splice(array.indexOf(value), 1);
-    }
-
-    let newList;
-    if (array.length > 0) {
-      newList = fakeNftList.filter(nft => array.includes(nft.category_id));
-    } else {
-      newList = fakeNftList;
+      categoryList.splice(categoryList.indexOf(value), 1);
     }
 
     this.setState({
-      selectedCategory: array,
-      nftList: newList,
+      selectedCategory: categoryList,
     });
   };
 
   render () {
-    const { isProfile } = this.props;
-    const { nftList, selectedOption } = this.state;
-    const filteredNftList = nftList.filter(nft => {
+    const { nftList, isProfile } = this.props;
+    const { selectedOption, selectedCategory } = this.state;
+    let filteredNftList;
+
+    // Filter by search input or type
+    filteredNftList = nftList.filter(nft => {
       if (selectedOption === 1) {
         return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
       } else if (selectedOption === 2) {
@@ -67,6 +63,11 @@ class GalleryContent extends React.Component<Props, State> {
         return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
       }
     });
+
+    // Filter by category
+    if (selectedCategory.length > 0) {
+      filteredNftList = filteredNftList.filter(nft => selectedCategory.includes(nft.category_id));
+    }
 
     const itemsCount = filteredNftList.length;
 
@@ -91,4 +92,8 @@ class GalleryContent extends React.Component<Props, State> {
   }
 }
 
-export default GalleryContent;
+const mapStateToProps = state => ({
+  nftList: nftSelectors.getNfts(state),
+});
+
+export default connect(mapStateToProps, null)(GalleryContent);

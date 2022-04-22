@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import HeroCta from '../HeroCta/HeroCta';
 import NftItem from '../NftItem/NftItem';
 import NftListTabs from '../NftListTabs/NftListTabs';
@@ -9,19 +11,20 @@ import Footer from '../Footer/Footer';
 import WalletIcon from '../../../assets/graphics/wallet.svg';
 import NoteIcon from '../../../assets/graphics/note-plus.svg';
 import WebIcon from '../../../assets/graphics/web.svg';
-import { fakeNftList } from '../../../utils/fakeNftList';
 import './pages.scss';
 
-type State = {
+type Props = {
   nftList: Array<Object>,
+}
+
+type State = {
   selectedTab: number,
 }
 
-class Home extends React.Component<State> {
+class Home extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      nftList: fakeNftList,
       selectedTab: null,
     };
   }
@@ -31,7 +34,8 @@ class Home extends React.Component<State> {
   };
 
   render () {
-    const { nftList, selectedTab } = this.state;
+    const { selectedTab } = this.state;
+    const { nftList } = this.props;
     const filteredNftList = nftList.filter(nft => {
       if (selectedTab === null) {
         return nft;
@@ -144,4 +148,8 @@ class Home extends React.Component<State> {
   }
 }
 
-export default Home;
+const mapStateToProps = state => ({
+  nftList: nftSelectors.getNfts(state),
+});
+
+export default connect(mapStateToProps, null)(Home);
