@@ -95,7 +95,7 @@ class Home extends React.Component {
           <section>
             <div className="section-header">
               <h2>Browse osNFTs by category</h2>
-              <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h3>
+              <h3>Which one do you think will contain the most engaging content?</h3>
             </div>
             <div className="section-content mt-40">
               <NftListTabs />
@@ -123,7 +123,7 @@ class Home extends React.Component {
           <section className="grey">
             <div className="section-header">
               <h2>Start creating your osNFTs today</h2>
-              <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h3>
+              <h3>No paper yet? No problem! You can use one of our osNFT frameworks.</h3>
             </div>
             <div className="section-content mt-80">
               <div className="info-section">
@@ -135,7 +135,7 @@ class Home extends React.Component {
                     Setup your finnie wallet
                   </div>
                   <div className="item-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+                    The first step for uploading your osNFT is to setup an NFT-capable wallet. We recommend using the Finnie wallet.
                   </div>
                 </div>
                 <div className="item">
@@ -146,7 +146,7 @@ class Home extends React.Component {
                     Add your work
                   </div>
                   <div className="item-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+                    Create your osNFT and submit it through the Finnie wallet to have it vetted by our team of experts (tip: you can be one, too! Contact us at info@intellart.ca).
                   </div>
                 </div>
                 <div className="item">
@@ -157,7 +157,7 @@ class Home extends React.Component {
                     Release it to the world
                   </div>
                   <div className="item-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+                    Congrats! Now your osNFT is on the market, you will earn 10% royalties on each re-purchase and 20% of the fees will fund the Open Access Treasury.
                   </div>
                 </div>
               </div>
@@ -166,7 +166,7 @@ class Home extends React.Component {
           <section>
             <div className="section-header">
               <h2>Top ranking osNFTs</h2>
-              <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h3>
+              <h3>Open Science NFTs with the most value. The ranking is not to your liking? Change it by having a more active role on the platform!</h3>
             </div>
             <div className="section-content mt-40">
               <TopRanking />
@@ -175,7 +175,7 @@ class Home extends React.Component {
           <section className="grey">
             <div className="section-header">
               <h2>Trending today</h2>
-              <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h3>
+              <h3>Here are the most popular osNFTs accross all categories</h3>
             </div>
             <div className="section-content mt-40">
               <TrendingToday />

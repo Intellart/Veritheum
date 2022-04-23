@@ -20,7 +20,7 @@ class HeroCta extends React.Component {
       <div className="hero-cta">
         <div className="hero-cta-content-wrapper">
           <h1><b>Create and sell</b><br/>your own unique <b>osNFTs</b></h1>
-          <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</h3>
+          <h3>Own your data. Own your money. Own your intellect. Share your knowledge freely through your very own Open Science NFT.</h3>
           <div className="hero-btns-wrapper">
             <Link to="/gallery" className="full">Explore</Link>
             <Link to="/gallery" className="outline">Create</Link>
