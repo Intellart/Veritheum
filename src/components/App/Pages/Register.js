@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { MdChevronRight } from 'react-icons/md';
 import { some, isEmpty } from 'lodash';
+import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
@@ -20,6 +21,7 @@ type State = {
   confirmPassword: string,
   firstName: string,
   lastName: string,
+  fieldOfStudy: string,
   showPassword: boolean,
 }
 
@@ -32,6 +34,7 @@ class Register extends React.Component<Props, State> {
       confirmPassword: '',
       firstName: '',
       lastName: '',
+      fieldOfStudy: 'None',
       showPassword: false,
     };
   }
@@ -52,10 +55,38 @@ class Register extends React.Component<Props, State> {
     });
   }
 
+  onOptionSelect = (value) => {
+    this.setState({ fieldOfStudy: value });
+  }
+
   render () {
     const {
       email, password, confirmPassword, firstName, lastName, showPassword,
     } = this.state;
+
+    const selectboxOptions = [
+      {
+        text: 'None',
+        value: 0,
+      },
+      {
+        text: 'Biological anthropology',
+        value: 1,
+      },
+      {
+        text: 'Biocultural anthropology',
+        value: 2,
+      },
+      {
+        text: 'Analytical chemistry',
+        value: 3,
+      },
+      {
+        text: 'Physical chemistry',
+        value: 4,
+      },
+    ];
+
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -66,6 +97,8 @@ class Register extends React.Component<Props, State> {
         <div className="circle-graphic gr-4" />
       </div>
     );
+
+    console.log(this.state);
 
     return (
       <>
@@ -99,8 +132,9 @@ class Register extends React.Component<Props, State> {
                 </div>
                 <form onSubmit={(e) => this.registerUser(e)}>
                   <div className="input-wrapper">
-                    <label>First name</label>
+                    <label htmlFor="first-name-input">First name</label>
                     <input
+                      id="first-name-input"
                       autoComplete="given-name"
                       placeholder="Please input your first name"
                       value={firstName}
@@ -108,8 +142,9 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Last name</label>
+                    <label htmlFor="last-name-input">Last name</label>
                     <input
+                      id="last-name-input"
                       autoComplete="family-name"
                       placeholder="Please input your last name"
                       value={lastName}
@@ -117,17 +152,18 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Field of study</label>
-                    <div className="selectbox-wrapper">
-                      <div className="selected">
-                        None
-                      </div>
-                      <MdChevronRight />
+                    <label htmlFor="field-of-study-input">Field of study</label>
+                    <div className="selectbox-wrapper" id="field-of-study-input">
+                      <Selectbox
+                        options={selectboxOptions}
+                        onChange={this.onOptionSelect}
+                      />
                     </div>
                   </div>
                   <div className="input-wrapper">
-                    <label>Email</label>
+                    <label htmlFor="email-input">Email</label>
                     <input
+                      id="email-input"
                       autoComplete="email"
                       placeholder="Please input your email"
                       value={email}
@@ -135,9 +171,10 @@ class Register extends React.Component<Props, State> {
                     />
                   </div>
                   <div className="input-wrapper">
-                    <label>Password</label>
+                    <label htmlFor="password-input">Password</label>
                     <div className="password-field-wrapper">
                       <input
+                        id="password-input"
                         autoComplete="password"
                         placeholder="Please input your password"
                         type={showPassword ? 'text' : 'password'}
@@ -152,10 +189,12 @@ class Register extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className="input-wrapper">
-                    <label>Confirm password</label>
+                    <label htmlFor="confirm-password-input">Confirm password</label>
                     <div className="password-field-wrapper">
                       <input
+                        id="confirm-password-input"
                         placeholder="Please confirm your password"
+                        type='password'
                         value={confirmPassword}
                         onChange={(e) => this.setState({ confirmPassword: e.target.value })}
                       />

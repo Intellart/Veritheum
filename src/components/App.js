@@ -4,16 +4,19 @@ import type { Node } from 'react';
 import {
   BrowserRouter as Router, Routes, Route,
 } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import Home from './App/Pages/Home';
 import Gallery from './App/Pages/Gallery';
 import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
 import Profile from './App/Pages/Profile';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 function App(): Node {
   return (
     <Router>
+      <ToastContainer />
       <Navigation />
       <div className="main-content">
         <Routes>

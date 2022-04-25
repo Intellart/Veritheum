@@ -1,349 +1,352 @@
-.nft-item {
-  background: #fff;
-  border: 1px solid #cfd9dd;
-  border-radius: 10px;
-  box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  min-width: 232px;
-  padding: 20px;
-
-  @media screen and (max-width: 800px) {
-    margin: 5px;
-    min-width: 180px;
-  }
-
-  .nft-item-title-wrapper {
-    align-items: center;
+.nft-item-wrapper {
+  .nft-item {
+    background: #fff;
+    border: 1px solid #cfd9dd;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
-    min-height: 80px;
-
-    .nft-item-title {
-      color: #11273f;
-      display: -webkit-box;
-      font-family: "SoraMedium";
-      font-size: 14px;
-      line-height: 1.43;
-      -webkit-line-clamp: 4;
-      line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-align: center;
-      text-overflow: ellipsis;
-
-      @media screen and (max-width: 800px) {
-        font-size: 12px;
-      }
-    }
-  }
-
-  .nft-item-top-info {
-    align-items: center;
-    border-bottom: 1px solid #e2e8eb;
-    border-top: 1px solid #e2e8eb;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 8px 0;
+    flex-direction: column;
+    height: calc(100% - 20px);
+    margin: 10px;
+    min-width: 232px;
+    padding: 20px;
 
     @media screen and (max-width: 800px) {
-      padding: 4px 0;
+      margin: 5px;
+      min-width: 180px;
     }
 
-    .group {
+    .nft-item-name-wrapper {
       align-items: center;
       display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      min-height: 80px;
 
-      &:first-child {
-        margin-right: 20px;
-      }
-    }
-
-    .category {
-      border-radius: 4px;
-      box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.1);
-      color: #fff;
-      display: flex;
-      font-size: 10px;
-      padding: 6px 8px;
-      width: fit-content;
-      text-align: center;
-      text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-      text-transform: capitalize;
-
-      &.biology {
-        background: #afd275;
-      }
-
-      &.physics {
-        background: #e7717d;
-      }
-
-      &.chemistry {
-        background: #8fc1e3;
-      }
-
-      @media screen and (max-width: 800px) {
-        font-size: 8px;
-        padding: 4px 6px;
-      }
-    }
-
-    .verified-user {
-      display: flex;
-      margin-right: 2px;
-
-      svg {
-        fill: #16365a;
-        font-size: 22px;
+      .nft-item-name {
+        color: #11273f;
+        display: -webkit-box;
+        font-family: "SoraMedium";
+        font-size: 14px;
+        line-height: 1.43;
+        -webkit-line-clamp: 4;
+        line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
 
         @media screen and (max-width: 800px) {
-          font-size: 14px;
+          font-size: 12px;
         }
       }
     }
 
-    .like-button {
+    .nft-item-top-info {
+      align-items: center;
+      border-bottom: 1px solid #e2e8eb;
+      border-top: 1px solid #e2e8eb;
       display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 8px 0;
 
-      svg {
-        fill: #16365a;
-        font-size: 24px;
+      @media screen and (max-width: 800px) {
+        padding: 4px 0;
+      }
+
+      .group {
+        align-items: center;
+        display: flex;
+
+        &:first-child {
+          margin-right: 20px;
+        }
+      }
+
+      .category {
+        border-radius: 4px;
+        box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.1);
+        color: #fff;
+        display: flex;
+        font-size: 10px;
+        padding: 6px 8px;
+        width: fit-content;
+        text-align: center;
+        text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+        text-transform: capitalize;
+
+        &.biology {
+          background: #afd275;
+        }
+
+        &.physics {
+          background: #e7717d;
+        }
+
+        &.chemistry {
+          background: #8fc1e3;
+        }
 
         @media screen and (max-width: 800px) {
-          font-size: 16px;
+          font-size: 8px;
+          padding: 4px 6px;
+        }
+      }
+
+      .verified-user {
+        display: flex;
+        margin-right: 2px;
+
+        svg {
+          fill: #16365a;
+          font-size: 22px;
+
+          @media screen and (max-width: 800px) {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .like-button {
+        display: flex;
+
+        svg {
+          fill: #16365a;
+          font-size: 24px;
+
+          @media screen and (max-width: 800px) {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    .nft-item-bottom-info {
+      .group {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+
+        &.align-end {
+          justify-content: flex-end;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .info-label {
+          color: rgba(62, 75, 91, 0.75);
+          font-size: 12.5px;
+          line-height: 1.4;
+          text-align: left;
+
+          @media screen and (max-width: 800px) {
+            font-size: 10px;
+          }
+        }
+
+        .price-info {
+          color: #11273f;
+          font-family: "SoraBold";
+          font-size: 12px;
+          line-height: 1.4;
+          position: relative;
+          text-align: right;
+
+          @media screen and (max-width: 800px) {
+            font-size: 10px;
+          }
+
+          .to-dollars {
+            font-family: "MontserratRegular";
+            position: absolute;
+            right: 0;
+            top: 100%;
+          }
+        }
+
+        .author {
+          align-items: center;
+          color: #11273f;
+          display: flex;
+          font-family: "SoraBold";
+          font-size: 12px;
+          line-height: 1.4;
+          text-align: right;
+
+          @media screen and (max-width: 800px) {
+            font-size: 10px;
+          }
+
+          .author-image {
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.1);
+            height: 25px;
+            margin-right: 8px;
+            width: 25px;
+
+            @media screen and (max-width: 800px) {
+              height: 18px;
+              width: 18px;
+            }
+
+            img {
+              height: 100%;
+              object-fit: cover;
+              width: 100%;
+            }
+          }
+        }
+
+        .endorsed-by-info {
+          display: flex;
+
+          .top-endorser {
+            border: 1px solid #fff;
+            border-radius: 50%;
+            height: 24px;
+            margin-left: -5px;
+            width: 24px;
+
+            @media screen and (max-width: 800px) {
+              height: 18px;
+              width: 18px;
+            }
+
+            img {
+              height: 100%;
+              object-fit: cover;
+              width: 100%;
+            }
+          }
+
+          .other-endorsers {
+            align-items: center;
+            background: #e2e8eb;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            color: #16365a;
+            display: flex;
+            font-size: 10px;
+            height: 24px;
+            justify-content: center;
+            margin-left: -5px;
+            text-align: center;
+            width: 24px;
+
+            @media screen and (max-width: 800px) {
+              height: 18px;
+              width: 18px;
+            }
+          }
+        }
+
+        .endorse-btn {
+          border-radius: 4px;
+          box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+          background: #16375b;
+          color: rgba(255, 255, 255, 0.9);
+          font-family: "SoraMedium";
+          font-size: 12px;
+          margin-top: -9px;
+          padding: 8px 20px;
+          text-align: center;
+          transition: 0.3s;
+
+          &:hover {
+            background: #475b71;
+            cursor: pointer;
+            transition: 0.3s;
+          }
+
+          @media screen and (max-width: 800px) {
+            font-size: 10px;
+            padding: 6px 12px;
+          }
         }
       }
     }
   }
 
-  .nft-item-bottom-info {
-    .group {
+  .trending-nft-item {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #cfd9dd;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
+    box-sizing: content-box;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    font-family: "SoraMedium";
+    font-size: 12px;
+    height: 120px;
+    justify-content: center;
+    line-height: 1.33;
+    margin: 10px;
+    padding: 0 20px;
+    text-align: center;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    width: 320px;
+
+    &.biology {
+      background: #afd275;
+    }
+
+    &.physics {
+      background: #e7717d;
+    }
+
+    &.chemistry {
+      background: #8fc1e3;
+    }
+
+    .trending-nft-item-top-info {
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      height: 80px;
+
+      .name {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        padding: 0 20px;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .trending-nft-item-bottom-info {
       align-items: center;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 25px;
+      padding-top: 4px;
+      width: 100%;
 
-      &.align-end {
-        justify-content: flex-end;
+      .trending-nft-item-type {
+        font-size: 10px;
+        text-shadow: none;
+        text-transform: capitalize;
       }
 
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      .info-label {
-        color: rgba(62, 75, 91, 0.75);
-        font-size: 12.5px;
-        line-height: 1.4;
-        text-align: left;
-
-        @media screen and (max-width: 800px) {
-          font-size: 10px;
-        }
-      }
-
-      .price-info {
-        color: #11273f;
-        font-family: "SoraBold";
-        font-size: 12px;
-        line-height: 1.4;
-        position: relative;
-        text-align: right;
-
-        @media screen and (max-width: 800px) {
-          font-size: 10px;
-        }
-
-        .to-dollars {
-          font-family: "MontserratRegular";
-          position: absolute;
-          right: 0;
-          top: 100%;
-        }
-      }
-
-      .author {
+      .group {
         align-items: center;
-        color: #11273f;
-        display: flex;
-        font-family: "SoraBold";
-        font-size: 12px;
-        line-height: 1.4;
-        text-align: right;
-
-        @media screen and (max-width: 800px) {
-          font-size: 10px;
-        }
-
-        .author-image {
-          background: #fff;
-          border-radius: 50%;
-          box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.1);
-          height: 25px;
-          margin-right: 8px;
-          width: 25px;
-
-          @media screen and (max-width: 800px) {
-            height: 18px;
-            width: 18px;
-          }
-
-          img {
-            height: 100%;
-            object-fit: cover;
-            width: 100%;
-          }
-        }
-      }
-
-      .endorsed-by-info {
         display: flex;
 
-        .top-endorser {
-          border: 1px solid #fff;
-          border-radius: 50%;
-          height: 24px;
-          margin-left: -5px;
-          width: 24px;
-
-          @media screen and (max-width: 800px) {
-            height: 18px;
-            width: 18px;
-          }
-
-          img {
-            height: 100%;
-            object-fit: cover;
-            width: 100%;
-          }
+        .verified-user {
+          margin-right: 2px;
         }
 
-        .other-endorsers {
-          align-items: center;
-          background: #e2e8eb;
-          border: 1px solid #fff;
-          border-radius: 50%;
-          color: #16365a;
-          display: flex;
-          font-size: 10px;
-          height: 24px;
-          justify-content: center;
-          margin-left: -5px;
-          text-align: center;
-          width: 24px;
-
-          @media screen and (max-width: 800px) {
-            height: 18px;
-            width: 18px;
-          }
+        svg {
+          font-size: 14px;
         }
-      }
-
-      .endorse-btn {
-        border-radius: 4px;
-        box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
-        background: #16375b;
-        color: rgba(255, 255, 255, 0.9);
-        font-family: "SoraMedium";
-        font-size: 12px;
-        margin-top: -9px;
-        padding: 8px 20px;
-        text-align: center;
-        transition: 0.3s;
-
-        &:hover {
-          background: #475b71;
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        @media screen and (max-width: 800px) {
-          font-size: 10px;
-          padding: 6px 12px;
-        }
-      }
-    }
-  }
-}
-
-.trending-nft-item {
-  align-items: center;
-  background: #fff;
-  border: 1px solid #cfd9dd;
-  border-radius: 10px;
-  box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
-  box-sizing: content-box;
-  color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  flex-direction: column;
-  font-family: "SoraMedium";
-  font-size: 12px;
-  height: 120px;
-  justify-content: center;
-  line-height: 1.33;
-  margin: 10px;
-  padding: 0 20px;
-  text-align: center;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-  width: 320px;
-
-  &.biology {
-    background: #afd275;
-  }
-
-  &.physics {
-    background: #e7717d;
-  }
-
-  &.chemistry {
-    background: #8fc1e3;
-  }
-
-  .trending-nft-item-top-info {
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    display: flex;
-    height: 80px;
-
-    .title {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      padding: 0 20px;
-      text-overflow: ellipsis;
-    }
-  }
-
-  .trending-nft-item-bottom-info {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    padding-top: 4px;
-    width: 100%;
-
-    .trending-nft-item-type {
-      font-size: 10px;
-      text-shadow: none;
-      text-transform: capitalize;
-    }
-
-    .group {
-      align-items: center;
-      display: flex;
-
-      .verified-user {
-        margin-right: 2px;
-      }
-
-      svg {
-        font-size: 14px;
       }
     }
   }

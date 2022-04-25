@@ -30,6 +30,6 @@ class HeroCta extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default HeroCta;

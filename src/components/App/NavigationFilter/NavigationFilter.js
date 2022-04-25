@@ -11,6 +11,6 @@ class NavigationFilter extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default NavigationFilter;

@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import HeroCta from '../HeroCta/HeroCta';
 import NftItem from '../NftItem/NftItem';
 import NftListTabs from '../NftListTabs/NftListTabs';
@@ -11,82 +13,36 @@ import NoteIcon from '../../../assets/graphics/note-plus.svg';
 import WebIcon from '../../../assets/graphics/web.svg';
 import './pages.scss';
 
-class Home extends React.Component {
+type Props = {
+  nftList: Array<Object>,
+}
+
+type State = {
+  selectedTab: number,
+}
+
+class Home extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedTab: null,
+    };
+  }
+
+  handleTabSelect = (value: number) => {
+    this.setState({ selectedTab: value });
+  };
+
   render () {
-    const fakeNftList = [
-      {
-        title: "CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Supramolecular strategies in artificial photosynthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Fermi surface transformation at the pseudogap critical point of a cuprate superconductor",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "The Hitchhiker's guide to biocatalysis: recent advances in the use of enzymes in organic synthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid system",
-        category: "physics",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Design of molecular water oxidation catalysts with earth-abundant metal ions",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-    ];
+    const { selectedTab } = this.state;
+    const { nftList } = this.props;
+    const filteredNftList = nftList.filter(nft => {
+      if (selectedTab === null) {
+        return nft;
+      } else {
+        return nft.category_id === selectedTab;
+      }
+    });
 
     return (
       <div className="home-page-wrapper">
@@ -98,18 +54,22 @@ class Home extends React.Component {
               <h3>Which one do you think will contain the most engaging content?</h3>
             </div>
             <div className="section-content mt-40">
-              <NftListTabs />
+              <NftListTabs
+                selectedTab={selectedTab}
+                handleTabSelect={this.handleTabSelect}
+              />
               <div className="homepage-nft-list">
-                {fakeNftList.map(nft => (
+                {filteredNftList.slice(0, 8).map(nft => (
                   <NftItem
-                    key={nft.title}
-                    title={nft.title}
-                    category={nft.category}
+                    key={nft.id}
+                    id={nft.id}
+                    categoryId={nft.category_id}
+                    tradeable={nft.tradeable}
                     price={nft.price}
-                    type={nft.type}
-                    verifiedUser={nft.verifiedUser}
-                    liked={nft.liked}
                     author={nft.author}
+                    verified={nft.verified}
+                    likes={nft.likes}
+                    name={nft.name}
                   />
                 ))}
               </div>
@@ -186,6 +146,10 @@ class Home extends React.Component {
       </div>
     );
   }
-};
+}
 
-export default Home;
+const mapStateToProps = state => ({
+  nftList: nftSelectors.getNfts(state),
+});
+
+export default connect(mapStateToProps, null)(Home);

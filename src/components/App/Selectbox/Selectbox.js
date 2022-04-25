@@ -1,20 +1,24 @@
 import React from 'react';
 import { MdChevronRight } from 'react-icons/md';
+import { map } from 'lodash';
 import './Selectbox.scss';
 
 type State = {
   isOpen: boolean,
+  selected: string,
 };
 
 type Props = {
-  label: String,
+  onChange: Function,
+  options: Array,
 }
 
-class Selectbox extends React.Component {
-  constructor() {
-    super();
+class Selectbox extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
     this.state = {
       isOpen: false,
+      selected: this.props.options[0].text,
     };
   }
 
@@ -41,13 +45,31 @@ class Selectbox extends React.Component {
     }
   };
 
+  handleSelect = (option: number) => {
+    const { onChange } = this.props;
+    onChange(option.value);
+
+    this.setState({ selected: option.text });
+  };
+
   render () {
-    const { isOpen } = this.state;
+    const { isOpen, selected } = this.state;
+    const { options } = this.props;
+
+    const selectboxItems = map(options, (option) => (
+      <li
+        key={option.value}
+        value={option.value}
+        onClick={() => this.handleSelect(option)}
+      >
+        {option.text}
+      </li>
+    ));
 
     return (
       <div className={`selectbox ${isOpen ? 'open' : ''}`} ref={(node) => { this.selectBoxRef = node; }} onClick={this.handleClick}>
         <div className="selected">
-          All items
+          {selected}
         </div>
         <div className="icon-wrapper">
           <MdChevronRight />
@@ -55,15 +77,13 @@ class Selectbox extends React.Component {
         {isOpen && (
           <div className="selectbox-options">
             <ul>
-              <li>Tradable items</li>
-              <li>Endorsable items</li>
+              {selectboxItems}
             </ul>
           </div>
         )}
       </div>
     );
-
   }
-};
+}
 
 export default Selectbox;

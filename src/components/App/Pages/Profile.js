@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { VscGlobe } from "react-icons/vsc";
-import { IoLogoTwitter, IoSettings } from "react-icons/io5";
-import { FaDiscord } from "react-icons/fa";
-import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
-import GalleryFilters from '../GalleryFilters/GalleryFilters';
-import NftList from '../NftList/NftList';
+import { VscGlobe } from 'react-icons/vsc';
+import { IoLogoTwitter, IoSettings } from 'react-icons/io5';
+import { FaDiscord } from 'react-icons/fa';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
 import './Profile.scss';
+import GalleryContent from '../GalleryContent/GalleryContent';
+import { currentUser } from '../../../localStorage';
+import { formatDate } from '../../../utils';
 
 class Profile extends React.Component {
   render () {
@@ -28,13 +28,13 @@ class Profile extends React.Component {
         <div className="upper-profile-page-wrapper">
           <div className="user-info">
             <div className="user-image">
-              <img src={UserImagePlaceholder} alt="User image" />
+              <img src={UserImagePlaceholder} alt="User" />
             </div>
             <div className="user-name">
-              John Doe
+              {currentUser.first_name} {currentUser.last_name}
             </div>
             <div className="user-date-joined">
-              Joined: April 1st, 2022
+              Joined: {formatDate(currentUser.created_at)}
             </div>
           </div>
           {graphics}
@@ -54,15 +54,11 @@ class Profile extends React.Component {
               <IoSettings />
             </Link>
           </div>
-          <GallerySideMenu />
-          <div className="profile-content-area">
-            <GalleryFilters profile />
-            <NftList />
-          </div>
+          <GalleryContent isProfile />
         </div>
       </div>
     );
   }
-};
+}
 
 export default Profile;

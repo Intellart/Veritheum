@@ -1,122 +1,58 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import NftItem from '../NftItem/NftItem';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import './TrendingToday.scss';
 
-class TrendingToday extends React.Component {
+type Props = {
+  nftList: Array<Object>,
+}
+
+class TrendingToday extends React.Component<Props> {
   render () {
-    const fakeNftList = [
-      {
-        title: "CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Supramolecular strategies in artificial photosynthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: false,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "Fermi surface transformation at the pseudogap critical point of a cuprate superconductor",
-        category: "physics",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-      {
-        title: "The Hitchhiker's guide to biocatalysis: recent advances in the use of enzymes in organic synthesis",
-        category: "chemistry",
-        price: 13.36,
-        type: 'endorsable',
-        verifiedUser: false,
-        liked: false,
-        author: 'John Doe'
-      },
-      {
-        title: "Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems",
-        category: "biology",
-        price: 13.36,
-        type: 'tradable',
-        verifiedUser: true,
-        liked: true,
-        author: 'John Doe'
-      },
-    ];
+    const { nftList } = this.props;
+    const getSlide = (lowestIndex, highestIndex) => (
+      <div className="slide">
+        {nftList.map((nft, i) => (
+          <React.Fragment key={nft.id}>
+            {i >= lowestIndex && i <= highestIndex && (
+              <NftItem
+                key={nft.id}
+                id={nft.id}
+                categoryId={nft.category_id}
+                tradeable={nft.tradeable}
+                price={nft.price}
+                author={nft.author}
+                verified={nft.verified}
+                likes={nft.likes}
+                name={nft.name}
+                trending
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+
     return (
       <div className="trending-today">
         <Carousel
           autoPlay
           showThumbs={false}
         >
-          <div className="slide">
-            {fakeNftList.map((nft, i) => (
-              <NftItem
-                key={i}
-                title={nft.title}
-                category={nft.category}
-                price={nft.price}
-                author={nft.author}
-                type={nft.type}
-                liked={nft.liked}
-                verifiedUser={nft.verifiedUser}
-                trending
-              />
-            ))}
-          </div>
-          <div className="slide">
-            {fakeNftList.map((nft, i) => (
-              <NftItem
-              key={i}
-                title={nft.title}
-                category={nft.category}
-                price={nft.price}
-                author={nft.author}
-                type={nft.type}
-                liked={nft.liked}
-                verifiedUser={nft.verifiedUser}
-                trending
-              />
-            ))}
-          </div>
-          <div className="slide">
-            {fakeNftList.map((nft, i) => (
-              <NftItem
-                key={i}
-                title={nft.title}
-                category={nft.category}
-                price={nft.price}
-                author={nft.author}
-                type={nft.type}
-                liked={nft.liked}
-                verifiedUser={nft.verifiedUser}
-                trending
-              />
-            ))}
-          </div>
+          {getSlide(0, 5)}
+          {getSlide(6, 11)}
+          {getSlide(12, 17)}
         </Carousel>
       </div>
     );
   }
-};
+}
 
-export default TrendingToday;
+const mapStateToProps = state => ({
+  nftList: nftSelectors.getNfts(state),
+});
+
+export default connect(mapStateToProps, null)(TrendingToday);

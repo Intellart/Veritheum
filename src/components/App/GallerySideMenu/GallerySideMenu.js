@@ -1,18 +1,22 @@
 import React from 'react';
-import GallerySideMenuItem from './GallerySideMenuItem/GalleySideMenuItem';
-import {
-  MdFilterList, MdArrowBack, MdChevronRight,
-  MdCheckBoxOutlineBlank,
-} from 'react-icons/md';
+import { MdFilterList, MdArrowBack } from 'react-icons/md';
+import GallerySideMenuItem from './GallerySideMenuItem/GallerySideMenuItem';
 import './GallerySideMenu.scss';
 
 type State = {
   menuClosed: boolean,
 }
 
-class GallerySideMenu extends React.Component {
-  constructor() {
-    super();
+type Props = {
+  filterNftsByCategory: Function,
+  filterNftsByPrice: Function,
+  initialMinPrice: number,
+  initialMaxPrice: number,
+}
+
+class GallerySideMenu extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
     this.state = {
       menuClosed: false,
     };
@@ -28,6 +32,10 @@ class GallerySideMenu extends React.Component {
 
   render () {
     const { menuClosed } = this.state;
+    const {
+      filterNftsByCategory, filterNftsByPrice, initialMinPrice,
+      initialMaxPrice,
+    } = this.props;
 
     return (
       <div className={`gallery-side-menu ${menuClosed ? 'alt' : ''}`}>
@@ -48,14 +56,19 @@ class GallerySideMenu extends React.Component {
           </div>
         </div>
         <div className="gallery-side-menu-body">
-          <GallerySideMenuItem label="Price" />
+          <GallerySideMenuItem
+            label="Price"
+            filterNftsByPrice={filterNftsByPrice}
+            initialMinPrice={initialMinPrice}
+            initialMaxPrice={initialMaxPrice}
+          />
           <GallerySideMenuItem label="Status" />
           <GallerySideMenuItem label="Collections" />
-          <GallerySideMenuItem label="Categories" />
+          <GallerySideMenuItem label="Categories" filterNftsByCategory={filterNftsByCategory} />
         </div>
       </div>
     );
   }
-};
+}
 
 export default GallerySideMenu;

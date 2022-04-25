@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { MdMenu, MdClose } from 'react-icons/md';
+import { currentUser } from '../../../localStorage';
 import Logo from '../../../assets/logo/veritheum_logo.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
-import { MdMenu, MdClose } from "react-icons/md";
 import './Navigation.scss';
 
 type State = {
@@ -18,11 +19,11 @@ class Navigation extends React.Component {
   }
 
   toggleMobileMenu = () => {
-    this.setState({ mobileMenuOpen: !this.state.mobileMenuOpen })
+    this.setState({ mobileMenuOpen: !this.state.mobileMenuOpen });
   };
 
   closeMobileMenu = () => {
-    this.setState({ mobileMenuOpen: false })
+    this.setState({ mobileMenuOpen: false });
   };
 
   render () {
@@ -43,7 +44,11 @@ class Navigation extends React.Component {
               <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
               <div className="group">
                 <Link to="/" className="outline" onClick={this.closeMobileMenu}>Create</Link>
-                <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
+                {currentUser ? (
+                  <Link to="/profile" className="full" onClick={this.closeMobileMenu}>Profile</Link>
+                ) : (
+                  <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
+                )}
               </div>
             </div>
           </div>
@@ -54,6 +59,6 @@ class Navigation extends React.Component {
       </nav>
     );
   }
-};
+}
 
 export default Navigation;

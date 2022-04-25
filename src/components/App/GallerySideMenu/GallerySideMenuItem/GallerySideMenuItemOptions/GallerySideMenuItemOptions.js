@@ -1,37 +1,39 @@
 import React from 'react';
+import MultiRangeSlider from '../../../MultiRangeSlider/MultiRangeSlider';
 import GallerySideMenuCheckbox from './GallerySideMenuCheckbox/GallerySideMenuCheckbox';
 import './GallerySideMenuItemOptions.scss';
 
-type State = {
-  menuOpen: boolean,
-}
-
 type Props = {
   label: String,
+  filterNftsByCategory: Function,
+  filterNftsByPrice: Function,
+  initialMinPrice: number,
+  initialMaxPrice: number,
 }
 
-class GallerySideMenuItemOptions extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      menuOpen: false,
-    };
-  }
-
-  handleClick = () => {
-    this.setState({ menuOpen: !this.state.menuOpen });
-  };
-
+class GallerySideMenuItemOptions extends React.Component<Props> {
   render () {
-    const { menuOpen } = this.state;
-    const { label } = this.props;
+    const {
+      label, filterNftsByCategory, filterNftsByPrice,
+      initialMinPrice, initialMaxPrice,
+    } = this.props;
 
-    if (label === 'Categories') {
+    if (label === 'Price') {
       return (
         <div className="gallery-side-menu-item-options">
-          <GallerySideMenuCheckbox label="Biology" />
-          <GallerySideMenuCheckbox label="Physics" />
-          <GallerySideMenuCheckbox label="Chemistry" />
+          <MultiRangeSlider
+            min={Math.floor(initialMinPrice)}
+            max={Math.ceil(initialMaxPrice)}
+            onChange={({ min, max }) => filterNftsByPrice(min, max)}
+          />
+        </div>
+      );
+    } else if (label === 'Categories') {
+      return (
+        <div className="gallery-side-menu-item-options">
+          <GallerySideMenuCheckbox label="Biology" filterNftsByCategory={filterNftsByCategory} />
+          <GallerySideMenuCheckbox label="Physics" filterNftsByCategory={filterNftsByCategory} />
+          <GallerySideMenuCheckbox label="Chemistry" filterNftsByCategory={filterNftsByCategory} />
         </div>
       );
     } else {
@@ -40,6 +42,6 @@ class GallerySideMenuItemOptions extends React.Component {
       );
     }
   }
-};
+}
 
 export default GallerySideMenuItemOptions;
