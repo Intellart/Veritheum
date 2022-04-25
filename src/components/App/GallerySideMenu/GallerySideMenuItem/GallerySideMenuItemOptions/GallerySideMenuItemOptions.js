@@ -38,7 +38,7 @@ class GallerySideMenuItemOptions extends React.Component<Props> {
       );
     } else {
       return (
-        <div className="gallery-side-menu-item-options">Lorem ipsum</div>
+        <div className="gallery-side-menu-item-options">Coming soon!</div>
       );
     }
   }
