@@ -9,6 +9,9 @@ type State = {
 
 type Props = {
   filterNftsByCategory: Function,
+  filterNftsByPrice: Function,
+  initialMinPrice: number,
+  initialMaxPrice: number,
 }
 
 class GallerySideMenu extends React.Component<Props, State> {
@@ -29,7 +32,10 @@ class GallerySideMenu extends React.Component<Props, State> {
 
   render () {
     const { menuClosed } = this.state;
-    const { filterNftsByCategory } = this.props;
+    const {
+      filterNftsByCategory, filterNftsByPrice, initialMinPrice,
+      initialMaxPrice,
+    } = this.props;
 
     return (
       <div className={`gallery-side-menu ${menuClosed ? 'alt' : ''}`}>
@@ -50,7 +56,12 @@ class GallerySideMenu extends React.Component<Props, State> {
           </div>
         </div>
         <div className="gallery-side-menu-body">
-          <GallerySideMenuItem label="Price" />
+          <GallerySideMenuItem
+            label="Price"
+            filterNftsByPrice={filterNftsByPrice}
+            initialMinPrice={initialMinPrice}
+            initialMaxPrice={initialMaxPrice}
+          />
           <GallerySideMenuItem label="Status" />
           <GallerySideMenuItem label="Collections" />
           <GallerySideMenuItem label="Categories" filterNftsByCategory={filterNftsByCategory} />

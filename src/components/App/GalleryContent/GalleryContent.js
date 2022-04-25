@@ -7,13 +7,17 @@ import { selectors as nftSelectors } from '../../../store/nftStore';
 
 type Props = {
   nftList: Array<Object>,
-  isProfile: Boolean,
+  isProfile?: Boolean,
 }
 
 type State = {
   searchText: string,
   selectedOption: Number,
   selectedCategory: string,
+  initialMinPrice: number,
+  initialMaxPrice: number,
+  minPrice: number,
+  maxPrice: number,
 }
 
 class GalleryContent extends React.Component<Props, State> {
@@ -23,8 +27,34 @@ class GalleryContent extends React.Component<Props, State> {
       searchText: '',
       selectedOption: null,
       selectedCategory: [],
+      initialMinPrice: null,
+      initialMaxPrice: null,
+      minPrice: null,
+      maxPrice: null,
     };
   }
+
+  componentDidMount() {
+    const { nftList } = this.props;
+
+    let minPrice;
+    let maxPrice;
+
+    minPrice = Math.min.apply(null, nftList.map(function(nft) {
+      return nft.price;
+    }));
+
+    maxPrice = Math.max.apply(null, nftList.map(function(nft) {
+      return nft.price;
+    }));
+
+    this.setState({
+      initialMinPrice: minPrice,
+      initialMaxPrice: maxPrice,
+      minPrice,
+      maxPrice,
+    });
+  };
 
   filterNftsByName = (value) => {
     this.setState({ searchText: value });
@@ -48,9 +78,19 @@ class GalleryContent extends React.Component<Props, State> {
     });
   };
 
+  filterNftsByPrice = (minPrice, maxPrice) => {
+    this.setState({
+      minPrice,
+      maxPrice,
+    })
+  };
+
   render () {
     const { nftList, isProfile } = this.props;
-    const { selectedOption, selectedCategory } = this.state;
+    const {
+      selectedOption, selectedCategory, initialMinPrice,
+      initialMaxPrice, minPrice, maxPrice,
+    } = this.state;
     let filteredNftList;
 
     // Filter by search input or type
@@ -69,19 +109,25 @@ class GalleryContent extends React.Component<Props, State> {
       filteredNftList = filteredNftList.filter(nft => selectedCategory.includes(nft.category_id));
     }
 
+    // FIlter by price
+    filteredNftList = filteredNftList.filter(nft => nft.price >= minPrice && nft.price <= maxPrice);
+
     const itemsCount = filteredNftList.length;
 
     return (
       <>
         <GallerySideMenu
           filterNftsByCategory={this.filterNftsByCategory}
+          filterNftsByPrice={this.filterNftsByPrice}
+          initialMinPrice={initialMinPrice}
+          initialMaxPrice={initialMaxPrice}
         />
         <div className={isProfile ? 'profile-content-area' : 'gallery-content-area'}>
           <GalleryFilters
             filterNftsByName={this.filterNftsByName}
             filterNftsByType={this.filterNftsByType}
             numberOfItems={itemsCount}
-            isProfile
+            isProfile={isProfile === true}
           />
           <NftList
             nftList={filteredNftList}
