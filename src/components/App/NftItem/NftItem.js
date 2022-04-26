@@ -25,7 +25,7 @@ class NftItem extends React.Component<Props> {
       category = 'biology';
     } else if (categoryId === 2) {
       category = 'physics';
-    } else {
+    } else if (categoryId === 3) {
       category = 'chemistry';
     }
 
@@ -72,9 +72,11 @@ class NftItem extends React.Component<Props> {
             </div>
             <div className="nft-item-top-info">
               <div className="group">
-                <div className={`category ${category}`}>
-                  {category}
-                </div>
+                {category && (
+                  <div className={`category ${category}`}>
+                    {category}
+                  </div>
+                )}
               </div>
               <div className="group">
                 {verified && (

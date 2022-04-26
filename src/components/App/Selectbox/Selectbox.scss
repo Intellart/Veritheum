@@ -56,6 +56,14 @@
     }
   }
 
+  .selected {
+    .placeholder {
+      color: #11273f;
+      font-family: "MontserratRegular";
+      opacity: 0.5;
+    }
+  }
+
   .selectbox-options {
     background: #fff;
     border-radius: 0 0 4px 4px;

@@ -43,11 +43,16 @@ class Navigation extends React.Component {
               <Link to="/" onClick={this.closeMobileMenu}>Home</Link>
               <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
               <div className="group">
-                <Link to="/" className="outline" onClick={this.closeMobileMenu}>Create</Link>
                 {currentUser ? (
-                  <Link to="/profile" className="full" onClick={this.closeMobileMenu}>Profile</Link>
+                  <>
+                    <Link to="/minting-page" className="outline" onClick={this.closeMobileMenu}>Create</Link>
+                    <Link to="/profile" className="full" onClick={this.closeMobileMenu}>Profile</Link>
+                  </>
                 ) : (
-                  <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
+                  <>
+                    <Link to="/register" className="outline" onClick={this.closeMobileMenu}>Create</Link>
+                    <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
+                  </>
                 )}
               </div>
             </div>

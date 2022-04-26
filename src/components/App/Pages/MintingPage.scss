@@ -1,0 +1,202 @@
+.minting-page {
+  .content-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 130px auto 80px;
+    max-width: 1340px;
+    padding: 0 20px;
+    width: calc(100vw - 40px);
+
+    @media screen and (max-width: 767px) {
+      margin: 100px auto 80px;
+    }
+
+    .header {
+      h2 {
+        color: rgba(17, 39, 63, 0.8);
+        font-size: 36px;
+        font-family: "SoraRegular";
+        letter-spacing: -0.48px;
+        line-height: 1.6;
+        margin: 0;
+        margin-bottom: 100px;
+        text-align: center;
+        text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+        @media screen and (max-width: 991px) {
+          font-size: 32px;
+        }
+
+        @media screen and (max-width: 767px) {
+          font-size: 26px;
+          margin-bottom: 40px;
+        }
+
+        @media screen and (max-width: 450px) {
+          font-size: 22px
+        }
+
+        b {
+          color: rgba(17, 39, 63, 1);
+          font-family: "SoraBold";
+        }
+
+        &:before {
+          background: #c2cbd4;
+          border-radius: 2.5px;
+          box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+          content: '';
+          display: block;
+          height: 6px;
+          margin: 0 auto 32px;
+          width: 55px;
+
+          @media screen and (max-width: 767px) {
+            height: 4px;
+            margin: 0 auto 22px;
+            width: 45px;
+          }
+        }
+      }
+    }
+
+    .row {
+      display: flex;
+      width: 100%;
+
+      @media screen and (max-width: 767px) {
+        flex-direction: column;
+      }
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+
+      &:first-child {
+        flex: 1;
+      }
+
+      &:last-child {
+        margin-left: 80px;
+        width: 320px;
+
+        @media screen and (max-width: 991px) {
+          margin-left: 40px;
+        }
+
+        @media screen and (max-width: 767px) {
+          margin-left: 0;
+          margin-top: 40px;
+          width: 100%;
+        }
+      }
+    }
+
+    form {
+      .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 25px;
+
+        input,
+        textarea {
+          background: #fff;
+          border-radius: 4px;
+          border: 1px solid #d5d5d5;
+          color: #11273f;
+          font-family: "MontserratRegular";
+          font-size: 14px;
+          letter-spacing: -0.14px;
+          padding: 15px 25px;
+
+          @media screen and (max-width: 767px) {
+            font-size: 12px;
+          }
+
+          &:focus,
+          &:focus-visible {
+            border: 1px solid rgba(17, 39, 63, 0.2);
+            box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.1);
+            outline: none;
+            transition: 0.3s;
+          }
+
+          &::placeholder {
+            opacity: 0.8;
+          }
+        }
+
+        textarea {
+          resize: none;
+
+          &.paper-content {
+            height: 200px;
+          }
+
+          &.description {
+            height: 100px;
+          }
+        }
+      }
+
+      button {
+        background: #16375b;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        font-family: "SoraBold";
+        font-size: 14px;
+        justify-content: center;
+        padding: 15px 25px;
+        text-align: center;
+        transition: 0.3s;
+        width: 100%;
+
+        &:hover {
+          background: #475b71;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        @media screen and (max-width: 767px) {
+          font-size: 12px;
+        }
+
+        &:disabled {
+          background: #cfd2d6;
+          cursor: default;
+        }
+      }
+    }
+
+    label,
+    .subheader {
+      color: rgba(17, 39, 63, 0.8);
+      font-family: "SoraMedium";
+      font-size: 18px;
+      letter-spacing: -0.2px;
+      margin-bottom: 12px;
+      text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+      @media screen and (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+
+    .nft-item {
+      margin: 0;
+
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
+
+      .nft-item-bottom-info {
+        margin-bottom: 20px;
+      }
+    }
+  }
+}

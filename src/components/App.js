@@ -11,6 +11,7 @@ import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
 import Profile from './App/Pages/Profile';
+import MintingPage from './App/Pages/MintingPage';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function App(): Node {
@@ -25,6 +26,7 @@ function App(): Node {
           <Route path="/sign_in" element={<Signin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/minting-page" element={<MintingPage />} />
         </Routes>
       </div>
     </Router>

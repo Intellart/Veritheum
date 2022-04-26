@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
-import { MdChevronRight } from 'react-icons/md';
 import { some, isEmpty } from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
@@ -57,7 +56,7 @@ class Register extends React.Component<Props, State> {
 
   onOptionSelect = (value) => {
     this.setState({ fieldOfStudy: value });
-  }
+  };
 
   render () {
     const {
@@ -97,8 +96,6 @@ class Register extends React.Component<Props, State> {
         <div className="circle-graphic gr-4" />
       </div>
     );
-
-    console.log(this.state);
 
     return (
       <>
@@ -157,6 +154,7 @@ class Register extends React.Component<Props, State> {
                       <Selectbox
                         options={selectboxOptions}
                         onChange={this.onOptionSelect}
+                        preselected
                       />
                     </div>
                   </div>
