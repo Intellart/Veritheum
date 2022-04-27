@@ -390,6 +390,7 @@ export const selectors = {
 
 export const actions: { ... } = {};
 
+// eslint-disable-next-line default-param-last
 export const reducer = (state: State = initialState, action: any): State => {
   switch (action.type) {
     default:

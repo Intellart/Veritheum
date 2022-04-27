@@ -57,6 +57,7 @@ class Selectbox extends React.Component<Props, State> {
     const { options } = this.props;
 
     const selectboxItems = map(options, (option) => (
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <li
         key={option.value}
         value={option.value}

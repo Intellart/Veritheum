@@ -28,8 +28,8 @@ function App(): Node {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/sign_in" element={<Signin />} />
           <Route path="/register" element={<Register />} />
+          {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
           {isAuthorized && <Route path="/profile" element={<Profile />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
         </Routes>

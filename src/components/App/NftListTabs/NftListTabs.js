@@ -6,7 +6,7 @@ type Props = {
   handleTabSelect: Function,
 }
 
-class NftListTabs extends React.Component {
+class NftListTabs extends React.Component<Props> {
   render () {
     const { selectedTab, handleTabSelect } = this.props;
 

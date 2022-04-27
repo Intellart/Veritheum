@@ -1,19 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { some, isEmpty } from 'lodash';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
-import type { Profile } from '../../../store/userStore';
-import type { ReduxState } from '../../../types';
 import './session_pages.scss';
 
 type Props = {
   dispatch: Function,
-  profile: Profile,
 }
 
 type State = {
@@ -45,7 +42,6 @@ class Signin extends React.Component<Props, State> {
 
   render () {
     const { email, password, showPassword } = this.state;
-    const { profile } = this.props;
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -56,8 +52,6 @@ class Signin extends React.Component<Props, State> {
         <div className="circle-graphic gr-4" />
       </div>
     );
-
-    if (!isEmpty(profile)) return <Navigate to="/profile" replace />;
 
     return (
       <>
@@ -127,10 +121,4 @@ class Signin extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => {
-  const { user } = state;
-
-  return { profile: user.profile };
-};
-
-export default connect(mapStateToProps)(Signin);
+export default connect()(Signin);

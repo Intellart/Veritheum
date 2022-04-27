@@ -1,21 +1,33 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import type { Node } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import NotFound from './NotFound';
 
 type Props = {
   isAuthorized: boolean,
 }
 
-class CatchAllRoute extends React.Component<Props> {
-  render () {
-    const { isAuthorized } = this.props;
+function CatchAllRoute(props: Props): Node {
+  const navigate = useNavigate();
+  const location = useLocation().pathname;
+  const { isAuthorized } = props;
 
-    if (!isAuthorized && window.location.pathname.includes('profile')) {
-      return <Navigate to="/sign_in" replace />;
+  useEffect(() => {
+    if (isAuthorized && location.includes('sign_in')) {
+      navigate('/profile', {
+        replace: true,
+      });
     }
 
-    return <NotFound />;
-  }
+    if (!isAuthorized && location.includes('profile')) {
+      navigate('/sign_in', {
+        replace: true,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthorized]);
+
+  return <NotFound />;
 }
 
 export default CatchAllRoute;

@@ -2,11 +2,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { isEmpty } from 'lodash';
 // Store needs to be imported before App in order for axios interceptors to work correctly
 import { store } from './store';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import { setItem } from './localStorage';
 import './index.css';
+
+store.subscribe(() => {
+  const user = store.getState().user.profile;
+  if (!isEmpty(user)) setItem('user', JSON.stringify(user));
+});
 
 ReactDOM.render(
   <React.StrictMode>

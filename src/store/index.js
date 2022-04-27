@@ -3,7 +3,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
-  concat, forEach, get, isString, includes,
+  concat, forEach, get, isString, includes, isEmpty,
 } from 'lodash';
 import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
@@ -94,7 +94,7 @@ function dispatchRecorder(dispatchedActions: ?Array<string>): any {
   };
 }
 
-const configureStore = (
+export const configureStore = (
   initialState: {} | ReduxState,
   actionChains: ?ActionChains,
   dispatchedActions: ?Array<string>,
@@ -126,7 +126,7 @@ const configureStore = (
 const localUser: string|null = getItem('user');
 
 const initialReduxState: Object = {
-  ...(localUser && {
+  ...(!isEmpty(localUser) && localUser && {
     user: {
       profile: JSON.parse(localUser),
     },

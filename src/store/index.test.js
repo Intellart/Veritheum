@@ -1,7 +1,7 @@
 /* eslint-disable no-import-assign */
 import * as redux from 'redux';
 import { chainActionsMiddleware, configureStore } from '.';
-import { apiClient as axios } from '../api/axios';
+import axios from '../api/axios';
 
 const dispatchedActions = [];
 let store = null;

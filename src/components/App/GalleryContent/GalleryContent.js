@@ -37,16 +37,8 @@ class GalleryContent extends React.Component<Props, State> {
   componentDidMount() {
     const { nftList } = this.props;
 
-    let minPrice;
-    let maxPrice;
-
-    minPrice = Math.min.apply(null, nftList.map(function(nft) {
-      return nft.price;
-    }));
-
-    maxPrice = Math.max.apply(null, nftList.map(function(nft) {
-      return nft.price;
-    }));
+    const minPrice = Math.min.apply(null, nftList.map((nft) => nft.price));
+    const maxPrice = Math.max.apply(null, nftList.map((nft) => nft.price));
 
     this.setState({
       initialMinPrice: minPrice,
@@ -54,7 +46,7 @@ class GalleryContent extends React.Component<Props, State> {
       minPrice,
       maxPrice,
     });
-  };
+  }
 
   filterNftsByName = (value) => {
     this.setState({ searchText: value });
@@ -82,7 +74,7 @@ class GalleryContent extends React.Component<Props, State> {
     this.setState({
       minPrice,
       maxPrice,
-    })
+    });
   };
 
   render () {

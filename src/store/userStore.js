@@ -1,6 +1,6 @@
 // @flow
 import * as API from '../api';
-import { removeItem, setItem } from '../localStorage';
+import { removeItem } from '../localStorage';
 import type { ReduxAction, ReduxActionWithPayload, ReduxState } from '../types';
 
 export type Profile = {
@@ -87,13 +87,6 @@ export const actions = {
   }),
 };
 
-const loginUser = (state: State, payload: { user: Profile }): State => {
-  const { user } = payload;
-  setItem('user', JSON.stringify(user));
-
-  return { ...state, ...{ profile: user } };
-};
-
 const logoutUser = (): State => {
   removeItem('_jwt');
   removeItem('user');
@@ -104,7 +97,7 @@ const logoutUser = (): State => {
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     case types.USR_LOGIN_USER_FULFILLED:
-      return loginUser(state, action.payload);
+      return { ...state, ...{ profile: action.payload.user } };
     case types.USR_LOGOUT_USER_FULFILLED:
     case types.USR_CLEAR_USER:
       return logoutUser();
