@@ -1,8 +1,8 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
-import { MdChevronRight } from 'react-icons/md';
 import { some, isEmpty } from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
@@ -21,7 +21,7 @@ type State = {
   confirmPassword: string,
   firstName: string,
   lastName: string,
-  fieldOfStudy: string,
+  fieldOfStudy: string|null,
   showPassword: boolean,
 }
 
@@ -34,18 +34,22 @@ class Register extends React.Component<Props, State> {
       confirmPassword: '',
       firstName: '',
       lastName: '',
-      fieldOfStudy: 'None',
+      fieldOfStudy: null,
       showPassword: false,
     };
   }
 
   registerUser(e: Event) {
     e.preventDefault();
+    const {
+      email, password, firstName, lastName, fieldOfStudy,
+    } = this.state;
     this.props.dispatch(actions.registerUser({
-      email: this.state.email,
-      password: this.state.password,
-      first_name: this.state.firstName,
-      last_name: this.state.lastName,
+      ...(fieldOfStudy && { fieldOfStudy }),
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
     }));
   }
 
@@ -57,7 +61,7 @@ class Register extends React.Component<Props, State> {
 
   onOptionSelect = (value) => {
     this.setState({ fieldOfStudy: value });
-  }
+  };
 
   render () {
     const {
@@ -97,8 +101,6 @@ class Register extends React.Component<Props, State> {
         <div className="circle-graphic gr-4" />
       </div>
     );
-
-    console.log(this.state);
 
     return (
       <>
@@ -225,4 +227,4 @@ class Register extends React.Component<Props, State> {
   }
 }
 
-export default connect()(Register);
+export default (connect()(Register): React$ComponentType<{}>);

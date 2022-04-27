@@ -9,6 +9,7 @@ import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
 import { reducer as nftStoreReducer } from './nftStore';
+import { getItem } from '../localStorage';
 import type {
   ReduxAction,
   ReduxState,
@@ -93,8 +94,7 @@ function dispatchRecorder(dispatchedActions: ?Array<string>): any {
   };
 }
 
-// $FlowFixMe
-export const configureStore = (
+const configureStore = (
   initialState: {} | ReduxState,
   actionChains: ?ActionChains,
   dispatchedActions: ?Array<string>,
@@ -122,3 +122,15 @@ export const configureStore = (
     middlewareApplier,
   );
 };
+
+const localUser: string|null = getItem('user');
+
+const initialReduxState: Object = {
+  ...(localUser && {
+    user: {
+      profile: JSON.parse(localUser),
+    },
+  }),
+};
+
+export const store: any = configureStore(initialReduxState);

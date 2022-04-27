@@ -1,17 +1,31 @@
+// @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { VscGlobe } from 'react-icons/vsc';
 import { IoLogoTwitter, IoSettings } from 'react-icons/io5';
 import { FaDiscord } from 'react-icons/fa';
+import GalleryContent from '../GalleryContent/GalleryContent';
+import { formatDate } from '../../../utils';
+import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
+import type { Profile as ProfileType } from '../../../store/userStore';
+import type { ReduxState } from '../../../types';
 import './Profile.scss';
-import GalleryContent from '../GalleryContent/GalleryContent';
-import { currentUser } from '../../../localStorage';
-import { formatDate } from '../../../utils';
 
-class Profile extends React.Component {
+type Props = {
+  dispatch: Function,
+  profile: ProfileType,
+}
+
+class Profile extends React.Component<Props> {
+  handleLogOut = () => {
+    this.props.dispatch(actions.logoutUser());
+  };
+
   render () {
+    const { profile } = this.props;
     const graphics = (
       <div className="graphics-wrapper">
         <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
@@ -31,13 +45,14 @@ class Profile extends React.Component {
               <img src={UserImagePlaceholder} alt="User" />
             </div>
             <div className="user-name">
-              {currentUser.first_name} {currentUser.last_name}
+              {profile.first_name} {profile.last_name}
             </div>
             <div className="user-date-joined">
-              Joined: {formatDate(currentUser.created_at)}
+              Joined: {formatDate(profile.created_at)}
             </div>
           </div>
           {graphics}
+          <button className="sign-out" onClick={this.handleLogOut}>Sign out</button>
         </div>
         <div className="lower-profile-page-wrapper">
           <div className="toolbar-links">
@@ -61,4 +76,10 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+const mapStateToProps = (state: ReduxState) => {
+  const { profile } = state.user;
+
+  return { profile };
+};
+
+export default (connect(mapStateToProps)(Profile): React$ComponentType<{}>);

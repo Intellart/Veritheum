@@ -2,25 +2,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+// Store needs to be imported before App in order for axios interceptors to work correctly
+import { store } from './store';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import { configureStore } from './store';
-import type { ReduxState } from './types';
-import { loadState, saveState } from './localStorage';
 import './index.css';
-
-const initialReduxState: ReduxState = {};
-const persistedState = loadState();
-const store = configureStore(
-  initialReduxState,
-  persistedState,
-);
-
-store.subscribe(() => {
-  saveState({
-    user: store.getState().user.profile,
-  });
-});
 
 ReactDOM.render(
   <React.StrictMode>

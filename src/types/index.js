@@ -2,10 +2,12 @@
 /* istanbul ignore file */
 import type { State as GlobalState } from '../store/globalStore';
 import type { State as UserState } from '../store/userStore';
+import type { State as NftState } from '../store/nftStore';
 
 export type ReduxState = {
   user: UserState,
   global: GlobalState,
+  nfts: NftState,
 };
 
 export type BaseReduxAction = {
@@ -20,6 +22,10 @@ export type PayloadReduxAction = {
 export type ReduxAction = {
   type: string,
   payload?: any,
+};
+export type ReduxActionWithPayload = {
+  type: string,
+  payload: any,
 };
 
 export type ReduxMiddlewareArgument = {

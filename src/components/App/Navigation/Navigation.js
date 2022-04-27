@@ -1,16 +1,19 @@
+// @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdMenu, MdClose } from 'react-icons/md';
-import { currentUser } from '../../../localStorage';
 import Logo from '../../../assets/logo/veritheum_logo.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
 import './Navigation.scss';
 
+type Props = {
+  isAuthorized: boolean,
+}
 type State = {
   mobileMenuOpen: boolean,
 }
 
-class Navigation extends React.Component {
+class Navigation extends React.Component<Props, State> {
   constructor() {
     super();
     this.state = {
@@ -27,6 +30,7 @@ class Navigation extends React.Component {
   };
 
   render () {
+    const { isAuthorized } = this.props;
     const { mobileMenuOpen } = this.state;
 
     return (
@@ -44,7 +48,7 @@ class Navigation extends React.Component {
               <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
               <div className="group">
                 <Link to="/" className="outline" onClick={this.closeMobileMenu}>Create</Link>
-                {currentUser ? (
+                {isAuthorized ? (
                   <Link to="/profile" className="full" onClick={this.closeMobileMenu}>Profile</Link>
                 ) : (
                   <Link to="/sign_in" className="full" onClick={this.closeMobileMenu}>Sign in</Link>
@@ -61,4 +65,4 @@ class Navigation extends React.Component {
   }
 }
 
-export default Navigation;
+export default ((Navigation): React$ComponentType<Props>);
