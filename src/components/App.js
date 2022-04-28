@@ -12,6 +12,9 @@ import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
 import Profile from './App/Pages/Profile';
 import MintingPage from './App/Pages/MintingPage';
+import TermsOfUse from './App/Pages/TermsOfUse';
+import CookiePolicy from './App/Pages/CookiePolicy';
+import PrivacyPolicy from './App/Pages/PrivacyPolicy';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function App(): Node {
@@ -27,6 +30,9 @@ function App(): Node {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/minting-page" element={<MintingPage />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
     </Router>

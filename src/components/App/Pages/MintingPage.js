@@ -1,11 +1,14 @@
 import React from 'react';
 import Selectbox from '../Selectbox/Selectbox';
 import NftItem from '../NftItem/NftItem';
+import FileUpload from '../FileUpload/FileUpload';
 import './MintingPage.scss';
+import { currentUser } from '../../../localStorage';
 
 type State = {
   tradeable: boolean,
   author: string,
+  file: any,
   paperContent: string,
   name: string,
   description: string,
@@ -18,7 +21,8 @@ class MintingPage extends React.Component<> {
     super();
     this.state = {
       tradeable: true,
-      author: '',
+      author: currentUser.first_name + ' ' + currentUser.last_name,
+      file: null,
       paperContent: '',
       name: '',
       description: '',
@@ -29,6 +33,10 @@ class MintingPage extends React.Component<> {
 
   onTypeSelect = (value) => {
     this.setState({ tradeable: value });
+  };
+
+  handleFileUpload = (event) => {
+    this.setState({ file: event.target.files[0] })
   };
 
   onCategorySelect = (value) => {
@@ -63,9 +71,11 @@ class MintingPage extends React.Component<> {
     ];
 
     const {
-      tradeable, author, paperContent, name,
+      tradeable, author, file, paperContent, name,
       description, categoryId, price,
     } = this.state;
+
+    console.log(this.state);
 
     return (
       <div className="minting-page">
@@ -87,10 +97,10 @@ class MintingPage extends React.Component<> {
                 </div>
                 {tradeable ? (
                   <div className="input-wrapper">
-                    <label htmlFor="minting-nft-upload-file">Upload file</label>
-                    <span id="minting-nft-upload-file">
-                      File upload component
-                    </span>
+                    <FileUpload
+                      file={file}
+                      handleFileUpload={this.handleFileUpload}
+                    />
                   </div>
                 ) : (
                   <div className="input-wrapper">
@@ -133,6 +143,7 @@ class MintingPage extends React.Component<> {
                     <label htmlFor="minting-nft-price">Price</label>
                     <input
                       id="minting-nft-price"
+                      type="number"
                       placeholder="Please provide the price of your item (ADA)"
                       onChange={(e) => this.setState({ price: e.target.value })}
                     />
@@ -142,6 +153,7 @@ class MintingPage extends React.Component<> {
                     <label htmlFor="minting-nft-endorsement">Endorsement</label>
                     <input
                       id="minting-nft-endorsement"
+                      type="number"
                       placeholder="Please provide the endorsement amount (ADA)"
                       onChange={(e) => this.setState({ price: e.target.value })}
                     />
@@ -161,6 +173,7 @@ class MintingPage extends React.Component<> {
                 name={name}
                 categoryId={categoryId}
                 price={price}
+                author={author}
               />
             </div>
           </div>

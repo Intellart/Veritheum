@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { IoLogoTwitter, IoLogoGithub } from 'react-icons/io5';
 import { FaDiscord } from 'react-icons/fa';
 import logoIcon from '../../../assets/logo/veritheum_logo_white.svg';
@@ -57,14 +58,14 @@ class Footer extends React.Component {
                 Navigation
               </div>
               <div className="column-item">
-                <a href='#'>
+                <Link to="/" >
                   Home
-                </a>
+                </Link>
               </div>
               <div className="column-item">
-                <a href='#'>
+                <Link to="/gallery" >
                   Explore
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -73,7 +74,7 @@ class Footer extends React.Component {
               © {today.getFullYear()} Intellart. All rights reserved.
             </div>
             <div className="action-links">
-              <span>Terms of Use</span>|<span>Cookie policy</span>|<span>Privacy policy</span>
+              <Link to="/terms-of-use">Terms of Use</Link>|<Link to="/cookie-policy">Cookie policy</Link>|<Link to="/privacy-policy">Privacy policy</Link>
             </div>
           </div>
         </div>
