@@ -1,22 +1,23 @@
 // @flow
+import type { ReduxState } from '../types';
 
 type Nft = {
   id: number,
   category_id: number,
   tradeable: boolean,
-  nft_collection_id: number,
+  nft_collection_id: number|null,
   price: number,
   author: string,
   owner_id: number,
-  endorsers: Array,
+  endorsers: string[]|null,
   verified: boolean,
-  likes: Array,
-  tags: Array,
+  likes: string[]|null,
+  tags: string[]|null,
   name: string,
-  description: string,
+  description: string|null,
 }
 
-const initialState = [
+const initialState: Nft[] = [
   {
     id: 1,
     category_id: 1,
@@ -379,19 +380,18 @@ const initialState = [
   },
 ];
 
-export type State = {
-  nfts: Nft,
-};
+export type State = Nft[];
 
 export const types: { ... } = {};
 
 export const selectors = {
-  getNfts: (state: ReduxState): Nft => state.nfts,
+  getNfts: (state: ReduxState): State => state.nfts,
 };
 
 export const actions: { ... } = {};
 
-export const reducer = (state = initialState, action: any): State => {
+// eslint-disable-next-line default-param-last
+export const reducer = (state: State = initialState, action: any): State => {
   switch (action.type) {
     default:
       return state || {};

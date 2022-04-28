@@ -3,12 +3,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
-  concat, forEach, get, isString, includes,
+  concat, forEach, get, isString, includes, isEmpty,
 } from 'lodash';
 import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
 import { reducer as nftStoreReducer } from './nftStore';
+import { getItem } from '../localStorage';
 import type {
   ReduxAction,
   ReduxState,
@@ -93,7 +94,6 @@ function dispatchRecorder(dispatchedActions: ?Array<string>): any {
   };
 }
 
-// $FlowFixMe
 export const configureStore = (
   initialState: {} | ReduxState,
   actionChains: ?ActionChains,
@@ -122,3 +122,15 @@ export const configureStore = (
     middlewareApplier,
   );
 };
+
+const localUser: string|null = getItem('user');
+
+const initialReduxState: Object = {
+  ...(!isEmpty(localUser) && localUser && {
+    user: {
+      profile: JSON.parse(localUser),
+    },
+  }),
+};
+
+export const store: any = configureStore(initialReduxState);

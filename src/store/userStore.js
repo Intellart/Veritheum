@@ -1,15 +1,16 @@
 // @flow
 import * as API from '../api';
-import type { ReduxAction, ReduxState } from '../types';
+import { removeItem } from '../localStorage';
+import type { ReduxAction, ReduxActionWithPayload, ReduxState } from '../types';
 
-type Profile = {
+export type Profile = {
   id: string,
   email: string,
   first_name: string,
   last_name: string,
-  updatedAt: Date,
-  createdAt: Date,
-  confirmedAt: Date,
+  updated_at: Date,
+  created_at: Date,
+  confirmed_at: Date,
 }
 
 type LoginCredentials = {
@@ -23,6 +24,14 @@ type RegisterCredentials = {
   first_name: string,
   last_name: string,
 }
+type UpdatePayload = {
+  userId: number,
+  user: {
+    first_name?: string,
+    last_name?: string,
+    orcid_id?: string,
+  }
+}
 
 export type State = {
   profile: Profile,
@@ -34,10 +43,22 @@ export const types = {
   USR_LOGIN_USER_REJECTED: 'USR/LOGIN_USER_REJECTED',
   USR_LOGIN_USER_FULFILLED: 'USR/LOGIN_USER_FULFILLED',
 
+  USR_LOGOUT_USER: 'USR/LOGOUT_USER',
+  USR_LOGOUT_USER_PENDING: 'USR/LOGOUT_USER_PENDING',
+  USR_LOGOUT_USER_REJECTED: 'USR/LOGOUT_USER_REJECTED',
+  USR_LOGOUT_USER_FULFILLED: 'USR/LOGOUT_USER_FULFILLED',
+
   USR_REGISTER_USER: 'USR/REGISTER_USER',
   USR_REGISTER_USER_PENDING: 'USR/REGISTER_USER_PENDING',
   USR_REGISTER_USER_REJECTED: 'USR/REGISTER_USER_REJECTED',
   USR_REGISTER_USER_FULFILLED: 'USR/REGISTER_USER_FULFILLED',
+
+  USR_UPDATE_USER: 'USR/UPDATE_USER',
+  USR_UPDATE_USER_PENDING: 'USR/UPDATE_USER_PENDING',
+  USR_UPDATE_USER_REJECTED: 'USR/UPDATE_USER_REJECTED',
+  USR_UPDATE_USER_FULFILLED: 'USR/UPDATE_USER_FULFILLED',
+
+  USR_CLEAR_USER: 'USR/CLEAR_USER',
 };
 
 export const selectors = {
@@ -47,20 +68,40 @@ export const selectors = {
 export const actions = {
   loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_LOGIN_USER,
-    payload: API.postRequest('users/sign_in', payload),
+    payload: API.postRequest('auth/session', { user: payload }),
+  }),
+  logoutUser: (): ReduxAction => ({
+    type: types.USR_LOGOUT_USER,
+    payload: API.deleteRequest('auth/session'),
   }),
   registerUser: (payload: RegisterCredentials): ReduxAction => ({
     type: types.USR_REGISTER_USER,
-    payload: API.postRequest('users', payload),
+    payload: API.postRequest('auth/user', { user: payload }),
+  }),
+  updateUser: (payload: UpdatePayload): ReduxAction => ({
+    type: types.USR_UPDATE_USER,
+    payload: API.putRequest(`users/${payload.userId}`, payload.user),
+  }),
+  clearUser: (): ReduxAction => ({
+    type: types.USR_CLEAR_USER,
   }),
 };
 
-export const reducer = (state: State, action: any): State => {
+const logoutUser = (): State => {
+  removeItem('_jwt');
+  removeItem('user');
+
+  return {};
+};
+
+export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     case types.USR_LOGIN_USER_FULFILLED:
-      window.location.replace('profile');
+      return { ...state, ...{ profile: action.payload.user } };
+    case types.USR_LOGOUT_USER_FULFILLED:
+    case types.USR_CLEAR_USER:
+      return logoutUser();
 
-      return { ...state, ...{ profile: action.payload } };
     default:
       return state || {};
   }

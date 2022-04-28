@@ -2,7 +2,7 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { format } from 'date-fns';
 
-export const formatDate = (date) => {
+export const formatDate = (date: Date): string|null => {
   if (!date) return null;
 
   return format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'MMMM') + ' ' + format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'do') + ' ' + format(utcToZonedTime(new Date(date), 'Europe/Berlin'), 'yyyy');

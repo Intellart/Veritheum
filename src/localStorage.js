@@ -1,23 +1,31 @@
-export const loadState = () => {
+// @flow
+import { isEmpty } from 'lodash';
+
+export const getItem = (key: string): string|null => {
   try {
-    const serializedState = localStorage.getItem('state');
-    if (serializedState === null) {
-      return undefined;
+    const serializedState = localStorage.getItem(key);
+    if (isEmpty(serializedState) || !serializedState) {
+      return null;
     }
 
-    return JSON.parse(serializedState);
+    return serializedState;
   } catch (err) {
-    return undefined;
+    return null;
   }
 };
 
-export const saveState = (state) => {
+export const setItem = (key: string, payload: string) => {
   try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('state', serializedState);
+    localStorage.setItem(key, payload);
   } catch (err) {
     // ignore write errors
   }
 };
 
-export const currentUser = localStorage.state && JSON.parse(localStorage.state).user;
+export const removeItem = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch (err) {
+    // ignore write errors
+  }
+};

@@ -1,18 +1,28 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import classnames from "classnames";
-import "./MultiRangeSlider.scss";
+import React, {
+  useCallback, useEffect, useState, useRef,
+} from 'react';
+import type { Node } from 'react';
+import classnames from 'classnames';
+import './MultiRangeSlider.scss';
 
-const MultiRangeSlider = ({ min, max, onChange }) => {
-  const [minVal, setMinVal] = useState(min);
-  const [maxVal, setMaxVal] = useState(max);
+type Props = {
+  min: number,
+  max: number,
+  onChange: Function,
+}
+
+function MultiRangeSlider(props: Props): Node {
+  const [minVal, setMinVal] = useState(props.min);
+  const [maxVal, setMaxVal] = useState(props.max);
   const minValRef = useRef(null);
   const maxValRef = useRef(null);
   const range = useRef(null);
+  const { min, max, onChange } = props;
 
   // Convert to percentage
   const getPercent = useCallback(
     (value) => Math.round(((value - min) / (max - min)) * 100),
-    [min, max]
+    [min, max],
   );
 
   // Set width of the range to decrease from the left side
@@ -43,6 +53,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
   // Get min and max values when their state changes
   useEffect(() => {
     onChange({ min: minVal, max: maxVal });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minVal, maxVal]);
 
   return (
@@ -58,8 +69,8 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
           setMinVal(value);
           event.target.value = value.toString();
         }}
-        className={classnames("thumb thumb--zindex-3", {
-          "thumb--zindex-5": minVal > max - 100
+        className={classnames('thumb thumb--zindex-3', {
+          'thumb--zindex-5': minVal > max - 100,
         })}
       />
       <input
@@ -84,6 +95,6 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
       </div>
     </div>
   );
-};
+}
 
 export default MultiRangeSlider;

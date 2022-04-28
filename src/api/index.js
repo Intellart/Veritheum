@@ -1,5 +1,5 @@
 // @flow
-import { apiClient } from './axios';
+import apiClient from './axios';
 
 export const getRequest = async (endpoint: string): Promise<any> => {
   const response: any = await apiClient.get(endpoint);
