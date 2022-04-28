@@ -159,6 +159,7 @@ class Register extends React.Component<Props, State> {
                       <Selectbox
                         options={selectboxOptions}
                         onChange={this.onOptionSelect}
+                        preselected
                       />
                     </div>
                   </div>

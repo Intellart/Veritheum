@@ -13,6 +13,10 @@ import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
 import Profile from './App/Pages/Profile';
+import MintingPage from './App/Pages/MintingPage';
+import TermsOfUse from './App/Pages/TermsOfUse';
+import CookiePolicy from './App/Pages/CookiePolicy';
+import PrivacyPolicy from './App/Pages/PrivacyPolicy';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import { selectors } from '../store/userStore';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -29,6 +33,10 @@ function App(): Node {
           <Route exact path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/minting-page" element={<MintingPage />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
           {isAuthorized && <Route path="/profile" element={<Profile />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />

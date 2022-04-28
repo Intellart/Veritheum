@@ -145,6 +145,10 @@ footer {
 
         .action-links {
           margin-bottom: 12px;
+
+          a {
+            font-size: 12px;
+          }
         }
       }
 
@@ -152,7 +156,7 @@ footer {
         font-size: 12px;
 
         .action-links {
-          span {
+          a {
             margin: 0 6px;
           }
         }
@@ -163,14 +167,17 @@ footer {
         letter-spacing: 0;
 
         .action-links {
-          span {
+          a {
+            font-size: 11px;
             margin: 0 4px;
           }
         }
       }
 
-      span {
+      a {
+        color: #f9f9f9;
         margin: 0 20px;
+        text-decoration: none;
         transition: 0.2s ease-in 0s;
 
         &:hover {

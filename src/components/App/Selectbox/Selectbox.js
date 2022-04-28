@@ -11,6 +11,8 @@ type State = {
 type Props = {
   onChange: Function,
   options: Array,
+  preselected?: boolean,
+  placeholder?: string,
 }
 
 class Selectbox extends React.Component<Props, State> {
@@ -18,7 +20,7 @@ class Selectbox extends React.Component<Props, State> {
     super(props);
     this.state = {
       isOpen: false,
-      selected: this.props.options[0].text,
+      selected: this.props.preselected ? this.props.options[0].text : null,
     };
   }
 
@@ -54,7 +56,7 @@ class Selectbox extends React.Component<Props, State> {
 
   render () {
     const { isOpen, selected } = this.state;
-    const { options } = this.props;
+    const { options, placeholder } = this.props;
 
     const selectboxItems = map(options, (option) => (
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -70,7 +72,11 @@ class Selectbox extends React.Component<Props, State> {
     return (
       <div className={`selectbox ${isOpen ? 'open' : ''}`} ref={(node) => { this.selectBoxRef = node; }} onClick={this.handleClick}>
         <div className="selected">
-          {selected}
+          {selected === null ? (
+            <span className="placeholder">{placeholder}</span>
+          ) : (
+            <span>{selected}</span>
+          )}
         </div>
         <div className="icon-wrapper">
           <MdChevronRight />

@@ -76,6 +76,7 @@ class GalleryFilters extends React.Component<Props> {
             <Selectbox
               onChange={filterNftsByType}
               options={selectboxOptions}
+              preselected
             />
           </div>
         </div>
