@@ -1,5 +1,5 @@
 // @flow
-import type { ReduxState } from '../types';
+import type { ReduxActionWithPayload, ReduxState } from '../types';
 
 type Nft = {
   id: number,
@@ -391,7 +391,7 @@ export const selectors = {
 export const actions: { ... } = {};
 
 // eslint-disable-next-line default-param-last
-export const reducer = (state: State = initialState, action: any): State => {
+export const reducer = (state: State = initialState, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     default:
       return state || {};

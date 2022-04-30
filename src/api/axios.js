@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   get, has, isEmpty, omit,
 } from 'lodash';
+import { toast } from 'react-toastify';
 import { isDevelopment } from '../utils';
 import { getItem, setItem } from '../localStorage';
 import { store } from '../store';
@@ -11,8 +12,7 @@ import { actions } from '../store/userStore';
 export const requestTimeoutMs: number = 120000;
 const baseURL = isDevelopment ? 'http://localhost:' + get(process.env, 'REACT_APP_LOCAL_API_PORT', '3000') : get(process.env, 'REACT_APP_API_BASE_URL', '');
 
-// $FlowFixMe
-const apiClient = axios.create({
+const apiClient: any = axios.create({
   baseURL: baseURL + '/api/' + get(process.env, 'REACT_APP_API_VERSION', 'v1'),
   timeout: requestTimeoutMs,
   headers: {
@@ -29,7 +29,11 @@ apiClient.interceptors.request.use((config) => {
   }
 
   return config;
-}, (error) => Promise.reject(error),
+}, (error) => {
+  toast.error(get(error, 'response.statusText', 'Error...'));
+
+  return error;
+},
 );
 
 apiClient.interceptors.response.use((response) => {
@@ -48,8 +52,9 @@ apiClient.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   if (get(error, 'response.status') === 401) store.dispatch(actions.clearUser());
+  toast.error(get(error, 'response.statusText', 'Error...'));
 
-  Promise.reject(error);
+  return error;
 },
 );
 

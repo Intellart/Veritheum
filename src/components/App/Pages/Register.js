@@ -3,16 +3,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
-import { some, isEmpty } from 'lodash';
+import {
+  some, isEmpty, get, isEqual,
+} from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
-import { actions } from '../../../store/userStore';
+import { actions, selectors } from '../../../store/userStore';
+import { orcidOAuthLink } from '../../../utils';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
+import ORCIDiDLogo from '../../../assets/logo/ORCIDiD_logo.svg';
 import './session_pages.scss';
 
 type Props = {
   dispatch: Function,
+  orcidAccount: Object,
 }
 
 type State = {
@@ -22,6 +27,7 @@ type State = {
   firstName: string,
   lastName: string,
   fieldOfStudy: string|null,
+  orcidId: string|null,
   showPassword: boolean,
 }
 
@@ -36,16 +42,20 @@ class Register extends React.Component<Props, State> {
       lastName: '',
       fieldOfStudy: null,
       showPassword: false,
+      orcidId: null,
     };
   }
 
-  registerUser(e: Event) {
-    e.preventDefault();
+  registerUser() {
     const {
-      email, password, firstName, lastName, fieldOfStudy,
+      email, password, firstName, lastName, fieldOfStudy, orcidId,
     } = this.state;
+    let additionalInfo = {};
+    if (fieldOfStudy) additionalInfo = { ...additionalInfo, ...{ study_field_id: fieldOfStudy } };
+    if (orcidId) additionalInfo = { ...additionalInfo, ...{ orcid_id: orcidId } };
+
     this.props.dispatch(actions.registerUser({
-      ...(fieldOfStudy && { fieldOfStudy }),
+      ...additionalInfo,
       email,
       password,
       first_name: firstName,
@@ -62,6 +72,32 @@ class Register extends React.Component<Props, State> {
   onOptionSelect = (value) => {
     this.setState({ fieldOfStudy: value });
   };
+
+  handleORCID() {
+    window.location.assign(orcidOAuthLink(window.location.pathname));
+  }
+
+  componentDidMount() {
+    const code = new URL(window.location.href).searchParams.get('code');
+    if (!isEmpty(code) && code) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      this.props.dispatch(actions.registerUserORCID({
+        code,
+        redirect_uri: window.location.origin + window.location.pathname,
+      }));
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!isEmpty(this.props.orcidAccount) && !isEqual(prevProps.orcidAccount, this.props.orcidAccount)) {
+      this.setState({
+        firstName: get(this.props.orcidAccount, 'person.name.given-names.value', ''),
+        lastName: get(this.props.orcidAccount, 'person.name.family-name.value', ''),
+        email: get(this.props.orcidAccount, 'person.emails.email[0].email', ''),
+        orcidId: get(this.props.orcidAccount, 'orcid-identifier.path', ''),
+      });
+    }
+  }
 
   render () {
     const {
@@ -132,7 +168,7 @@ class Register extends React.Component<Props, State> {
                 <div className="form-header">
                   Register
                 </div>
-                <form onSubmit={(e) => this.registerUser(e)}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="input-wrapper">
                     <label htmlFor="first-name-input">First name</label>
                     <input
@@ -203,7 +239,11 @@ class Register extends React.Component<Props, State> {
                       />
                     </div>
                   </div>
-                  <button disabled={some([email, password, confirmPassword, firstName, lastName], isEmpty) || password !== confirmPassword}>
+                  <button className="orcid-button" onClick={() => this.handleORCID()}>
+                    <img src={ORCIDiDLogo} alt="orcid-logo" />
+                    Connect your ORCID iD
+                  </button>
+                  <button onClick={() => this.registerUser()} disabled={some([email, password, confirmPassword, firstName, lastName], isEmpty) || password !== confirmPassword}>
                     Register
                   </button>
                 </form>
@@ -228,4 +268,8 @@ class Register extends React.Component<Props, State> {
   }
 }
 
-export default (connect()(Register): React$ComponentType<{}>);
+const mapStateToProps = (state) => ({
+  orcidAccount: selectors.getOrcid(state),
+});
+
+export default (connect(mapStateToProps)(Register): React$ComponentType<{}>);

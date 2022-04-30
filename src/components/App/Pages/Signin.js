@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -5,8 +6,10 @@ import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { some, isEmpty } from 'lodash';
 import Footer from '../Footer/Footer';
 import { actions } from '../../../store/userStore';
+import { orcidOAuthLink } from '../../../utils';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
+import ORCIDiDLogo from '../../../assets/logo/ORCIDiD_logo.svg';
 import './session_pages.scss';
 
 type Props = {
@@ -29,15 +32,30 @@ class Signin extends React.Component<Props, State> {
     };
   }
 
-  loginUser(e: Event) {
-    e.preventDefault();
+  loginUser() {
     this.props.dispatch(actions.loginUser({ email: this.state.email, password: this.state.password }));
+  }
+
+  handleORCID() {
+    window.location.assign(orcidOAuthLink(window.location.pathname));
   }
 
   togglePasswordVisibility() {
     this.setState({
       showPassword: !this.state.showPassword,
     });
+  }
+
+  componentDidMount() {
+    const code = new URL(window.location.href).searchParams.get('code');
+    if (!isEmpty(code) && code) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      this.props.dispatch(actions.loginUserORCID({
+        code,
+        redirect_uri: window.location.origin + window.location.pathname,
+      }));
+      // this.props.dispatch(actions.loginUserORCID('0000-0001-9349-4019'));
+    }
   }
 
   render () {
@@ -69,7 +87,7 @@ class Signin extends React.Component<Props, State> {
                 <div className="form-header">
                   Sign in
                 </div>
-                <form onSubmit={(e) => this.loginUser(e)}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="input-wrapper">
                     <label htmlFor="signin-email-input">Email</label>
                     <input
@@ -101,8 +119,12 @@ class Signin extends React.Component<Props, State> {
                   <div className="forgot-password-wrapper">
                     <Link to="/">Forgot password?</Link>
                   </div>
-                  <button disabled={some([email, password], isEmpty)}>
+                  <button onClick={() => this.loginUser()} disabled={some([email, password], isEmpty)}>
                     Login
+                  </button>
+                  <button className="orcid-button" onClick={() => this.handleORCID()}>
+                    <img src={ORCIDiDLogo} alt="orcid-logo" />
+                    Login with ORCID
                   </button>
                 </form>
                 <div className="form-footer">
@@ -121,4 +143,4 @@ class Signin extends React.Component<Props, State> {
   }
 }
 
-export default connect()(Signin);
+export default (connect()(Signin): React$ComponentType<{}>);

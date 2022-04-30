@@ -37,7 +37,7 @@ const stateSanitizer = (state: ReduxState): any => {
   };
 };
 
-const actionsDenylist = () => get(process.env, 'REACT_APP_REDUX_ACTIONS_BLACKLIST', '').split(',');
+const actionsDenylist = () => get(process.env, 'REACT_APP_REDUX_ACTIONS_DENYLIST', '').split(',');
 
 function promiseMiddleware({ dispatch }: ReduxMiddlewareArgument): any {
   return (next) => (action) => {
