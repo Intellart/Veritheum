@@ -55,6 +55,17 @@ Add `.env` file to root directory. Variables must start with a prefix `REACT_APP
 
 Node variables are populated only during initial dev server load, so restart server when adding or updating variables.
 
+#### A list of all used variables
+    ESLINT_NO_DEV_ERRORS="true"
+    REACT_APP_API_BASE_URL=""
+    REACT_APP_API_VERSION="v1"
+    REACT_APP_LOCAL_API_PORT="3000"
+    REACT_APP_ORCID_CLIENT_ID="<secret>"
+    REACT_APP_ORCID_SECRET="<secret>"
+    REACT_APP_REDUX_ACTIONS_DENYLIST=""
+    REACT_APP_REDUX_SANITIZER="false"
+    REACT_APP_REDUX_STATE_LOG="false"
+
 #### Other env variables
 
 During development, you can avoid your webpack build failing because of `eslint` errors by adding env variable:
@@ -63,7 +74,7 @@ During development, you can avoid your webpack build failing because of `eslint`
 
 To make Redux dev tools skip recording certain actions set
 
-    REACT_APP_REDUX_ACTIONS_BLACKLIST="ACTION_ONE,ACTION_TWO"
+    REACT_APP_REDUX_ACTIONS_DENYLIST="ACTION_ONE,ACTION_TWO"
 
 To make Redux dev tools stop serializing large chunks of data
 

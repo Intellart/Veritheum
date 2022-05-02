@@ -26,7 +26,13 @@ function App(): Node {
 
   return (
     <Router>
-      <ToastContainer />
+      <ToastContainer
+        closeOnClick
+        newestOnTop={false}
+        pauseOnHover
+        position="bottom-left"
+        rtl={false}
+      />
       <Navigation isAuthorized={isAuthorized} />
       <div className="main-content">
         <Routes>

@@ -1,5 +1,6 @@
 // @flow
-// import type { ReduxAction, ReduxState } from "../types";
+// eslint-disable-next-line no-unused-vars
+import type { ReduxAction, ReduxState, ReduxActionWithPayload } from '../types';
 
 export type State = {};
 
@@ -9,7 +10,7 @@ export const selectors: { ... } = {};
 
 export const actions: { ... } = {};
 
-export const reducer = (state: State, action: any): State => {
+export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     default:
       return state || {};
