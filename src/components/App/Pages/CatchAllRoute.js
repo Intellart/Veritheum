@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import type { Node } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NotFound from './NotFound';
+import NotFound from './NotFound/NotFound';
 
 type Props = {
   isAuthorized: boolean,

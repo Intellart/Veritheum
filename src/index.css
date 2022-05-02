@@ -33,6 +33,10 @@
   font-weight: bold;
 }
 
+html.no-scroll {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   font-family: 'SoraRegular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

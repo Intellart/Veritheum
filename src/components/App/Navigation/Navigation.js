@@ -3,7 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdMenu, MdClose } from 'react-icons/md';
 import Logo from '../../../assets/logo/veritheum_logo.svg';
+import MinimizedLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
+import ProfileMenu from './ProfileMenu/ProfileMenu';
 import './Navigation.scss';
 
 type Props = {
@@ -33,12 +35,26 @@ class Navigation extends React.Component<Props, State> {
     const { isAuthorized } = this.props;
     const { mobileMenuOpen } = this.state;
 
+    const html = document.querySelector('html');
+    if (mobileMenuOpen) {
+      if (html) {
+        html.classList.add('no-scroll');
+      }
+    } else {
+      if (html) {
+        html.classList.remove('no-scroll');
+      }
+    }
+
     return (
       <nav>
         <div className="nav-items-wrapper">
           <div className="item-group">
-            <Link to="/" className="logo">
+            <Link to="/" className="logo desktop">
               <img src={Logo} alt="Veritheum Logo" />
+            </Link>
+            <Link to="/" className="logo mobile" onClick={this.closeMobileMenu}>
+              <img src={MinimizedLogo} alt="Veritheum Logo" />
             </Link>
             <NavigationFilter />
           </div>
@@ -50,7 +66,7 @@ class Navigation extends React.Component<Props, State> {
                 {isAuthorized ? (
                   <>
                     <Link to="/minting-page" className="outline" onClick={this.closeMobileMenu}>Create</Link>
-                    <Link to="/profile" className="full" onClick={this.closeMobileMenu}>Profile</Link>
+                    <ProfileMenu closeMobileMenu={this.closeMobileMenu} />
                   </>
                 ) : (
                   <>
@@ -62,7 +78,9 @@ class Navigation extends React.Component<Props, State> {
             </div>
           </div>
           <div className={`mobile-menu-toggle ${mobileMenuOpen ? 'menu-open' : ''}`} onClick={this.toggleMobileMenu}>
-            {mobileMenuOpen ? <MdClose /> : <MdMenu />}
+            <span />
+            <span />
+            <span />
           </div>
         </div>
       </nav>
