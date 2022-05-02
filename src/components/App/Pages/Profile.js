@@ -7,7 +7,6 @@ import { IoLogoTwitter, IoSettings } from 'react-icons/io5';
 import { FaDiscord } from 'react-icons/fa';
 import GalleryContent from '../GalleryContent/GalleryContent';
 import { formatDate } from '../../../utils';
-import { actions } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
 import type { Profile as ProfileType } from '../../../store/userStore';
@@ -15,15 +14,10 @@ import type { ReduxState } from '../../../types';
 import './Profile.scss';
 
 type Props = {
-  dispatch: Function,
   profile: ProfileType,
 }
 
 class Profile extends React.Component<Props> {
-  handleLogOut = () => {
-    this.props.dispatch(actions.logoutUser());
-  };
-
   render () {
     const { profile } = this.props;
     const graphics = (
@@ -52,7 +46,6 @@ class Profile extends React.Component<Props> {
             </div>
           </div>
           {graphics}
-          <button className="sign-out" onClick={this.handleLogOut}>Sign out</button>
         </div>
         <div className="lower-profile-page-wrapper">
           <div className="toolbar-links">
@@ -65,7 +58,7 @@ class Profile extends React.Component<Props> {
             <Link to="/profile">
               <FaDiscord />
             </Link>
-            <Link to="/profile">
+            <Link to="/settings">
               <IoSettings />
             </Link>
           </div>

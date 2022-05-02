@@ -1,0 +1,159 @@
+.profile-settings {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 130px auto 80px;
+  max-width: 1340px;
+  padding: 0 20px;
+  width: calc(100% - 40px);
+
+  @media screen and (max-width: 767px) {
+    margin: 60px auto 80px;
+  }
+
+  .header {
+    h2 {
+      color: rgba(17, 39, 63, 0.8);
+      font-size: 36px;
+      font-family: "SoraRegular";
+      letter-spacing: -0.48px;
+      line-height: 1.6;
+      margin: 0;
+      margin-bottom: 100px;
+      text-align: center;
+      text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+      @media screen and (max-width: 991px) {
+        font-size: 32px;
+      }
+
+      @media screen and (max-width: 767px) {
+        font-size: 26px;
+        margin-bottom: 40px;
+      }
+
+      @media screen and (max-width: 450px) {
+        font-size: 22px
+      }
+
+      b {
+        color: rgba(17, 39, 63, 1);
+        font-family: "SoraBold";
+      }
+
+      &:before {
+        background: #c2cbd4;
+        border-radius: 2.5px;
+        box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+        content: '';
+        display: block;
+        height: 6px;
+        margin: 0 auto 32px;
+        width: 55px;
+
+        @media screen and (max-width: 767px) {
+          height: 4px;
+          margin: 0 auto 22px;
+          width: 45px;
+        }
+      }
+    }
+  }
+
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    label {
+      color: rgba(17, 39, 63, 0.9);
+      font-family: "SoraMedium";
+      font-size: 16px;
+      letter-spacing: -0.16px;
+      margin-bottom: 6px;
+      text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+      @media screen and (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+
+    input {
+      background: #fff;
+      border-radius: 4px;
+      border: 1px solid #d5d5d5;
+      color: #11273f;
+      font-size: 14px;
+      letter-spacing: -0.14px;
+      padding: 15px 25px;
+
+      @media screen and (max-width: 767px) {
+        font-size: 12px;
+      }
+
+      &:focus,
+      &:focus-visible {
+        border: 1px solid rgba(17, 39, 63, 0.2);
+        box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.1);
+        outline: none;
+        transition: 0.3s;
+      }
+
+      &::placeholder {
+        opacity: 0.8;
+      }
+    }
+
+    .password-field-wrapper {
+      position: relative;
+
+      input {
+        padding-right: 60px;
+        width: calc(100% - 87px);
+      }
+
+      svg {
+        color: #11273f;
+        font-size: 20px;
+        opacity: 0.6;
+        position: absolute;
+        right: 25px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 0.3s;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 1;
+          transition: 0.3s;
+        }
+      }
+    }
+  }
+
+  button {
+    background: #16375b;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    font-family: "SoraBold";
+    font-size: 14px;
+    justify-content: center;
+    padding: 15px 25px;
+    text-align: center;
+    transition: 0.3s;
+    width: 100%;
+
+    &:hover {
+      background: #475b71;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    @media screen and (max-width: 767px) {
+      font-size: 12px;
+    }
+  }
+}
