@@ -256,17 +256,22 @@ nav {
             width: 100vw;
 
             a {
-              &.outline {
+              &.outline,
+              &.full {
                 background: transparent;
                 border: none;
                 border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+                border-radius: 0;
                 box-shadow: none;
+                color: #11273f;
                 padding: 12px 20px;
                 text-align: left;
                 width: calc(100% - 40px);
 
                 &:hover {
                   background: inherit;
+                  border: none;
+                  border-bottom: 1px solid rgba(207, 217, 221, 0.6);
                   color: inherit;
                 }
               }
