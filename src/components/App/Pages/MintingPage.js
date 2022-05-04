@@ -6,10 +6,11 @@ import FileUpload from '../FileUpload/FileUpload';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
+import { actions } from '../../../store/nftStore';
 
 type State = {
   tradeable: boolean,
-  author: string,
+  owner: string,
   file: any,
   paperContent: string,
   name: string,
@@ -23,11 +24,11 @@ type Props = {
 }
 
 class MintingPage extends React.Component<Props, State> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       tradeable: true,
-      author: '',
+      owner: '',
       file: null,
       paperContent: '',
       name: '',
@@ -38,8 +39,8 @@ class MintingPage extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const author = `${this.props.profile.first_name} ${this.props.profile.last_name}`;
-    this.setState({ author })
+    const owner = `${this.props.profile.first_name} ${this.props.profile.last_name}`;
+    this.setState({ owner })
   }
 
   onTypeSelect = (value) => {
@@ -53,6 +54,26 @@ class MintingPage extends React.Component<Props, State> {
   onCategorySelect = (value) => {
     this.setState({ categoryId: value });
   };
+
+  createNft = () => {
+    const {
+      tradeable, price, name, description, categoryId,
+    } = this.state;
+
+    this.props.dispatch(actions.createNft({
+      tradeable,
+      price,
+      name,
+      description,
+      category_id: categoryId,
+      owner_id: this.props.profile.id,
+      fingerprint: "abc",
+      policy_id: "abc",
+      onchain_transaction_id: 1,
+      asset_name: "abc",
+      // TODO
+    }));
+  }
 
   render () {
     const typeOptions = [
@@ -82,9 +103,11 @@ class MintingPage extends React.Component<Props, State> {
     ];
 
     const {
-      tradeable, author, file, paperContent, name,
-      description, categoryId, price,
+      tradeable, owner, file, paperContent, name,
+      description, category, price,
     } = this.state;
+
+    console.log(this.state);
 
     return (
       <div className="minting-page">
@@ -94,7 +117,7 @@ class MintingPage extends React.Component<Props, State> {
           </div>
           <div className="row">
             <div className="column">
-              <form>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <div className="input-wrapper">
                   <label htmlFor="minting-nft-type-selectbox">Type</label>
                   <Selectbox
@@ -168,7 +191,7 @@ class MintingPage extends React.Component<Props, State> {
                     />
                   </div>
                 )}
-                <button>
+                <button onClick={this.createNft}>
                   Start minting process
                 </button>
               </form>
@@ -180,9 +203,9 @@ class MintingPage extends React.Component<Props, State> {
               <NftItem
                 tradeable={tradeable}
                 name={name}
-                categoryId={categoryId}
+                category={category}
                 price={price}
-                author={author}
+                owner={owner}
               />
             </div>
           </div>

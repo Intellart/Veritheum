@@ -24,11 +24,11 @@ class GallerySideMenuCheckbox extends React.Component<Props, State> {
 
     let selectedValue;
     if (label === 'Biology') {
-      selectedValue = 1;
+      selectedValue = 'biology';
     } else if (label === 'Physics') {
-      selectedValue = 2;
+      selectedValue = 'physics';
     } else if (label === 'Chemistry') {
-      selectedValue = 3;
+      selectedValue = 'chemistry';
     }
 
     this.setState({ checked: !this.state.checked });

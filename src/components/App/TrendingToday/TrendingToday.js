@@ -15,17 +15,15 @@ class TrendingToday extends React.Component<Props> {
     const { nftList } = this.props;
     const getSlide = (lowestIndex, highestIndex) => (
       <div className="slide">
-        {nftList.map((nft, i) => (
-          <React.Fragment key={nft.id}>
+        {nftList.length > 0 && nftList.map((nft, i) => (
+          <React.Fragment key={nft.fingerprint}>
             {i >= lowestIndex && i <= highestIndex && (
               <NftItem
-                key={nft.id}
-                id={nft.id}
-                categoryId={nft.category_id}
+                key={nft.fingerprint}
+                category={nft.category}
                 tradeable={nft.tradeable}
                 price={nft.price}
-                author={nft.author}
-                verified={nft.verified}
+                owner={nft.owner}
                 likes={nft.likes}
                 name={nft.name}
                 trending

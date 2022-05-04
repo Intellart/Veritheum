@@ -39,11 +39,12 @@ class ProfileSettings extends React.Component<Props, State> {
       firstName, lastName,
     } = this.state;
     this.props.dispatch(actions.updateUser({
-      userId: this.props.profile.id,
+      ...this.props.profile,
       first_name: firstName,
       last_name: lastName,
+      full_name: `${firstName} ${lastName}`,
+      orcid_id: this.props.profile.orcid_id,
     }));
-
   }
 
   render () {

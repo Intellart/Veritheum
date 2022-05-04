@@ -39,10 +39,10 @@ class Profile extends React.Component<Props> {
               <img src={UserImagePlaceholder} alt="User" />
             </div>
             <div className="user-name">
-              {profile.user.first_name} {profile.user.last_name}
+              {profile.full_name}
             </div>
             <div className="user-date-joined">
-              Joined: {formatDate(profile.user.created_at)}
+              Joined: {formatDate(profile.created_at)}
             </div>
           </div>
           {graphics}

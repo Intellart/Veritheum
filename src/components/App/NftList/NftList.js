@@ -21,13 +21,11 @@ class NftList extends React.Component<Props> {
           <div className="nft-list">
             {nftList.map(nft => (
               <NftItem
-                key={nft.id}
-                id={nft.id}
-                categoryId={nft.category_id}
+                key={nft.fingerprint}
+                category={nft.category}
                 tradeable={nft.tradeable}
                 price={nft.price}
-                author={nft.author}
-                verified={nft.verified}
+                owner={nft.owner}
                 likes={nft.likes}
                 name={nft.name}
               />

@@ -4,11 +4,10 @@ import User from '../../../assets/icons/user.svg';
 import './NftItem.scss';
 
 type Props = {
-  categoryId: number,
+  category: string,
   tradeable: boolean,
   price: number,
-  author: string,
-  verified: boolean,
+  owner: Object,
   name: string,
   trending?: boolean,
 }
@@ -16,18 +15,9 @@ type Props = {
 class NftItem extends React.Component<Props> {
   render () {
     const {
-      categoryId, tradeable, price,
-      author, verified, name, trending,
+      category, tradeable, price,
+      owner, name, trending,
     } = this.props;
-
-    let category;
-    if (categoryId === 1) {
-      category = 'biology';
-    } else if (categoryId === 2) {
-      category = 'physics';
-    } else if (categoryId === 3) {
-      category = 'chemistry';
-    }
 
     let type;
     if (tradeable === true) {
@@ -52,11 +42,11 @@ class NftItem extends React.Component<Props> {
                 {type}
               </div>
               <div className="group">
-                {verified && (
+                {/* verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
-                )}
+                )*/}
                 <div className="like-button">
                   {liked ? <IoHeart /> : <IoHeartOutline /> }
                 </div>
@@ -79,11 +69,11 @@ class NftItem extends React.Component<Props> {
                 )}
               </div>
               <div className="group">
-                {verified && (
+                {/*verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
-                )}
+                )*/}
                 <div className="like-button">
                   {liked ? <IoHeart /> : <IoHeartOutline /> }
                 </div>
@@ -111,7 +101,7 @@ class NftItem extends React.Component<Props> {
                       <div className="author-image">
                         <img src={User} alt="User" />
                       </div>
-                      {author}
+                      {owner.full_name}
                     </div>
                   </div>
                 </>

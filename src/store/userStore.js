@@ -109,7 +109,7 @@ export const actions = {
   }),
   updateUser: (payload: UpdatePayload): ReduxAction => ({
     type: types.USR_UPDATE_USER,
-    payload: API.putRequest(`users/${payload.userId}`, payload.user),
+    payload: API.putRequest(`users/${payload.id}`, { user: payload }),
   }),
   clearUser: (): ReduxAction => ({
     type: types.USR_CLEAR_USER,
@@ -135,6 +135,10 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
 
     case types.USR_REGISTER_USER_FULFILLED:
       toast.success('User registered, a confirmation email has been sent!');
+      return state;
+
+    case types.USR_UPDATE_USER_FULFILLED:
+      toast.success('User successfully updated!');
       return state;
 
     case types.USR_LOGOUT_USER_FULFILLED:

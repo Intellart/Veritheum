@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { selectors as nftSelectors } from '../../../store/nftStore';
+import { selectors as nftSelectors, actions } from '../../../store/nftStore';
 import HeroCta from '../HeroCta/HeroCta';
 import NftItem from '../NftItem/NftItem';
 import NftListTabs from '../NftListTabs/NftListTabs';
@@ -29,6 +29,10 @@ class Home extends React.Component<Props, State> {
     };
   }
 
+  componentDidMount() {
+    this.props.dispatch(actions.fetchNfts());
+  }
+
   handleTabSelect = (value: number) => {
     this.setState({ selectedTab: value });
   };
@@ -36,11 +40,11 @@ class Home extends React.Component<Props, State> {
   render () {
     const { selectedTab } = this.state;
     const { nftList } = this.props;
-    const filteredNftList = nftList.filter(nft => {
+    const filteredNftList = nftList.length > 0 && nftList.filter(nft => {
       if (selectedTab === null) {
         return nft;
       } else {
-        return nft.category_id === selectedTab;
+        return nft.category === selectedTab;
       }
     });
 
@@ -59,15 +63,13 @@ class Home extends React.Component<Props, State> {
                 handleTabSelect={this.handleTabSelect}
               />
               <div className="homepage-nft-list">
-                {filteredNftList.slice(0, 8).map(nft => (
+                {filteredNftList && filteredNftList.slice(0, 8).map(nft => (
                   <NftItem
-                    key={nft.id}
-                    id={nft.id}
-                    categoryId={nft.category_id}
+                    key={nft.fingerprint}
+                    category={nft.category}
                     tradeable={nft.tradeable}
                     price={nft.price}
-                    author={nft.author}
-                    verified={nft.verified}
+                    owner={nft.owner}
                     likes={nft.likes}
                     name={nft.name}
                   />
