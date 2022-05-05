@@ -58,12 +58,12 @@ class Footer extends React.Component {
                 Navigation
               </div>
               <div className="column-item">
-                <Link to="/" >
+                <Link to="/">
                   Home
                 </Link>
               </div>
               <div className="column-item">
-                <Link to="/gallery" >
+                <Link to="/gallery">
                   Explore
                 </Link>
               </div>

@@ -312,7 +312,9 @@
       align-items: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.4);
       display: flex;
+      justify-content: center;
       height: 80px;
+      width: 100%;
 
       .name {
         display: -webkit-box;

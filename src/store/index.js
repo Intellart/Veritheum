@@ -9,6 +9,7 @@ import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
 import { reducer as nftStoreReducer } from './nftStore';
+import { reducer as categoryStoreReducer } from './categoriesStore';
 import { getItem } from '../localStorage';
 import type {
   ReduxAction,
@@ -117,6 +118,7 @@ export const configureStore = (
       global: globalStoreReducer,
       user: userStoreReducer,
       nfts: nftStoreReducer,
+      categories: categoryStoreReducer,
     }),
     initialState,
     middlewareApplier,

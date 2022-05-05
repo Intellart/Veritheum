@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function ScrollToTop() {
   const { key } = useLocation();
@@ -17,9 +17,10 @@ export default function ScrollToTop() {
       positions.current.set(key, { x: window.scrollX, y: window.scrollY });
     };
 
-    window.addEventListener("scroll", handler);
+    window.addEventListener('scroll', handler);
+
     return () => {
-      window.removeEventListener("scroll", handler);
+      window.removeEventListener('scroll', handler);
     };
   }, [key]);
 

@@ -40,7 +40,7 @@ export const selectors = {
 };
 
 export const actions = {
-  fetchNfts: (payload): ReduxAction => ({
+  fetchNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_NFTS,
     payload: API.getRequest('nfts').then((response) => response),
   }),

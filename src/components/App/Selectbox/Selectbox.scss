@@ -57,10 +57,13 @@
   }
 
   .selected {
+    text-transform: capitalize;
+
     .placeholder {
       color: #11273f;
       font-family: "MontserratRegular";
       opacity: 0.5;
+      text-transform: none;
     }
   }
 
@@ -72,6 +75,7 @@
     max-height: 200px;
     overflow: auto;
     position: absolute;
+    text-transform: capitalize;
     top: 100%;
     width: 100%;
     z-index: 2;

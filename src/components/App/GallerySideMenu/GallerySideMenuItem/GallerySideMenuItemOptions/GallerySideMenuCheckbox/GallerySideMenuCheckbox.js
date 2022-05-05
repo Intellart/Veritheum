@@ -21,15 +21,7 @@ class GallerySideMenuCheckbox extends React.Component<Props, State> {
 
   handleClick = () => {
     const { label } = this.props;
-
-    let selectedValue;
-    if (label === 'Biology') {
-      selectedValue = 'biology';
-    } else if (label === 'Physics') {
-      selectedValue = 'physics';
-    } else if (label === 'Chemistry') {
-      selectedValue = 'chemistry';
-    }
+    const selectedValue = label;
 
     this.setState({ checked: !this.state.checked });
     this.props.filterNftsByCategory(selectedValue);
@@ -38,10 +30,11 @@ class GallerySideMenuCheckbox extends React.Component<Props, State> {
   render () {
     const { checked } = this.state;
     const { label } = this.props;
+    const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
 
     return (
       <div className="gallery-side-menu-checkbox" onClick={this.handleClick}>
-        {checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />} {label}
+        {checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />} {capitalizedLabel}
       </div>
     );
   }

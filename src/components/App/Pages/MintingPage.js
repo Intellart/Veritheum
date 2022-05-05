@@ -6,7 +6,8 @@ import FileUpload from '../FileUpload/FileUpload';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
-import { actions } from '../../../store/nftStore';
+import { actions as nftActions } from '../../../store/nftStore';
+import { actions as categoryActions, Category } from '../../../store/categoriesStore';
 
 type State = {
   tradeable: boolean,
@@ -15,12 +16,15 @@ type State = {
   paperContent: string,
   name: string,
   description: string,
-  category_id: number,
+  categoryId: number,
+  categoryText: string,
   price: number,
 }
 
 type Props = {
   profile: ProfileType,
+  dispatch: Function,
+  categories: Array<Category>
 }
 
 class MintingPage extends React.Component<Props, State> {
@@ -34,13 +38,16 @@ class MintingPage extends React.Component<Props, State> {
       name: '',
       description: '',
       categoryId: null,
+      categoryText: '',
       price: null,
     };
   }
 
   componentDidMount() {
+    this.props.dispatch(categoryActions.getCategories());
+
     const owner = `${this.props.profile.first_name} ${this.props.profile.last_name}`;
-    this.setState({ owner })
+    this.setState({ owner });
   }
 
   onTypeSelect = (value) => {
@@ -48,11 +55,15 @@ class MintingPage extends React.Component<Props, State> {
   };
 
   handleFileUpload = (event) => {
-    this.setState({ file: event.target.files[0] })
+    this.setState({ file: event.target.files[0] });
   };
 
   onCategorySelect = (value) => {
-    this.setState({ categoryId: value });
+    const categoryText = this.props.categories.find(category => category.id === value).category_name;
+    this.setState({
+      categoryId: value,
+      categoryText,
+    });
   };
 
   createNft = () => {
@@ -60,20 +71,20 @@ class MintingPage extends React.Component<Props, State> {
       tradeable, price, name, description, categoryId,
     } = this.state;
 
-    this.props.dispatch(actions.createNft({
+    this.props.dispatch(nftActions.createNft({
       tradeable,
       price,
       name,
       description,
       category_id: categoryId,
       owner_id: this.props.profile.id,
-      fingerprint: "abc",
-      policy_id: "abc",
+      fingerprint: 'fingerprint-example',
+      policy_id: '8001dede26bb7cbbe4ee5eae6568e763422e0a3c776b3f70878b03f1',
       onchain_transaction_id: 1,
-      asset_name: "abc",
+      asset_name: 'lion00024',
       // TODO
     }));
-  }
+  };
 
   render () {
     const typeOptions = [
@@ -87,27 +98,15 @@ class MintingPage extends React.Component<Props, State> {
       },
     ];
 
-    const categoryOptions = [
-      {
-        value: 1,
-        text: 'Biology',
-      },
-      {
-        value: 2,
-        text: 'Physics',
-      },
-      {
-        value: 3,
-        text: 'Chemistry',
-      },
-    ];
+    const categoryOptions = this.props.categories.length > 0 && this.props.categories.map((category) => ({
+      value: category.id,
+      text: category.category_name,
+    }));
 
     const {
-      tradeable, owner, file, paperContent, name,
-      description, category, price,
+      // eslint-disable-next-line no-unused-vars
+      tradeable, owner, file, paperContent, name, description, categoryText, price,
     } = this.state;
-
-    console.log(this.state);
 
     return (
       <div className="minting-page">
@@ -141,6 +140,7 @@ class MintingPage extends React.Component<Props, State> {
                       id="minting-nft-paper-content"
                       className="paper-content"
                       placeholder="Please provide the paper content here"
+                      onChange={(e) => this.setState({ paperContent: e.target.value })}
                     />
                   </div>
                 )}
@@ -203,7 +203,7 @@ class MintingPage extends React.Component<Props, State> {
               <NftItem
                 tradeable={tradeable}
                 name={name}
-                category={category}
+                category={categoryText}
                 price={price}
                 owner={owner}
               />
@@ -217,6 +217,7 @@ class MintingPage extends React.Component<Props, State> {
 
 const mapStateToProps = (state: ReduxState) => ({
   profile: state.user.profile,
+  categories: state.categories,
 });
 
 export default (connect(mapStateToProps)(MintingPage): React$ComponentType<{}>);

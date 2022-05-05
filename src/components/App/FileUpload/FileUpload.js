@@ -15,10 +15,8 @@ class FileUpload extends React.Component<Props> {
       <div className="file-upload">
         <div className="label-text">Upload file</div>
         <label htmlFor="upload-file">
-          <>
-            <p>Upload single file</p>
-            <FaRegImage />
-          </>
+          <p>Upload single file</p>
+          <FaRegImage />
           {file ? (
             <p>{file.name}</p>
           ) : (

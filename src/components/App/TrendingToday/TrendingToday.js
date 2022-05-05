@@ -23,6 +23,7 @@ class TrendingToday extends React.Component<Props> {
                 category={nft.category}
                 tradeable={nft.tradeable}
                 price={nft.price}
+                verified={nft.verified}
                 owner={nft.owner}
                 likes={nft.likes}
                 name={nft.name}

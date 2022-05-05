@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { connect } from 'react-redux';
 import { actions } from '../../../../store/userStore';
@@ -29,7 +30,7 @@ class ProfileSettings extends React.Component<Props, State> {
     this.setState({
       firstName: first_name,
       lastName: last_name,
-    })
+    });
   }
 
   // TODO

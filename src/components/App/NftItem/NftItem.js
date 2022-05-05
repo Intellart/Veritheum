@@ -7,6 +7,7 @@ type Props = {
   category: string,
   tradeable: boolean,
   price: number,
+  verified: boolean,
   owner: Object,
   name: string,
   trending?: boolean,
@@ -15,7 +16,7 @@ type Props = {
 class NftItem extends React.Component<Props> {
   render () {
     const {
-      category, tradeable, price,
+      category, tradeable, price, verified,
       owner, name, trending,
     } = this.props;
 
@@ -42,11 +43,11 @@ class NftItem extends React.Component<Props> {
                 {type}
               </div>
               <div className="group">
-                {/* verified && (
+                {verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
-                )*/}
+                )}
                 <div className="like-button">
                   {liked ? <IoHeart /> : <IoHeartOutline /> }
                 </div>
@@ -69,11 +70,11 @@ class NftItem extends React.Component<Props> {
                 )}
               </div>
               <div className="group">
-                {/*verified && (
+                {verified && (
                   <div className="verified-user">
                     <IoShieldCheckmarkSharp />
                   </div>
-                )*/}
+                )}
                 <div className="like-button">
                   {liked ? <IoHeart /> : <IoHeartOutline /> }
                 </div>

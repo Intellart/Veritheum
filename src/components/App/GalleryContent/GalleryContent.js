@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
 import GalleryFilters from '../GalleryFilters/GalleryFilters';
 import NftList from '../NftList/NftList';
@@ -9,6 +8,7 @@ import { selectors as nftSelectors, actions } from '../../../store/nftStore';
 type Props = {
   nftList: Array<Object>,
   isProfile?: Boolean,
+  dispatch: Function,
 }
 
 type State = {
@@ -39,7 +39,7 @@ class GalleryContent extends React.Component<Props, State> {
     this.props.dispatch(actions.fetchNfts());
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps) {
     if (this.props.nftList !== prevProps.nftList) {
       const { nftList } = this.props;
 

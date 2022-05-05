@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { selectors as nftSelectors, actions } from '../../../store/nftStore';
 import HeroCta from '../HeroCta/HeroCta';
 import NftItem from '../NftItem/NftItem';
-import NftListTabs from '../NftListTabs/NftListTabs';
+import NftCategoryListTabs from '../NftCategoryListTabs/NftCategoryListTabs';
 import TopRanking from '../TopRanking/TopRanking';
 import TrendingToday from '../TrendingToday/TrendingToday';
 import Footer from '../Footer/Footer';
@@ -15,6 +15,7 @@ import './pages.scss';
 
 type Props = {
   nftList: Array<Object>,
+  dispatch: Function,
 }
 
 type State = {
@@ -58,7 +59,7 @@ class Home extends React.Component<Props, State> {
               <h3>Which one do you think will contain the most engaging content?</h3>
             </div>
             <div className="section-content mt-40">
-              <NftListTabs
+              <NftCategoryListTabs
                 selectedTab={selectedTab}
                 handleTabSelect={this.handleTabSelect}
               />
@@ -69,6 +70,7 @@ class Home extends React.Component<Props, State> {
                     category={nft.category}
                     tradeable={nft.tradeable}
                     price={nft.price}
+                    verified={nft.verified}
                     owner={nft.owner}
                     likes={nft.likes}
                     name={nft.name}

@@ -131,14 +131,17 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
 
     case types.USR_CONNECT_ORCID_FULFILLED:
       toast.success('Thank you for connecting your ORCID iD!');
+
       return { ...state, ...{ orcidAccount: action.payload } };
 
     case types.USR_REGISTER_USER_FULFILLED:
       toast.success('User registered, a confirmation email has been sent!');
+
       return state;
 
     case types.USR_UPDATE_USER_FULFILLED:
       toast.success('User successfully updated!');
+
       return state;
 
     case types.USR_LOGOUT_USER_FULFILLED:
