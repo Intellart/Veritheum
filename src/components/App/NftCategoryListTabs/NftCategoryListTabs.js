@@ -1,21 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
-import { actions, Category } from '../../../store/categoriesStore';
+import { Category } from '../../../store/categoriesStore';
 import './NftCategoryListTabs.scss';
 
 type Props = {
   selectedTab: Number,
   handleTabSelect: Function,
-  dispatch: Function,
   categories: Array<Category>
 }
 
 class NftCategoryListTabs extends React.Component<Props> {
-  componentDidMount() {
-    this.props.dispatch(actions.getCategories());
-  }
-
   render () {
     const { selectedTab, handleTabSelect, categories } = this.props;
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MultiRangeSlider from '../../../MultiRangeSlider/MultiRangeSlider';
 import GallerySideMenuCheckbox from './GallerySideMenuCheckbox/GallerySideMenuCheckbox';
-import { actions, Category } from '../../../../../store/categoriesStore';
+import { Category } from '../../../../../store/categoriesStore';
 import './GallerySideMenuItemOptions.scss';
 
 type Props = {
@@ -11,15 +11,10 @@ type Props = {
   filterNftsByPrice: Function,
   initialMinPrice: number,
   initialMaxPrice: number,
-  dispatch: Function,
   categories: Array<Category>,
 }
 
 class GallerySideMenuItemOptions extends React.Component<Props> {
-  componentDidMount() {
-    this.props.dispatch(actions.getCategories());
-  }
-
   render () {
     const {
       label, filterNftsByCategory, filterNftsByPrice,

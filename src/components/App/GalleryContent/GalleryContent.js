@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
 import GalleryFilters from '../GalleryFilters/GalleryFilters';
 import NftList from '../NftList/NftList';
-import { selectors as nftSelectors, actions } from '../../../store/nftStore';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 
 type Props = {
   nftList: Array<Object>,
   isProfile?: Boolean,
-  dispatch: Function,
 }
 
 type State = {
@@ -33,10 +32,6 @@ class GalleryContent extends React.Component<Props, State> {
       minPrice: null,
       maxPrice: null,
     };
-  }
-
-  componentDidMount() {
-    this.props.dispatch(actions.fetchNfts());
   }
 
   componentDidUpdate(prevProps) {

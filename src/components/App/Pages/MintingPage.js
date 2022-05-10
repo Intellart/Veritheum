@@ -9,7 +9,7 @@ import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
 import { actions as nftActions } from '../../../store/nftStore';
-import { actions as categoryActions, Category } from '../../../store/categoriesStore';
+import { Category } from '../../../store/categoriesStore';
 
 type State = {
   tradeable: boolean,
@@ -26,7 +26,6 @@ type State = {
 
 type Props = {
   profile: ProfileType,
-  dispatch: Function,
   categories: Array<Category>
 }
 
@@ -48,8 +47,6 @@ class MintingPage extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.props.dispatch(categoryActions.getCategories());
-
     const owner = `${this.props.profile.first_name} ${this.props.profile.last_name}`;
     this.setState({ owner });
   }
