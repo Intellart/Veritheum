@@ -1,8 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Selectbox from '../Selectbox/Selectbox';
+import { some, isEmpty } from 'lodash';
 import NftItem from '../NftItem/NftItem';
 import FileUpload from '../FileUpload/FileUpload';
+import MintingWizard from '../MintingWizard/MintingWizard';
+import Selectbox from '../Selectbox/Selectbox';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
@@ -19,6 +21,7 @@ type State = {
   categoryId: number,
   categoryText: string,
   price: number,
+  mintingProcessStarted: boolean,
 }
 
 type Props = {
@@ -40,6 +43,7 @@ class MintingPage extends React.Component<Props, State> {
       categoryId: null,
       categoryText: '',
       price: null,
+      mintingProcessStarted: false,
     };
   }
 
@@ -71,7 +75,7 @@ class MintingPage extends React.Component<Props, State> {
       tradeable, price, name, description, categoryId,
     } = this.state;
 
-    this.props.dispatch(nftActions.createNft({
+/*  this.props.dispatch(nftActions.createNft({
       tradeable,
       price,
       name,
@@ -83,7 +87,9 @@ class MintingPage extends React.Component<Props, State> {
       onchain_transaction_id: 1,
       asset_name: 'lion00024',
       // TODO
-    }));
+    })); */
+
+    this.setState({ mintingProcessStarted: true });
   };
 
   render () {
@@ -106,7 +112,17 @@ class MintingPage extends React.Component<Props, State> {
     const {
       // eslint-disable-next-line no-unused-vars
       tradeable, owner, file, paperContent, name, description, categoryText, price,
+      mintingProcessStarted,
     } = this.state;
+
+    let fileUploaded;
+    if (file && file.name.length) {
+      fileUploaded = true;
+    } else {
+      fileUploaded = false;
+    }
+
+    const disabled = tradeable ? (fileUploaded === false || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
 
     return (
       <div className="minting-page">
@@ -114,101 +130,105 @@ class MintingPage extends React.Component<Props, State> {
           <div className="header">
             <h2>Create item</h2>
           </div>
-          <div className="row">
-            <div className="column">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="input-wrapper">
-                  <label htmlFor="minting-nft-type-selectbox">Type</label>
-                  <Selectbox
-                    id="minting-nft-type-selectbox"
-                    options={typeOptions}
-                    onChange={this.onTypeSelect}
-                    preselected
-                  />
-                </div>
-                {tradeable ? (
+          {mintingProcessStarted ? (
+            <MintingWizard />
+          ) : (
+            <div className="row">
+              <div className="column">
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="input-wrapper">
-                    <FileUpload
-                      file={file}
-                      handleFileUpload={this.handleFileUpload}
+                    <label htmlFor="minting-nft-type-selectbox">Type</label>
+                    <Selectbox
+                      id="minting-nft-type-selectbox"
+                      options={typeOptions}
+                      onChange={this.onTypeSelect}
+                      preselected
                     />
                   </div>
-                ) : (
+                  {tradeable ? (
+                    <div className="input-wrapper">
+                      <FileUpload
+                        file={file}
+                        handleFileUpload={this.handleFileUpload}
+                      />
+                    </div>
+                  ) : (
+                    <div className="input-wrapper">
+                      <label htmlFor="minting-nft-paper-content">Paper content</label>
+                      <textarea
+                        id="minting-nft-paper-content"
+                        className="paper-content"
+                        placeholder="Please provide the paper content here"
+                        onChange={(e) => this.setState({ paperContent: e.target.value })}
+                      />
+                    </div>
+                  )}
                   <div className="input-wrapper">
-                    <label htmlFor="minting-nft-paper-content">Paper content</label>
+                    <label htmlFor="minting-nft-title">Title</label>
+                    <input
+                      id="minting-nft-title"
+                      placeholder="Please type the name of the item here"
+                      onChange={(e) => this.setState({ name: e.target.value })}
+                    />
+                  </div>
+                  <div className="input-wrapper">
+                    <label htmlFor="minting-nft-description">Description</label>
                     <textarea
-                      id="minting-nft-paper-content"
-                      className="paper-content"
-                      placeholder="Please provide the paper content here"
-                      onChange={(e) => this.setState({ paperContent: e.target.value })}
+                      id="minting-nft-description"
+                      className="description"
+                      placeholder="Please provide a detailed description of your item here"
+                      onChange={(e) => this.setState({ description: e.target.value })}
                     />
                   </div>
-                )}
-                <div className="input-wrapper">
-                  <label htmlFor="minting-nft-title">Title</label>
-                  <input
-                    id="minting-nft-title"
-                    placeholder="Please type the name of the item here"
-                    onChange={(e) => this.setState({ name: e.target.value })}
-                  />
-                </div>
-                <div className="input-wrapper">
-                  <label htmlFor="minting-nft-description">Description</label>
-                  <textarea
-                    id="minting-nft-description"
-                    className="description"
-                    placeholder="Please provide a detailed description of your item here"
-                    onChange={(e) => this.setState({ description: e.target.value })}
-                  />
-                </div>
-                <div className="input-wrapper">
-                  <label htmlFor="minting-nft-category">Category</label>
-                  <Selectbox
-                    id="minting-nft-category"
-                    options={categoryOptions}
-                    onChange={this.onCategorySelect}
-                    placeholder="Select a category for your item"
-                  />
-                </div>
-                {tradeable ? (
                   <div className="input-wrapper">
-                    <label htmlFor="minting-nft-price">Price</label>
-                    <input
-                      id="minting-nft-price"
-                      type="number"
-                      placeholder="Please provide the price of your item (ADA)"
-                      onChange={(e) => this.setState({ price: e.target.value })}
+                    <label htmlFor="minting-nft-category">Category</label>
+                    <Selectbox
+                      id="minting-nft-category"
+                      options={categoryOptions}
+                      onChange={this.onCategorySelect}
+                      placeholder="Select a category for your item"
                     />
                   </div>
-                ) : (
-                  <div className="input-wrapper">
-                    <label htmlFor="minting-nft-endorsement">Endorsement</label>
-                    <input
-                      id="minting-nft-endorsement"
-                      type="number"
-                      placeholder="Please provide the endorsement amount (ADA)"
-                      onChange={(e) => this.setState({ price: e.target.value })}
-                    />
-                  </div>
-                )}
-                <button onClick={this.createNft}>
-                  Start minting process
-                </button>
-              </form>
-            </div>
-            <div className="column">
-              <div className="subheader">
-                Preview item
+                  {tradeable ? (
+                    <div className="input-wrapper">
+                      <label htmlFor="minting-nft-price">Price</label>
+                      <input
+                        id="minting-nft-price"
+                        type="number"
+                        placeholder="Please provide the price of your item (ADA)"
+                        onChange={(e) => this.setState({ price: e.target.value })}
+                      />
+                    </div>
+                  ) : (
+                    <div className="input-wrapper">
+                      <label htmlFor="minting-nft-endorsement">Endorsement</label>
+                      <input
+                        id="minting-nft-endorsement"
+                        type="number"
+                        placeholder="Please provide the endorsement amount (ADA)"
+                        onChange={(e) => this.setState({ price: e.target.value })}
+                      />
+                    </div>
+                  )}
+                  <button onClick={this.createNft} disabled={disabled}>
+                    Start minting process
+                  </button>
+                </form>
               </div>
-              <NftItem
-                tradeable={tradeable}
-                name={name}
-                category={categoryText}
-                price={price}
-                owner={owner}
-              />
+              <div className="column">
+                <div className="subheader">
+                  Preview item
+                </div>
+                <NftItem
+                  tradeable={tradeable}
+                  name={name}
+                  category={categoryText}
+                  price={price}
+                  owner={owner}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );

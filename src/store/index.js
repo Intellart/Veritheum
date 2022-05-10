@@ -10,6 +10,7 @@ import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
 import { reducer as nftStoreReducer } from './nftStore';
 import { reducer as categoryStoreReducer } from './categoriesStore';
+import { reducer as studyFieldStoreReducer } from './studyFieldsStore';
 import { getItem } from '../localStorage';
 import type {
   ReduxAction,
@@ -119,6 +120,7 @@ export const configureStore = (
       user: userStoreReducer,
       nfts: nftStoreReducer,
       categories: categoryStoreReducer,
+      studyFields: studyFieldStoreReducer,
     }),
     initialState,
     middlewareApplier,

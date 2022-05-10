@@ -8,7 +8,8 @@ import {
 } from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
-import { actions, selectors } from '../../../store/userStore';
+import { actions as userActions, selectors as orcidSelectors } from '../../../store/userStore';
+import { actions as studyFieldActions, selectors as studyFieldsSelectors, StudyField } from '../../../store/studyFieldsStore';
 import { orcidOAuthLink } from '../../../utils';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
@@ -18,6 +19,7 @@ import './session_pages.scss';
 type Props = {
   dispatch: Function,
   orcidAccount: Object,
+  studyFields: Array<StudyField>,
 }
 
 type State = {
@@ -54,7 +56,7 @@ class Register extends React.Component<Props, State> {
     if (fieldOfStudy) additionalInfo = { ...additionalInfo, ...{ study_field_id: fieldOfStudy } };
     if (orcidId) additionalInfo = { ...additionalInfo, ...{ orcid_id: orcidId } };
 
-    this.props.dispatch(actions.registerUser({
+    this.props.dispatch(userActions.registerUser({
       ...additionalInfo,
       email,
       password,
@@ -78,10 +80,12 @@ class Register extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    this.props.dispatch(studyFieldActions.getStudyFields());
+
     const code = new URL(window.location.href).searchParams.get('code');
     if (!isEmpty(code) && code) {
       window.history.replaceState({}, document.title, window.location.pathname);
-      this.props.dispatch(actions.registerUserORCID({
+      this.props.dispatch(userActions.registerUserORCID({
         code,
         redirect_uri: window.location.origin + window.location.pathname,
       }));
@@ -104,28 +108,13 @@ class Register extends React.Component<Props, State> {
       email, password, confirmPassword, firstName, lastName, showPassword,
     } = this.state;
 
-    const selectboxOptions = [
-      {
-        text: 'None',
-        value: 0,
-      },
-      {
-        text: 'Biological anthropology',
-        value: 1,
-      },
-      {
-        text: 'Biocultural anthropology',
-        value: 2,
-      },
-      {
-        text: 'Analytical chemistry',
-        value: 3,
-      },
-      {
-        text: 'Physical chemistry',
-        value: 4,
-      },
-    ];
+    const { studyFields } = this.props;
+    let studyFieldsOptions = studyFields.length > 0 && studyFields.map((studyField) => ({
+      value: studyField.id,
+      text: studyField.field_name,
+    }));
+
+    studyFieldsOptions = studyFields.length > 0 ? [{value: null, text: 'None'}, ...studyFieldsOptions] : [{value: null, text: 'None'}];
 
     const graphics = (
       <div className="graphics-wrapper">
@@ -193,7 +182,7 @@ class Register extends React.Component<Props, State> {
                     <label htmlFor="field-of-study-input">Field of study</label>
                     <div className="selectbox-wrapper" id="field-of-study-input">
                       <Selectbox
-                        options={selectboxOptions}
+                        options={studyFieldsOptions}
                         onChange={this.onOptionSelect}
                         preselected
                       />
@@ -269,7 +258,8 @@ class Register extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state) => ({
-  orcidAccount: selectors.getOrcid(state),
+  orcidAccount: orcidSelectors.getOrcid(state),
+  studyFields: studyFieldsSelectors.getStudyFields(state),
 });
 
 export default (connect(mapStateToProps)(Register): React$ComponentType<{}>);

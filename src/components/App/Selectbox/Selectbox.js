@@ -12,6 +12,7 @@ type Props = {
   onChange: Function,
   options: Array,
   preselected?: boolean,
+  preselectedWithValue?: string,
   placeholder?: string,
 }
 
@@ -20,7 +21,7 @@ class Selectbox extends React.Component<Props, State> {
     super(props);
     this.state = {
       isOpen: false,
-      selected: this.props.preselected ? this.props.options[0].text : null,
+      selected: (this.props.preselected ? (this.props.preselectedWithValue ? this.props.preselectedWithValue : this.props.options[0].text) : null),
     };
   }
 
