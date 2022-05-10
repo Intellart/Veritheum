@@ -3,13 +3,15 @@
 import type { State as GlobalState } from '../store/globalStore';
 import type { State as UserState } from '../store/userStore';
 import type { State as NftState } from '../store/nftStore';
-import type { State as CategoryState } from '../store/categoryStore';
+import type { State as CategoryState } from '../store/categoriesStore';
+import type { State as StudyFieldsState } from '../store/studyFieldsStore';
 
 export type ReduxState = {
   user: UserState,
   global: GlobalState,
   nfts: NftState,
   categories: CategoryState,
+  studyFields: StudyFieldsState,
 };
 
 export type BaseReduxAction = {

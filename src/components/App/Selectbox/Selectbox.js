@@ -21,6 +21,7 @@ class Selectbox extends React.Component<Props, State> {
     super(props);
     this.state = {
       isOpen: false,
+      // eslint-disable-next-line no-nested-ternary
       selected: (this.props.preselected ? (this.props.preselectedWithValue ? this.props.preselectedWithValue : this.props.options[0].text) : null),
     };
   }

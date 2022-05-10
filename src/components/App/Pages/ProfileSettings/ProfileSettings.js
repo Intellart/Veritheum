@@ -61,7 +61,7 @@ class ProfileSettings extends React.Component<Props, State> {
       text: studyField.field_name,
     }));
 
-    studyFieldsOptions = studyFields.length > 0 ? [{value: null, text: 'None'}, ...studyFieldsOptions] : [{value: null, text: 'None'}];
+    studyFieldsOptions = studyFields.length > 0 ? [{ value: null, text: 'None' }, ...studyFieldsOptions] : [{ value: null, text: 'None' }];
 
     return (
       <div className="profile-settings">

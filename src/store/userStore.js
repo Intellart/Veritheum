@@ -9,6 +9,7 @@ export type Profile = {
   email: string,
   first_name: string,
   last_name: string,
+  full_name: string,
   updated_at: Date,
   created_at: Date,
   confirmed_at: Date,
@@ -107,7 +108,7 @@ export const actions = {
     type: types.USR_CONNECT_ORCID,
     payload: API.orcidOAuth('auth/user/orcid', { orcid: payload }),
   }),
-  updateUser: (payload: UpdatePayload): ReduxAction => ({
+  updateUser: (payload: UpdatePayload&Profile): ReduxAction => ({
     type: types.USR_UPDATE_USER,
     payload: API.putRequest(`users/${payload.id}`, { user: payload }),
   }),

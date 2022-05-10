@@ -18,13 +18,13 @@ export const types = {
 };
 
 export const selectors = {
-  getCategories: (state: ReduxState): Category => state.categories,
+  getCategories: (state: ReduxState): State => state.categories,
 };
 
 export const actions = {
   getCategories: (): ReduxAction => ({
     type: types.CATEGORY_GET_CATEGORIES,
-    payload: API.getRequest('categories').then((response) => response),
+    payload: API.getRequest('categories'),
   }),
 };
 
@@ -34,6 +34,6 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return action.payload;
 
     default:
-      return state || {};
+      return state || [];
   }
 };

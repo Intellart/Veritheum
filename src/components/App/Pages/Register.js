@@ -9,7 +9,7 @@ import {
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
 import { actions as userActions, selectors as orcidSelectors } from '../../../store/userStore';
-import { actions as studyFieldActions, selectors as studyFieldsSelectors, StudyField } from '../../../store/studyFieldsStore';
+import { actions as studyFieldActions, selectors as studyFieldsSelectors, type StudyField } from '../../../store/studyFieldsStore';
 import { orcidOAuthLink } from '../../../utils';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
@@ -109,12 +109,12 @@ class Register extends React.Component<Props, State> {
     } = this.state;
 
     const { studyFields } = this.props;
-    let studyFieldsOptions = studyFields.length > 0 && studyFields.map((studyField) => ({
+    let studyFieldsOptions: Object = studyFields.length > 0 && studyFields.map((studyField) => ({
       value: studyField.id,
       text: studyField.field_name,
     }));
 
-    studyFieldsOptions = studyFields.length > 0 ? [{value: null, text: 'None'}, ...studyFieldsOptions] : [{value: null, text: 'None'}];
+    studyFieldsOptions = studyFields.length > 0 ? [{ value: null, text: 'None' }, ...studyFieldsOptions] : [{ value: null, text: 'None' }];
 
     const graphics = (
       <div className="graphics-wrapper">

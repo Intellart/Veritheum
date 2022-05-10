@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { map } from 'lodash';
 import { actions, Category } from '../../../store/categoriesStore';
 import './NftCategoryListTabs.scss';
 
@@ -23,7 +24,7 @@ class NftCategoryListTabs extends React.Component<Props> {
         <div className={`tab all ${selectedTab === null ? 'active' : ''}`} onClick={() => handleTabSelect(null)}>
           All
         </div>
-        {categories.length > 0 && categories.map(category => (
+        {map(categories, category => (
           <div
             key={category.id}
             className={`tab ${category.category_name} ${selectedTab === category.category_name ? 'active' : ''}`}

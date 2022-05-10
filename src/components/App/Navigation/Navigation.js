@@ -35,10 +35,10 @@ class Navigation extends React.Component<Props, State> {
     const { mobileMenuOpen } = this.state;
 
     const html = document.querySelector('html');
-    if (html && mobileMenuOpen) {
-      html.classList.add('no-scroll');
+    if (mobileMenuOpen) {
+      html?.classList.add('no-scroll');
     } else {
-      html.classList.remove('no-scroll');
+      html?.classList.remove('no-scroll');
     }
 
     return (

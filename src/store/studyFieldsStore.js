@@ -18,13 +18,13 @@ export const types = {
 };
 
 export const selectors = {
-  getStudyFields: (state: ReduxState): StudyField => state.studyFields,
+  getStudyFields: (state: ReduxState): State => state.studyFields,
 };
 
 export const actions = {
   getStudyFields: (): ReduxAction => ({
     type: types.STUDY_FIELD_GET_STUDY_FIELDS,
-    payload: API.getRequest('study_fields').then((response) => response),
+    payload: API.getRequest('study_fields'),
   }),
 };
 

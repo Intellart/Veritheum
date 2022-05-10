@@ -75,7 +75,7 @@ class MintingPage extends React.Component<Props, State> {
       tradeable, price, name, description, categoryId,
     } = this.state;
 
-/*  this.props.dispatch(nftActions.createNft({
+    /*  this.props.dispatch(nftActions.createNft({
       tradeable,
       price,
       name,

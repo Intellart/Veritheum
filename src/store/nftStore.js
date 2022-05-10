@@ -1,4 +1,5 @@
 // @flow
+import { values, keyBy } from 'lodash';
 import * as API from '../api';
 import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 
@@ -21,7 +22,9 @@ type Nft = {
   owner: Object,
 }
 
-export type State = Nft[];
+export type State = {
+  [string]: Nft
+};
 
 export const types = {
   NFT_FETCH_NFTS: 'NFT/FETCH_NFTS',
@@ -36,15 +39,15 @@ export const types = {
 };
 
 export const selectors = {
-  getNfts: (state: ReduxState): State => state.nfts,
+  getNfts: (state: ReduxState): Nft[] => values(state.nfts),
 };
 
 export const actions = {
   fetchNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_NFTS,
-    payload: API.getRequest('nfts').then((response) => response),
+    payload: API.getRequest('nfts'),
   }),
-  createNft: (payload): ReduxAction => ({
+  createNft: (payload: Object): ReduxAction => ({
     type: types.NFT_CREATE_NFT,
     payload: API.postRequest('nfts', { nft: payload }),
   }),
@@ -54,7 +57,7 @@ export const actions = {
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     case types.NFT_FETCH_NFTS_FULFILLED:
-      return action.payload;
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_CREATE_NFT_FULFILLED:
       return state;

@@ -12,16 +12,16 @@ class MintingWizard extends React.Component {
 
     this.state = {
       stepNumber: 1,
-    }
+    };
   }
 
   nextStep = () => {
     this.setState({ stepNumber: this.state.stepNumber + 1 });
-  }
+  };
 
   previousStep = () => {
     this.setState({ stepNumber: this.state.stepNumber - 1 });
-  }
+  };
 
   render () {
     const { stepNumber } = this.state;
