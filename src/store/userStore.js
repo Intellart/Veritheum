@@ -128,6 +128,8 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
   switch (action.type) {
     case types.USR_LOGIN_USER_FULFILLED:
     case types.USR_LOGIN_USER_ORCID_FULFILLED:
+      toast.success('User successfully logged in!');
+
       return { ...state, ...{ profile: action.payload } };
 
     case types.USR_CONNECT_ORCID_FULFILLED:
@@ -146,6 +148,10 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return state;
 
     case types.USR_LOGOUT_USER_FULFILLED:
+      toast.success('User successfully logged out!');
+
+      return logoutUser();
+
     case types.USR_CLEAR_USER:
       return logoutUser();
 

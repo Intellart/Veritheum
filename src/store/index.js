@@ -8,8 +8,8 @@ import {
 import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer } from './userStore';
-import { reducer as nftStoreReducer } from './nftStore';
-import { reducer as categoryStoreReducer } from './categoriesStore';
+import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
+import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
 import { reducer as studyFieldStoreReducer } from './studyFieldsStore';
 import { getItem } from '../localStorage';
 import type {
@@ -135,6 +135,12 @@ const initialReduxState: Object = {
       profile: JSON.parse(localUser),
     },
   }),
+  global: {
+    loading: {
+      [nftStoreTypes.NFT_FETCH_NFTS]: 'PENDING',
+      [categoriesStoreTypes.CATEGORY_GET_CATEGORIES]: 'PENDING',
+    },
+  },
 };
 
 export const store: any = configureStore(initialReduxState);
