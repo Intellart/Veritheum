@@ -35,17 +35,48 @@ class TrendingToday extends React.Component<Props> {
       </div>
     );
 
+    const getSlides = () => {
+      if (nftList.length > 0 && nftList.length <= 6) {
+        return (
+          <div className="trending-today">
+            <Carousel
+              autoPlay
+              showThumbs={false}
+            >
+              {getSlide(0, 5)}
+            </Carousel>
+          </div>
+        )
+      } else if (nftList.length >= 7 && nftList.length < 13) {
+        return (
+          <div className="trending-today">
+            <Carousel
+              autoPlay
+              showThumbs={false}
+            >
+              {getSlide(0, 5)}
+              {getSlide(6, 11)}
+            </Carousel>
+          </div>
+        )
+      } else {
+        <div className="trending-today">
+          <Carousel
+            autoPlay
+            showThumbs={false}
+          >
+            {getSlide(0, 5)}
+            {getSlide(6, 11)}
+            {getSlide(12, 17)}
+          </Carousel>
+        </div>
+      }
+    }
+
     return (
-      <div className="trending-today">
-        <Carousel
-          autoPlay
-          showThumbs={false}
-        >
-          {getSlide(0, 5)}
-          {getSlide(6, 11)}
-          {getSlide(12, 17)}
-        </Carousel>
-      </div>
+      <>
+        {getSlides()}
+      </>
     );
   }
 }

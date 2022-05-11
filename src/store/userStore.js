@@ -145,7 +145,7 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.USR_UPDATE_USER_FULFILLED:
       toast.success('User successfully updated!');
 
-      return state;
+      return { ...state, ...{ profile: action.payload } };
 
     case types.USR_LOGOUT_USER_FULFILLED:
       toast.success('User successfully logged out!');

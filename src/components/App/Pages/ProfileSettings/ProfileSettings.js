@@ -33,10 +33,9 @@ class ProfileSettings extends React.Component<Props, State> {
   }
 
   onOptionSelect = (value) => {
-    this.setState({ fieldOfStudy: value });
+    this.setState({ studyField: value });
   };
 
-  // TODO
   updateUser(e: Event) {
     e.preventDefault();
     const {
@@ -47,7 +46,7 @@ class ProfileSettings extends React.Component<Props, State> {
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`,
-      study_field: studyField,
+      study_field_id: studyField,
       orcid_id: this.props.profile.orcid_id,
     }));
   }
@@ -61,7 +60,7 @@ class ProfileSettings extends React.Component<Props, State> {
       text: studyField.field_name,
     }));
 
-    studyFieldsOptions = studyFields.length > 0 ? [{ value: null, text: 'None' }, ...studyFieldsOptions] : [{ value: null, text: 'None' }];
+    studyFieldsOptions = studyFields.length > 0 ? [{value: null, text: 'None'}, ...studyFieldsOptions] : [{value: null, text: 'None'}];
 
     return (
       <div className="profile-settings">

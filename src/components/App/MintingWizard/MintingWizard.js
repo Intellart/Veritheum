@@ -4,6 +4,9 @@ import './MintingWizard.scss';
 
 type State = {
   stepNumber: number,
+  step1Answer: string,
+  step2Anser: string,
+  step3Answer: string,
 }
 
 class MintingWizard extends React.Component {
@@ -12,6 +15,9 @@ class MintingWizard extends React.Component {
 
     this.state = {
       stepNumber: 1,
+      step1Answer: '',
+      step2Answer: '',
+      step3Answer: '',
     };
   }
 
@@ -21,6 +27,24 @@ class MintingWizard extends React.Component {
 
   previousStep = () => {
     this.setState({ stepNumber: this.state.stepNumber - 1 });
+  };
+
+  handleSelect = (event: Event, stepNumber: string) => {
+    const stepAnswer = event.target.value;
+
+    switch (stepNumber) {
+      case 1:
+        this.setState({ step1Answer: stepAnswer });
+        break;
+      case 2:
+        this.setState({ step2Answer: stepAnswer });
+        break;
+      case 3:
+        this.setState({ step3Answer: stepAnswer });
+        break;
+      default:
+        return;
+    }
   };
 
   render () {
@@ -53,6 +77,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question1"
+                      value="Integer tincidunt"
+                      onChange={(e) => this.handleSelect(e, 1)}
                     />
                     Integer tincidunt
                     <span className="checkmark" />
@@ -63,6 +90,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question1"
+                      value="Cras dapibus"
+                      onChange={(e) => this.handleSelect(e, 1)}
                     />
                     Cras dapibus
                     <span className="checkmark" />
@@ -73,6 +103,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question1"
+                      value="Vivamus elementum"
+                      onChange={(e) => this.handleSelect(e, 1)}
                     />
                     Vivamus elementum
                     <span className="checkmark" />
@@ -95,6 +128,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question2"
+                      value="Blandit vel"
+                      onChange={(e) => this.handleSelect(e, 2)}
                     />
                     Blandit vel
                     <span className="checkmark" />
@@ -105,6 +141,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question2"
+                      value="Luctus pulvinar"
+                      onChange={(e) => this.handleSelect(e, 2)}
                     />
                     Luctus pulvinar
                     <span className="checkmark" />
@@ -115,6 +154,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question2"
+                      value="Hendrerit id"
+                      onChange={(e) => this.handleSelect(e, 2)}
                     />
                     Hendrerit id
                     <span className="checkmark" />
@@ -137,6 +179,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question3"
+                      value="Sed consequat"
+                      onChange={(e) => this.handleSelect(e, 3)}
                     />
                     Sed consequat
                     <span className="checkmark" />
@@ -147,6 +192,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question3"
+                      value="Donec pede justo"
+                      onChange={(e) => this.handleSelect(e, 3)}
                     />
                     Donec pede justo
                     <span className="checkmark" />
@@ -157,6 +205,9 @@ class MintingWizard extends React.Component {
                     <input
                       type="radio"
                       className="button-only"
+                      name="Question3"
+                      value="Aenean massa"
+                      onChange={(e) => this.handleSelect(e, 3)}
                     />
                     Aenean massa
                     <span className="checkmark" />
