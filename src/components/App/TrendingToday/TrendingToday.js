@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
+import { map } from 'lodash';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import NftItem from '../NftItem/NftItem';
 import { selectors as nftSelectors } from '../../../store/nftStore';
+import type { Nft } from '../../../store/nftStore';
 import './TrendingToday.scss';
 
 type Props = {
-  nftList: Array<Object>,
+  nftList: Nft[],
 }
 
 class TrendingToday extends React.Component<Props> {
@@ -15,23 +17,17 @@ class TrendingToday extends React.Component<Props> {
     const { nftList } = this.props;
     const getSlide = (lowestIndex, highestIndex) => (
       <div className="slide">
-        {nftList.length > 0 && nftList.map((nft, i) => (
-          <React.Fragment key={nft.fingerprint}>
-            {i >= lowestIndex && i <= highestIndex && (
-              <NftItem
-                key={nft.fingerprint}
-                category={nft.category}
-                tradeable={nft.tradeable}
-                price={nft.price}
-                verified={nft.verified}
-                owner={nft.owner}
-                likes={nft.likes}
-                name={nft.name}
-                trending
-              />
-            )}
-          </React.Fragment>
-        ))}
+        {map(nftList, (nft: Nft, i) => {
+          if (i < lowestIndex || i > highestIndex) return null;
+
+          return (
+            <NftItem
+              key={nft.fingerprint}
+              data={nft}
+              trending
+            />
+          );
+        })}
       </div>
     );
 
@@ -46,7 +42,7 @@ class TrendingToday extends React.Component<Props> {
               {getSlide(0, 5)}
             </Carousel>
           </div>
-        )
+        );
       } else if (nftList.length >= 7 && nftList.length < 13) {
         return (
           <div className="trending-today">
@@ -58,7 +54,7 @@ class TrendingToday extends React.Component<Props> {
               {getSlide(6, 11)}
             </Carousel>
           </div>
-        )
+        );
       } else {
         <div className="trending-today">
           <Carousel
@@ -69,9 +65,9 @@ class TrendingToday extends React.Component<Props> {
             {getSlide(6, 11)}
             {getSlide(12, 17)}
           </Carousel>
-        </div>
+        </div>;
       }
-    }
+    };
 
     return (
       <>
@@ -85,4 +81,4 @@ const mapStateToProps = state => ({
   nftList: nftSelectors.getNfts(state),
 });
 
-export default connect(mapStateToProps, null)(TrendingToday);
+export default (connect(mapStateToProps, null)(TrendingToday): React$ComponentType<{}>);

@@ -1,24 +1,50 @@
+// @flow
 import React from 'react';
 import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from 'react-icons/io5';
+import { connect } from 'react-redux';
+import { get } from 'lodash';
 import User from '../../../assets/icons/user.svg';
+import { actions } from '../../../store/nftStore';
+import { findNftLike } from '../../../utils';
+import type { Nft, NftLike } from '../../../store/nftStore';
+import type { ReduxState } from '../../../types';
 import './NftItem.scss';
 
 type Props = {
-  category: string,
-  tradeable: boolean,
-  price: number,
-  verified: boolean,
-  owner: Object,
-  name: string,
+  data: Nft,
   trending?: boolean,
 }
 
-class NftItem extends React.Component<Props> {
-  render () {
+type ReduxProps = {
+  ...Props,
+  dispatch: Function,
+  userId: ?number,
+}
+
+class NftItem extends React.Component<ReduxProps> {
+  handleLike = (like: ?NftLike) => {
     const {
-      category, tradeable, price, verified,
-      owner, name, trending,
+      dispatch, userId, data, trending,
     } = this.props;
+
+    if (!userId || trending) return;
+
+    if (like) {
+      dispatch(actions.dislikeNft(like.id));
+    } else {
+      dispatch(actions.likeNft({
+        fingerprint: data.fingerprint,
+        user_id: userId,
+      }));
+    }
+  };
+
+  render () {
+    const { data, trending, userId } = this.props;
+    const {
+      tradeable, category, name, verified, owner, price,
+    } = data;
+    const like = findNftLike(data, userId);
 
     let type;
     if (tradeable === true) {
@@ -26,8 +52,6 @@ class NftItem extends React.Component<Props> {
     } else {
       type = 'Endorsable';
     }
-
-    const liked = false;
 
     return (
       <div className="nft-item-wrapper">
@@ -49,7 +73,7 @@ class NftItem extends React.Component<Props> {
                   </div>
                 )}
                 <div className="like-button">
-                  {liked ? <IoHeart /> : <IoHeartOutline /> }
+                  {like ? <IoHeart /> : <IoHeartOutline /> }
                 </div>
               </div>
             </div>
@@ -75,8 +99,8 @@ class NftItem extends React.Component<Props> {
                     <IoShieldCheckmarkSharp />
                   </div>
                 )}
-                <div className="like-button">
-                  {liked ? <IoHeart /> : <IoHeartOutline /> }
+                <div className="like-button" onClick={() => this.handleLike(like)}>
+                  {like ? <IoHeart /> : <IoHeartOutline /> }
                 </div>
               </div>
             </div>
@@ -142,4 +166,8 @@ class NftItem extends React.Component<Props> {
   }
 }
 
-export default NftItem;
+const mapStateToProps = (state: ReduxState) => ({
+  userId: get(state, 'user.profile.id'),
+});
+
+export default (connect<ReduxProps, Props>(mapStateToProps)(NftItem): React$ComponentType<Props>);

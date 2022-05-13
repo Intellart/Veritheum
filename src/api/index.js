@@ -1,8 +1,28 @@
 // @flow
+import {
+  isEmpty, join, map, has, trimEnd,
+} from 'lodash';
 import apiClient from './axios';
 
-export const getRequest = async (endpoint: string): Promise<any> => {
-  const response: any = await apiClient.get(endpoint);
+export type QueryParam = {
+  key: string,
+  query: ?string,
+}
+
+export const getRequest = async (endpoint: string, params?: QueryParam[]|string[]): Promise<any> => {
+  let url = endpoint;
+  if (!isEmpty(params) && has(params, '[0].key')) {
+    url += '?' + join(map(params, (param: QueryParam) => {
+      if (param.query && !isEmpty(param.query)) return `${param.key}=${param.query}`;
+    }), '&');
+    url = trimEnd(url, '&');
+  }
+  if (!isEmpty(params) && !has(params, '[0].key')) {
+    url += '/' + join(params, '/');
+    url = trimEnd(url, '/');
+  }
+
+  const response: any = await apiClient.get(url);
 
   if (response.status === 200) {
     return response.data;
@@ -32,7 +52,13 @@ export const putRequest = async (endpoint: string, payload: any): Promise<any> =
 };
 
 export const deleteRequest = async (endpoint: string): Promise<any> => {
-  await apiClient.delete(endpoint);
+  const response: any = await apiClient.delete(endpoint);
+
+  if (response.status === 200) {
+    return response.data;
+  }
+
+  return null;
 };
 
 export const orcidOAuth = async (finalEndpoint: string, payload: any): Promise<any> => {

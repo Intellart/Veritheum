@@ -1,7 +1,9 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { selectors as nftSelectors, actions } from '../../../store/nftStore';
+import { filter, map } from 'lodash';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import HeroCta from '../HeroCta/HeroCta';
 import NftItem from '../NftItem/NftItem';
 import NftCategoryListTabs from '../NftCategoryListTabs/NftCategoryListTabs';
@@ -11,15 +13,15 @@ import Footer from '../Footer/Footer';
 import WalletIcon from '../../../assets/graphics/wallet.svg';
 import NoteIcon from '../../../assets/graphics/note-plus.svg';
 import WebIcon from '../../../assets/graphics/web.svg';
+import type { Nft } from '../../../store/nftStore';
 import './pages.scss';
 
 type Props = {
-  nftList: Array<Object>,
-  dispatch: Function,
+  nftList: Nft[],
 }
 
 type State = {
-  selectedTab: number,
+  selectedTab: number|null,
 }
 
 class Home extends React.Component<Props, State> {
@@ -30,10 +32,6 @@ class Home extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount() {
-    this.props.dispatch(actions.fetchNfts());
-  }
-
   handleTabSelect = (value: number) => {
     this.setState({ selectedTab: value });
   };
@@ -41,8 +39,8 @@ class Home extends React.Component<Props, State> {
   render () {
     const { selectedTab } = this.state;
     const { nftList } = this.props;
-    const filteredNftList = nftList.length > 0 && nftList.filter(nft => {
-      if (selectedTab === null) {
+    const filteredNftList = filter(nftList, nft => {
+      if (!selectedTab) {
         return nft;
       } else {
         return nft.category === selectedTab;
@@ -64,16 +62,10 @@ class Home extends React.Component<Props, State> {
                 handleTabSelect={this.handleTabSelect}
               />
               <div className="homepage-nft-list">
-                {filteredNftList && filteredNftList.slice(0, 8).map(nft => (
+                {map(filteredNftList.slice(0, 8), (nft: Nft) => (
                   <NftItem
                     key={nft.fingerprint}
-                    category={nft.category}
-                    tradeable={nft.tradeable}
-                    price={nft.price}
-                    verified={nft.verified}
-                    owner={nft.owner}
-                    likes={nft.likes}
-                    name={nft.name}
+                    data={nft}
                   />
                 ))}
               </div>
@@ -156,4 +148,4 @@ const mapStateToProps = state => ({
   nftList: nftSelectors.getNfts(state),
 });
 
-export default connect(mapStateToProps, null)(Home);
+export default (connect(mapStateToProps, null)(Home): React$ComponentType<{}>);

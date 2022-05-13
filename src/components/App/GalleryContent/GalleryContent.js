@@ -1,30 +1,51 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import {
+  filter, map, get, isEqual,
+} from 'lodash';
 import GallerySideMenu from '../GallerySideMenu/GallerySideMenu';
 import GalleryFilters from '../GalleryFilters/GalleryFilters';
 import NftList from '../NftList/NftList';
 import { selectors as nftSelectors } from '../../../store/nftStore';
+import { selectors as userSelectors } from '../../../store/userStore';
+import { buildUserGalleryNftList } from '../../../utils';
+import type { Nft } from '../../../store/nftStore';
+import type { Profile } from '../../../store/userStore';
 
 type Props = {
-  nftList: Array<Object>,
-  isProfile?: Boolean,
+  isProfile?: boolean,
+  tabs?: Object[],
+}
+
+type ReduxProps = {
+  ...Props,
+  profile: Profile,
+  nftList: Nft[],
+  userNfts: Nft[],
 }
 
 type State = {
+  galleryNftList: {[string]: Nft[]},
+  galleryTabs: Object[],
   searchText: string,
-  selectedOption: Number,
-  selectedCategory: string,
-  initialMinPrice: number,
-  initialMaxPrice: number,
-  minPrice: number,
-  maxPrice: number,
+  selectedTab: string,
+  selectedOption: number|null,
+  selectedCategory: string[],
+  initialMinPrice: number|null,
+  initialMaxPrice: number|null,
+  minPrice: number|null,
+  maxPrice: number|null,
 }
 
-class GalleryContent extends React.Component<Props, State> {
+class GalleryContent extends React.Component<ReduxProps, State> {
   constructor() {
     super();
     this.state = {
+      galleryNftList: {},
+      galleryTabs: [],
       searchText: '',
+      selectedTab: get(this.props, 'tabs[0].value.id', 'all'),
       selectedOption: null,
       selectedCategory: [],
       initialMinPrice: null,
@@ -34,14 +55,23 @@ class GalleryContent extends React.Component<Props, State> {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.nftList !== prevProps.nftList) {
-      const { nftList } = this.props;
+  componentDidMount() {
+    const {
+      isProfile, profile, userNfts, nftList, tabs,
+    } = this.props;
+    const { selectedTab } = this.state;
 
-      const minPrice = Math.min.apply(null, nftList.map((nft) => nft.price));
-      const maxPrice = Math.max.apply(null, nftList.map((nft) => nft.price));
+    const list = isProfile ? userNfts : nftList;
+    if (list) {
+      const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
+      const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
+
+      const gallery = isProfile && tabs ? buildUserGalleryNftList(tabs, profile, list) : { list: { all: list }, tabs: [] };
 
       this.setState({
+        selectedTab: isProfile && selectedTab !== 'all' ? selectedTab : get(tabs, '[0].value.id', 'all'),
+        galleryNftList: gallery.list,
+        galleryTabs: gallery.tabs,
         initialMinPrice: minPrice,
         initialMaxPrice: maxPrice,
         minPrice,
@@ -50,13 +80,34 @@ class GalleryContent extends React.Component<Props, State> {
     }
   }
 
-  filterNftsByName = (value) => {
-    this.setState({ searchText: value });
-  };
+  componentDidUpdate(prevProps) {
+    const {
+      isProfile, profile, userNfts, nftList, tabs,
+    } = this.props;
+    const { selectedTab } = this.state;
 
-  filterNftsByType = (value) => {
-    this.setState({ selectedOption: value });
-  };
+    const list = isProfile ? userNfts : nftList;
+    const prevList = isProfile ? prevProps.userNfts : prevProps.nftList;
+
+    if (!isEqual(list, prevList)) {
+      const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
+      const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
+
+      const gallery = isProfile && tabs ? buildUserGalleryNftList(tabs, profile, list) : { list: { all: list }, tabs: [] };
+
+      this.setState({
+        selectedTab: isProfile && selectedTab !== 'all' ? selectedTab : get(tabs, '[0].value.id', 'all'),
+        galleryNftList: gallery.list,
+        galleryTabs: gallery.tabs,
+        initialMinPrice: minPrice,
+        initialMaxPrice: maxPrice,
+        minPrice,
+        maxPrice,
+      });
+    }
+  }
+
+  handleFiltersChange = (key: string, value) => this.setState({ [key]: value });
 
   filterNftsByCategory = (value) => {
     const { selectedCategory } = this.state;
@@ -80,15 +131,17 @@ class GalleryContent extends React.Component<Props, State> {
   };
 
   render () {
-    const { nftList, isProfile } = this.props;
+    const { isProfile } = this.props;
     const {
-      selectedOption, selectedCategory, initialMinPrice,
-      initialMaxPrice, minPrice, maxPrice,
+      selectedTab, selectedOption, selectedCategory, initialMinPrice,
+      initialMaxPrice, minPrice, maxPrice, searchText, galleryNftList,
+      galleryTabs,
     } = this.state;
-    let filteredNftList;
+
+    let filteredNftList = get(galleryNftList, selectedTab, []);
 
     // Filter by search input or type
-    filteredNftList = nftList.length > 0 && nftList.filter(nft => {
+    filteredNftList = filter(filteredNftList, (nft: Nft) => {
       if (selectedOption === 1) {
         return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
       } else if (selectedOption === 2) {
@@ -97,15 +150,18 @@ class GalleryContent extends React.Component<Props, State> {
         return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
       }
     });
+
     // Filter by category
     if (selectedCategory.length > 0) {
-      filteredNftList = filteredNftList.filter(nft => selectedCategory.includes(nft.category));
+      filteredNftList = filter(filteredNftList, (nft: Nft) => selectedCategory.includes(nft.category));
     }
 
     // Filter by price
-    filteredNftList = nftList.length > 0 && filteredNftList.filter(nft => nft.price >= minPrice && nft.price <= maxPrice);
+    filteredNftList = filter(filteredNftList, (nft: Nft) => {
+      if (minPrice && maxPrice) return Number(nft.price) >= minPrice && Number(nft.price) <= maxPrice;
 
-    const itemsCount = filteredNftList.length;
+      return true;
+    });
 
     return (
       <>
@@ -117,10 +173,12 @@ class GalleryContent extends React.Component<Props, State> {
         />
         <div className={isProfile ? 'profile-content-area' : 'gallery-content-area'}>
           <GalleryFilters
-            filterNftsByName={this.filterNftsByName}
-            filterNftsByType={this.filterNftsByType}
-            numberOfItems={itemsCount}
-            isProfile={isProfile === true}
+            onFiltersChange={this.handleFiltersChange}
+            filteredItemCount={filteredNftList.length}
+            tabs={galleryTabs}
+            selectedTab={selectedTab}
+            searchText={searchText}
+            isProfile={isProfile}
           />
           <NftList
             nftList={filteredNftList}
@@ -132,7 +190,9 @@ class GalleryContent extends React.Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
+  profile: userSelectors.getUser(state),
   nftList: nftSelectors.getNfts(state),
+  userNfts: userSelectors.getUserNfts(state),
 });
 
-export default connect(mapStateToProps, null)(GalleryContent);
+export default (connect<ReduxProps, Props>(mapStateToProps, null)(GalleryContent): React$ComponentType<Props>);

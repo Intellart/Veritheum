@@ -31,7 +31,7 @@ export const actions = {
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     case types.STUDY_FIELD_GET_STUDY_FIELDS_FULFILLED:
-      return action.payload;
+      return { ...state, ...action.payload };
 
     default:
       return state || {};

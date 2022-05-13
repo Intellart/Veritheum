@@ -1,9 +1,22 @@
 // @flow
-import { values, keyBy } from 'lodash';
+import {
+  values, keyBy, get,
+} from 'lodash';
 import * as API from '../api';
 import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 
-type Nft = {
+export type LikePayload = {
+  fingerprint: string,
+  user_id: number,
+}
+
+export type NftLike = {
+  id: number,
+  user_id:number,
+  fingerprint:string,
+}
+
+export type Nft = {
   fingerprint: string,
   tradeable: boolean,
   price: string,
@@ -17,9 +30,10 @@ type Nft = {
   onchain_transaction: Object,
   cardano_address: string,
   tags: string[]|null,
-  likes: string[]|null,
+  likes: NftLike[],
   endorsers: string[]|null,
   owner: Object,
+  verified: boolean,
 }
 
 export type State = {
@@ -36,6 +50,16 @@ export const types = {
   NFT_CREATE_NFT_PENDING: 'NFT/CREATE_NFT_PENDING',
   NFT_CREATE_NFT_REJECTED: 'NFT/CREATE_NFT_REJECTED',
   NFT_CREATE_NFT_FULFILLED: 'NFT/CREATE_NFT_FULFILLED',
+
+  NFT_LIKE_NFT: 'NFT/LIKE_NFT',
+  NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
+  NFT_LIKE_NFT_REJECTED: 'NFT/LIKE_NFT_REJECTED',
+  NFT_LIKE_NFT_FULFILLED: 'NFT/LIKE_NFT_FULFILLED',
+
+  NFT_DISLIKE_NFT: 'NFT/DISLIKE_NFT',
+  NFT_DISLIKE_NFT_PENDING: 'NFT/DISLIKE_NFT_PENDING',
+  NFT_DISLIKE_NFT_REJECTED: 'NFT/DISLIKE_NFT_REJECTED',
+  NFT_DISLIKE_NFT_FULFILLED: 'NFT/DISLIKE_NFT_FULFILLED',
 };
 
 export const selectors = {
@@ -51,6 +75,28 @@ export const actions = {
     type: types.NFT_CREATE_NFT,
     payload: API.postRequest('nfts', { nft: payload }),
   }),
+  likeNft: (payload: LikePayload): ReduxAction => ({
+    type: types.NFT_LIKE_NFT,
+    payload: API.postRequest('nft_likes', { like: payload }),
+  }),
+  dislikeNft: (id: number): ReduxAction => ({
+    type: types.NFT_DISLIKE_NFT,
+    payload: API.deleteRequest(`nft_likes/${id}`),
+  }),
+};
+
+const handleLikeResponse = (state: State, payload: Object): State => {
+  const nft: ?Nft = get(state, payload.fingerprint);
+  if (!nft) return state;
+
+  return { ...state, [payload.fingerprint]: payload };
+};
+
+const handleDislikeResponse = (state: State, payload: Object): State => {
+  const nft: ?Nft = get(state, payload.fingerprint);
+  if (!nft) return state;
+
+  return { ...state, [payload.fingerprint]: payload };
 };
 
 // eslint-disable-next-line default-param-last
@@ -61,6 +107,11 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
 
     case types.NFT_CREATE_NFT_FULFILLED:
       return state;
+
+    case types.NFT_LIKE_NFT_FULFILLED:
+      return handleLikeResponse(state, action.payload);
+    case types.NFT_DISLIKE_NFT_FULFILLED:
+      return handleDislikeResponse(state, action.payload);
 
     default:
       return state || {};

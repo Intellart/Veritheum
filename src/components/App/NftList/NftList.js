@@ -1,10 +1,12 @@
+// @flow
 import React from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import NftItem from '../NftItem/NftItem';
+import type { Nft } from '../../../store/nftStore';
 import './NftList.scss';
 
 type Props = {
-  nftList: Array<Object>,
+  nftList: Nft[],
 }
 
 class NftList extends React.Component<Props> {
@@ -19,16 +21,10 @@ class NftList extends React.Component<Props> {
           </div>
         ) : (
           <div className="nft-list">
-            {nftList.map(nft => (
+            {map(nftList, (nft: Nft) => (
               <NftItem
                 key={nft.fingerprint}
-                category={nft.category}
-                tradeable={nft.tradeable}
-                price={nft.price}
-                verified={nft.verified}
-                owner={nft.owner}
-                likes={nft.likes}
-                name={nft.name}
+                data={nft}
               />
             ))}
           </div>
@@ -38,4 +34,4 @@ class NftList extends React.Component<Props> {
   }
 }
 
-export default NftList;
+export default (NftList: React$ComponentType<Props>);

@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import Selectbox from '../Selectbox/Selectbox';
 import './MintingWizard.scss';
@@ -5,14 +6,13 @@ import './MintingWizard.scss';
 type State = {
   stepNumber: number,
   step1Answer: string,
-  step2Anser: string,
+  step2Answer: string,
   step3Answer: string,
 }
 
-class MintingWizard extends React.Component {
+class MintingWizard extends React.Component<{}, State> {
   constructor() {
     super();
-
     this.state = {
       stepNumber: 1,
       step1Answer: '',
@@ -29,25 +29,11 @@ class MintingWizard extends React.Component {
     this.setState({ stepNumber: this.state.stepNumber - 1 });
   };
 
-  handleSelect = (event: Event, stepNumber: string) => {
-    const stepAnswer = event.target.value;
-
-    switch (stepNumber) {
-      case 1:
-        this.setState({ step1Answer: stepAnswer });
-        break;
-      case 2:
-        this.setState({ step2Answer: stepAnswer });
-        break;
-      case 3:
-        this.setState({ step3Answer: stepAnswer });
-        break;
-      default:
-        return;
-    }
+  handleSelect = (event, stepNumber: number) => {
+    this.setState({ [`step${stepNumber}Answer`]: event.target.value });
   };
 
-  render () {
+  render() {
     const { stepNumber } = this.state;
 
     return (
@@ -226,4 +212,4 @@ class MintingWizard extends React.Component {
   }
 }
 
-export default MintingWizard;
+export default (MintingWizard: React$ComponentType<{}>);

@@ -5,11 +5,11 @@ import NftItem from '../NftItem/NftItem';
 import FileUpload from '../FileUpload/FileUpload';
 import MintingWizard from '../MintingWizard/MintingWizard';
 import Selectbox from '../Selectbox/Selectbox';
+import { actions as nftActions } from '../../../store/nftStore';
+import { Category } from '../../../store/categoriesStore';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
-import { actions as nftActions } from '../../../store/nftStore';
-import { Category } from '../../../store/categoriesStore';
 
 type State = {
   tradeable: boolean,
@@ -18,9 +18,9 @@ type State = {
   paperContent: string,
   name: string,
   description: string,
-  categoryId: number,
+  categoryId: number|null,
   categoryText: string,
-  price: number,
+  price: number|null,
   mintingProcessStarted: boolean,
 }
 
@@ -60,7 +60,7 @@ class MintingPage extends React.Component<Props, State> {
   };
 
   onCategorySelect = (value) => {
-    const categoryText = this.props.categories.find(category => category.id === value).category_name;
+    const categoryText = this.props.categories.find(category => category.id === value)?.category_name;
     this.setState({
       categoryId: value,
       categoryText,
@@ -217,11 +217,16 @@ class MintingPage extends React.Component<Props, State> {
                   Preview item
                 </div>
                 <NftItem
-                  tradeable={tradeable}
-                  name={name}
-                  category={categoryText}
-                  price={price}
-                  owner={owner}
+                  data={
+                    {
+                      fingerprint: '',
+                      tradeable,
+                      name,
+                      category: categoryText,
+                      price,
+                      owner,
+                    }
+                  }
                 />
               </div>
             </div>

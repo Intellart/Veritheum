@@ -1,15 +1,19 @@
-/* eslint-disable camelcase */
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { map, isEmpty } from 'lodash';
 import { actions } from '../../../../store/userStore';
-import type { Profile as ProfileType } from '../../../store/userStore';
-import { actions as studyFieldActions, selectors as studyFieldsSelectors, StudyField } from '../../../../store/studyFieldsStore';
-import type { ReduxState } from '../../../types';
+import { actions as studyFieldActions, selectors as studyFieldsSelectors } from '../../../../store/studyFieldsStore';
 import Selectbox from '../../Selectbox/Selectbox';
+import type { ReduxState } from '../../../../types';
+import type { Profile as ProfileType } from '../../../../store/userStore';
+import type { StudyField } from '../../../../store/studyFieldsStore';
 import './ProfileSettings.scss';
 
 type State = {
   firstName: string,
+  lastName: string,
+  studyField: string,
 }
 
 type Props = {
@@ -29,7 +33,7 @@ class ProfileSettings extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.props.dispatch(studyFieldActions.getStudyFields());
+    if (isEmpty(this.props.studyFields)) this.props.dispatch(studyFieldActions.getStudyFields());
   }
 
   onOptionSelect = (value) => {
@@ -42,25 +46,27 @@ class ProfileSettings extends React.Component<Props, State> {
       firstName, lastName, studyField,
     } = this.state;
     this.props.dispatch(actions.updateUser({
-      ...this.props.profile,
-      first_name: firstName,
-      last_name: lastName,
-      full_name: `${firstName} ${lastName}`,
-      study_field_id: studyField,
-      orcid_id: this.props.profile.orcid_id,
+      userId: this.props.profile.id,
+      user: {
+        first_name: firstName,
+        last_name: lastName,
+        study_field_id: studyField,
+        orcid_id: this.props.profile.orcid_id,
+      },
     }));
   }
 
   render () {
     const { firstName, lastName, studyField } = this.state;
+    const { studyFields } = this.props;
 
-    const { profile, studyFields } = this.props;
-    let studyFieldsOptions = studyFields.length > 0 && studyFields.map((studyField) => ({
-      value: studyField.id,
-      text: studyField.field_name,
-    }));
-
-    studyFieldsOptions = studyFields.length > 0 ? [{value: null, text: 'None'}, ...studyFieldsOptions] : [{value: null, text: 'None'}];
+    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    if (studyFields) {
+      studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (sf: StudyField) => ({
+        value: sf.id,
+        text: sf.field_name,
+      }))];
+    }
 
     return (
       <div className="profile-settings">

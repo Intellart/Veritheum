@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import {
-  some, isEmpty, get, isEqual,
+  some, isEmpty, get, isEqual, map,
 } from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
@@ -16,7 +16,10 @@ import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import ORCIDiDLogo from '../../../assets/logo/ORCIDiD_logo.svg';
 import './session_pages.scss';
 
-type Props = {
+type Props = {}
+
+type ReduxProps = {
+  ...Props,
   dispatch: Function,
   orcidAccount: Object,
   studyFields: Array<StudyField>,
@@ -33,7 +36,7 @@ type State = {
   showPassword: boolean,
 }
 
-class Register extends React.Component<Props, State> {
+class Register extends React.Component<ReduxProps, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,7 +83,7 @@ class Register extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.props.dispatch(studyFieldActions.getStudyFields());
+    if (isEmpty(this.props.studyFields)) this.props.dispatch(studyFieldActions.getStudyFields());
 
     const code = new URL(window.location.href).searchParams.get('code');
     if (!isEmpty(code) && code) {
@@ -109,12 +112,14 @@ class Register extends React.Component<Props, State> {
     } = this.state;
 
     const { studyFields } = this.props;
-    let studyFieldsOptions: Object = studyFields.length > 0 && studyFields.map((studyField) => ({
-      value: studyField.id,
-      text: studyField.field_name,
-    }));
 
-    studyFieldsOptions = studyFields.length > 0 ? [{ value: null, text: 'None' }, ...studyFieldsOptions] : [{ value: null, text: 'None' }];
+    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    if (studyFields) {
+      studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (studyField: StudyField) => ({
+        value: studyField.id,
+        text: studyField.field_name,
+      }))];
+    }
 
     const graphics = (
       <div className="graphics-wrapper">
@@ -262,4 +267,4 @@ const mapStateToProps = (state) => ({
   studyFields: studyFieldsSelectors.getStudyFields(state),
 });
 
-export default (connect(mapStateToProps)(Register): React$ComponentType<{}>);
+export default (connect<ReduxProps, Props>(mapStateToProps)(Register): React$ComponentType<Props>);

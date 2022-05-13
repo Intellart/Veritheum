@@ -1,12 +1,15 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { map } from 'lodash';
 import MultiRangeSlider from '../../../MultiRangeSlider/MultiRangeSlider';
 import GallerySideMenuCheckbox from './GallerySideMenuCheckbox/GallerySideMenuCheckbox';
-import { Category } from '../../../../../store/categoriesStore';
+import type { Category } from '../../../../../store/categoriesStore';
+import type { ReduxState } from '../../../../../types';
 import './GallerySideMenuItemOptions.scss';
 
 type Props = {
-  label: String,
+  label: string,
   filterNftsByCategory: Function,
   filterNftsByPrice: Function,
   initialMinPrice: number,
@@ -34,7 +37,7 @@ class GallerySideMenuItemOptions extends React.Component<Props> {
     } else if (label === 'Categories') {
       return (
         <div className="gallery-side-menu-item-options">
-          {categories.length > 0 && categories.map(category => (
+          {map(categories, (category) => (
             <GallerySideMenuCheckbox key={category.id} label={category.category_name} filterNftsByCategory={filterNftsByCategory} />
           ))}
         </div>
