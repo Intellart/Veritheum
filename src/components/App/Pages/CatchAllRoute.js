@@ -1,6 +1,8 @@
+// @flow
 import React, { useEffect } from 'react';
 import type { Node } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { includes } from 'lodash';
 import NotFound from './NotFound/NotFound';
 
 type Props = {
@@ -13,13 +15,13 @@ function CatchAllRoute(props: Props): Node {
   const { isAuthorized } = props;
 
   useEffect(() => {
-    if (isAuthorized && location.includes('sign_in')) {
+    if (isAuthorized && includes(['/sign_in'], location)) {
       navigate('/profile', {
         replace: true,
       });
     }
 
-    if (!isAuthorized && location.includes('profile')) {
+    if (!isAuthorized && includes(['/profile', '/settings', '/minting-page'], location)) {
       navigate('/sign_in', {
         replace: true,
       });

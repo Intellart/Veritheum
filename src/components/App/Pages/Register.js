@@ -4,20 +4,25 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import {
-  some, isEmpty, get, isEqual,
+  some, isEmpty, get, isEqual, map,
 } from 'lodash';
 import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
-import { actions, selectors } from '../../../store/userStore';
+import { actions as userActions, selectors as orcidSelectors } from '../../../store/userStore';
+import { actions as studyFieldActions, selectors as studyFieldsSelectors, type StudyField } from '../../../store/studyFieldsStore';
 import { orcidOAuthLink } from '../../../utils';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import ORCIDiDLogo from '../../../assets/logo/ORCIDiD_logo.svg';
 import './session_pages.scss';
 
-type Props = {
+type Props = {}
+
+type ReduxProps = {
+  ...Props,
   dispatch: Function,
   orcidAccount: Object,
+  studyFields: Array<StudyField>,
 }
 
 type State = {
@@ -31,7 +36,7 @@ type State = {
   showPassword: boolean,
 }
 
-class Register extends React.Component<Props, State> {
+class Register extends React.Component<ReduxProps, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,7 +59,7 @@ class Register extends React.Component<Props, State> {
     if (fieldOfStudy) additionalInfo = { ...additionalInfo, ...{ study_field_id: fieldOfStudy } };
     if (orcidId) additionalInfo = { ...additionalInfo, ...{ orcid_id: orcidId } };
 
-    this.props.dispatch(actions.registerUser({
+    this.props.dispatch(userActions.registerUser({
       ...additionalInfo,
       email,
       password,
@@ -78,10 +83,12 @@ class Register extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    if (isEmpty(this.props.studyFields)) this.props.dispatch(studyFieldActions.getStudyFields());
+
     const code = new URL(window.location.href).searchParams.get('code');
     if (!isEmpty(code) && code) {
       window.history.replaceState({}, document.title, window.location.pathname);
-      this.props.dispatch(actions.registerUserORCID({
+      this.props.dispatch(userActions.registerUserORCID({
         code,
         redirect_uri: window.location.origin + window.location.pathname,
       }));
@@ -104,28 +111,15 @@ class Register extends React.Component<Props, State> {
       email, password, confirmPassword, firstName, lastName, showPassword,
     } = this.state;
 
-    const selectboxOptions = [
-      {
-        text: 'None',
-        value: 0,
-      },
-      {
-        text: 'Biological anthropology',
-        value: 1,
-      },
-      {
-        text: 'Biocultural anthropology',
-        value: 2,
-      },
-      {
-        text: 'Analytical chemistry',
-        value: 3,
-      },
-      {
-        text: 'Physical chemistry',
-        value: 4,
-      },
-    ];
+    const { studyFields } = this.props;
+
+    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    if (studyFields) {
+      studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (studyField: StudyField) => ({
+        value: studyField.id,
+        text: studyField.field_name,
+      }))];
+    }
 
     const graphics = (
       <div className="graphics-wrapper">
@@ -193,7 +187,7 @@ class Register extends React.Component<Props, State> {
                     <label htmlFor="field-of-study-input">Field of study</label>
                     <div className="selectbox-wrapper" id="field-of-study-input">
                       <Selectbox
-                        options={selectboxOptions}
+                        options={studyFieldsOptions}
                         onChange={this.onOptionSelect}
                         preselected
                       />
@@ -269,7 +263,8 @@ class Register extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state) => ({
-  orcidAccount: selectors.getOrcid(state),
+  orcidAccount: orcidSelectors.getOrcid(state),
+  studyFields: studyFieldsSelectors.getStudyFields(state),
 });
 
-export default (connect(mapStateToProps)(Register): React$ComponentType<{}>);
+export default (connect<ReduxProps, Props>(mapStateToProps)(Register): React$ComponentType<Props>);

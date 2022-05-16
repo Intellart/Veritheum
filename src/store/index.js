@@ -1,21 +1,33 @@
 // @flow
+import React from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
-  concat, forEach, get, isString, includes, isEmpty,
+  concat, forEach, get, isString, includes, isEmpty, has,
 } from 'lodash';
+import { toast } from 'react-toastify';
 import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
-import { reducer as userStoreReducer } from './userStore';
-import { reducer as nftStoreReducer } from './nftStore';
+import { reducer as userStoreReducer, types as userStoreTypes } from './userStore';
+import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
+import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
+import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
 import { getItem } from '../localStorage';
+import Error from '../components/App/Errors/Errors';
 import type {
   ReduxAction,
   ReduxState,
   ReduxMiddlewareArgument,
   ActionChains,
 } from '../types';
+
+const ignoreErrors = [
+  userStoreTypes.USR_FETCH_NFTS,
+  nftStoreTypes.NFT_FETCH_NFTS,
+  categoriesStoreTypes.CATEGORY_GET_CATEGORIES,
+  studyFieldStoreTypes.STUDY_FIELD_GET_STUDY_FIELDS,
+];
 
 const disableSanitizer = window.sessionStorage.getItem('disable_sanitizer') === 'true';
 const sanitizedPayload = 'Set REACT_APP_REDUX_SANITIZER=false';
@@ -57,6 +69,16 @@ function promiseMiddleware({ dispatch }: ReduxMiddlewareArgument): any {
               statusCode,
             },
           });
+
+          if (includes(ignoreErrors, action.type)) return;
+
+          const errors = get(e, 'response.data.errors');
+          const isObject = has(errors, '[0].title');
+          if (isObject) {
+            forEach(errors, (err) => toast.error(<Error error={err} isObject={isObject} />));
+          } else {
+            toast.error(<Error error={e} isObject={isObject} />);
+          }
         });
 
       return dispatch({ type: `${action.type}_PENDING` });
@@ -117,6 +139,8 @@ export const configureStore = (
       global: globalStoreReducer,
       user: userStoreReducer,
       nfts: nftStoreReducer,
+      categories: categoryStoreReducer,
+      studyFields: studyFieldStoreReducer,
     }),
     initialState,
     middlewareApplier,
@@ -131,6 +155,12 @@ const initialReduxState: Object = {
       profile: JSON.parse(localUser),
     },
   }),
+  global: {
+    loading: {
+      [nftStoreTypes.NFT_FETCH_NFTS]: 'PENDING',
+      [categoriesStoreTypes.CATEGORY_GET_CATEGORIES]: 'PENDING',
+    },
+  },
 };
 
 export const store: any = configureStore(initialReduxState);

@@ -7,8 +7,6 @@ import {
 } from 'react-icons/md';
 import { actions } from '../../../../store/userStore';
 import UserImagePlaceholder from '../../../../assets/icons/user.svg';
-import type { Profile as ProfileType } from '../../../store/userStore';
-import type { ReduxState } from '../../../types';
 import './ProfileMenu.scss';
 
 type State = {
@@ -17,7 +15,6 @@ type State = {
 
 type Props = {
   dispatch: Function,
-  profile: ProfileType,
   closeMobileMenu: Function,
 }
 
@@ -60,7 +57,7 @@ class ProfileMenu extends React.Component<Props, State> {
   };
 
   closeMenu = () => {
-    const {closeMobileMenu } = this.props;
+    const { closeMobileMenu } = this.props;
 
     this.setState({ isOpen: false });
     closeMobileMenu();
@@ -69,7 +66,7 @@ class ProfileMenu extends React.Component<Props, State> {
   render () {
     const { isOpen } = this.state;
 
-     return (
+    return (
       <div className="profile-menu" ref={(node) => { this.menuRef = node; }}>
         <div className="profile-image" onClick={this.handleClick}>
           <img src={UserImagePlaceholder} alt="user" />
@@ -97,11 +94,4 @@ class ProfileMenu extends React.Component<Props, State> {
     );
   }
 }
-
-const mapStateToProps = (state: ReduxState) => {
-  const { profile } = state.user;
-
-  return { profile };
-};
-
-export default (connect(mapStateToProps)(ProfileMenu): React$ComponentType<{}>);
+export default (connect()(ProfileMenu): React$ComponentType<{}>);

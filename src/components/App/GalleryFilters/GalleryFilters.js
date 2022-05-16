@@ -1,29 +1,24 @@
+// @flow
 import React from 'react';
-import {
-  MdCollectionsBookmark, MdEdit,
-} from 'react-icons/md';
-import { IoHeart, IoSearch } from 'react-icons/io5';
+import { map } from 'lodash';
+import { IoSearch } from 'react-icons/io5';
 import Selectbox from '../Selectbox/Selectbox';
 import './GalleryFilters.scss';
 
 type Props = {
+  onFiltersChange: Function,
   searchText: string,
-  filterNftsByName: Function,
-  filterNftsByType: Function,
-  numberOfItems: number,
-  isProfile: boolean,
+  filteredItemCount: number,
+  selectedTab: string,
+  tabs: Object[],
+  isProfile?: boolean,
 };
 
 class GalleryFilters extends React.Component<Props> {
-  handleChange = (e: Event) => {
-    const { filterNftsByName } = this.props;
-    filterNftsByName(e.target.value);
-  };
-
   render () {
     const {
-      searchText, filterNftsByType, numberOfItems,
-      isProfile,
+      tabs, searchText, filteredItemCount,
+      isProfile, selectedTab, onFiltersChange,
     } = this.props;
 
     const selectboxOptions = [
@@ -35,38 +30,25 @@ class GalleryFilters extends React.Component<Props> {
     return (
       <div className="gallery-filters-wrapper">
         <div className="group main-group">
-          {isProfile && (
-            <>
-              <div className="tab active">
-                <MdCollectionsBookmark /> Collected
-                <div className="count">
-                  27
-                </div>
+          {isProfile && map(tabs, (tab) => (
+            <div key={tab.value.id} className={`tab ${selectedTab === tab.value.id ? 'active' : ''}`} onClick={() => onFiltersChange('selectedTab', tab.value.id)}>
+              {tab.icon}
+              {tab.label}
+              <div className="count">
+                {tab.count}
               </div>
-              <div className="tab">
-                <MdEdit /> Created
-                <div className="count">
-                  4
-                </div>
-              </div>
-              <div className="tab">
-                <IoHeart /> Liked
-                <div className="count">
-                  92
-                </div>
-              </div>
-            </>
-          )}
+            </div>
+          ))}
         </div>
 
         <div className="group">
           <div className="filter">
             <div className="item-count">
-              {numberOfItems} <span>items</span>
+              {filteredItemCount} <span>items</span>
             </div>
             <input
               name="search-nfts"
-              onChange={this.handleChange}
+              onChange={(e) => onFiltersChange('searchText', e.target.value)}
               placeholder="Search..."
               value={searchText}
             />
@@ -74,7 +56,7 @@ class GalleryFilters extends React.Component<Props> {
           </div>
           <div className="selectbox-wrapper">
             <Selectbox
-              onChange={filterNftsByType}
+              onChange={(val) => onFiltersChange('selectedOption', val)}
               options={selectboxOptions}
               preselected
             />
@@ -85,4 +67,4 @@ class GalleryFilters extends React.Component<Props> {
   }
 }
 
-export default GalleryFilters;
+export default (GalleryFilters: React$ComponentType<Props>);

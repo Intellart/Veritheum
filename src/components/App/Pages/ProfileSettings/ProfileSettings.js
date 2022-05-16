@@ -1,53 +1,72 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { map, isEmpty } from 'lodash';
 import { actions } from '../../../../store/userStore';
-import type { Profile as ProfileType } from '../../../store/userStore';
-import type { ReduxState } from '../../../types';
+import { actions as studyFieldActions, selectors as studyFieldsSelectors } from '../../../../store/studyFieldsStore';
+import Selectbox from '../../Selectbox/Selectbox';
+import type { ReduxState } from '../../../../types';
+import type { Profile as ProfileType } from '../../../../store/userStore';
+import type { StudyField } from '../../../../store/studyFieldsStore';
 import './ProfileSettings.scss';
 
 type State = {
   firstName: string,
+  lastName: string,
+  studyField: string,
 }
 
 type Props = {
   dispatch: Function,
   profile: ProfileType,
+  studyFields: Array<StudyField>,
 }
 
 class ProfileSettings extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
+      firstName: this.props.profile.first_name,
+      lastName: this.props.profile.last_name,
+      studyField: this.props.profile.study_field,
     };
   }
 
   componentDidMount() {
-    const { first_name, last_name } = this.props.profile;
-
-    this.setState({
-      firstName: first_name,
-      lastName: last_name,
-    })
+    if (isEmpty(this.props.studyFields)) this.props.dispatch(studyFieldActions.getStudyFields());
   }
 
-  // TODO
+  onOptionSelect = (value) => {
+    this.setState({ studyField: value });
+  };
+
   updateUser(e: Event) {
     e.preventDefault();
     const {
-      firstName, lastName,
+      firstName, lastName, studyField,
     } = this.state;
     this.props.dispatch(actions.updateUser({
       userId: this.props.profile.id,
-      first_name: firstName,
-      last_name: lastName,
+      user: {
+        first_name: firstName,
+        last_name: lastName,
+        study_field_id: studyField,
+        orcid_id: this.props.profile.orcid_id,
+      },
     }));
-
   }
 
   render () {
-    const { firstName, lastName } = this.state;
+    const { firstName, lastName, studyField } = this.state;
+    const { studyFields } = this.props;
+
+    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    if (studyFields) {
+      studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (sf: StudyField) => ({
+        value: sf.id,
+        text: sf.field_name,
+      }))];
+    }
 
     return (
       <div className="profile-settings">
@@ -75,6 +94,17 @@ class ProfileSettings extends React.Component<Props, State> {
               onChange={(e) => this.setState({ lastName: e.target.value })}
             />
           </div>
+          <div className="input-wrapper">
+            <label htmlFor="edit-field-of-study-input">Field of study</label>
+            <div className="selectbox-wrapper" id="edit-field-of-study-input">
+              <Selectbox
+                options={studyFieldsOptions}
+                onChange={this.onOptionSelect}
+                preselected
+                preselectedWithValue={studyField}
+              />
+            </div>
+          </div>
           <button>
             Save changes
           </button>
@@ -84,10 +114,9 @@ class ProfileSettings extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => {
-  const { profile } = state.user;
-
-  return { profile };
-};
+const mapStateToProps = (state: ReduxState) => ({
+  profile: state.user.profile,
+  studyFields: studyFieldsSelectors.getStudyFields(state),
+});
 
 export default (connect(mapStateToProps)(ProfileSettings): React$ComponentType<{}>);

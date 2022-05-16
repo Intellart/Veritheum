@@ -1,0 +1,266 @@
+.minting-wizard {
+  background: #fff;
+  border: 1px solid #cfd9dd;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  max-width: 650px;
+  padding: 60px 60px 50px 60px;
+  width: calc(100% - 120px);
+
+  @media screen and (max-width: 767px) {
+    padding: 30px;
+    min-height: auto;
+    width: calc(100% - 60px);
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+
+    &.short {
+      flex: 0 !important;
+
+      @media screen and (max-width: 767px) {
+        display: none !important;
+      }
+    }
+
+    &.long {
+      flex: 1 !important;
+      margin: 0 !important
+    }
+  }
+
+  .steps-graphic-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-right: 60px;
+
+    .step {
+      align-items: center;
+      background: #cfd2d6;
+      border: 2px solid #cfd2d6;
+      border-radius: 50%;
+      color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      font-family: "SoraMedium";
+      font-size: 12px;
+      height: 40px;
+      justify-content: center;
+      margin-bottom: 12px;
+      position: relative;
+      transition: 0.3s;
+      width: 40px;
+
+      &::before {
+        background: #cfd2d6;
+        bottom: calc(100% + 2px);
+        content: "";
+        display: block;
+        height: 12px;
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+        transition: 0.2s;
+        width: 2px;
+      }
+
+      &:first-child {
+        &::before {
+          display: none;
+        }
+      }
+
+      &.done {
+        background: #16375c;
+        border: 2px solid #16375c;
+        color: rgba(255, 255, 255, 0.8);
+        transition: 0.2s;
+
+        &::before {
+          background: #16375c;
+        }
+      }
+
+      &.active {
+        background: #fff;
+        border: 2px solid #16375c;
+        color: #16375c;
+        transition: 0.2s;
+
+        &::before {
+          background: #16375c;
+        }
+      }
+    }
+  }
+
+  .step-counter {
+    font-size: 14px;
+    opacity: 0.5;
+
+    @media screen and (max-width: 767px) {
+      font-size: 12px;
+    }
+  }
+
+  .step-title {
+    color: #11273f;
+    font-family: "SoraBold";
+    font-size: 24px;
+    line-height: 1.4;
+    letter-spacing: -0.24px;
+    margin: 25px 0 20px;
+
+    @media screen and (max-width: 767px) {
+      font-size: 18px;
+      margin: 20px 0 15px;
+    }
+  }
+
+  .step-question {
+    font-size: 14px;
+    line-height: 1.5;
+
+    @media screen and (max-width: 767px) {
+      font-size: 12px;
+    }
+  }
+
+  .minting-wizard-content {
+    border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+    padding: 30px 0;
+
+    @media screen and (max-width: 767px) {
+      padding: 30px 0;
+    }
+
+    .radio-button {
+      margin-bottom: 8px;
+      position: relative;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &:hover input ~ .checkmark {
+        background-color: #fff;
+        transition: 0.3s;
+      }
+
+      input {
+        height: 100%;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+
+        &:checked ~ .checkmark {
+          border: 1px solid #16375b;
+          transition: 0.3s;
+
+          &:after {
+            display: block;
+          }
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .checkmark {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.54);
+        border-radius: 50%;
+        height: 14px;
+        left: 0;
+        position: absolute;
+        top: 3px;
+        transition: 0.3s;
+        width: 14px;
+
+        &:after {
+          background: #16375b;
+          border-radius: 50%;
+          content: "";
+          display: none;
+          height: 10px;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate3d(-50%, -50%, 0);
+          width: 10px;
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      label {
+        color: #11273f;
+        font-family: "SoraRegular";
+        font-size: 14px;
+        line-height: 1.45;
+        margin-bottom: 16px;
+        margin-left: 30px;
+      }
+    }
+  }
+
+  .minting-wizard-footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    button {
+      background: #16375b;
+      border: none;
+      border-radius: 4px;
+      box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      font-family: "SoraBold";
+      font-size: 14px;
+      justify-content: center;
+      min-width: 120px;
+      padding: 15px 25px;
+      text-align: center;
+      transition: background-color 0.3s;
+
+      &.hide {
+        pointer-events: none;
+        visibility: hidden;
+      }
+
+      &:hover {
+        background: #475b71;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      @media screen and (max-width: 767px) {
+        font-size: 12px;
+      }
+
+      @media screen and (max-width: 450px) {
+        min-width: 100px;
+        padding: 12px 20px;
+      }
+
+      &:disabled {
+        background: #cfd2d6;
+        cursor: default;
+      }
+    }
+  }
+}

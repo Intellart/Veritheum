@@ -1,398 +1,118 @@
 // @flow
-import type { ReduxActionWithPayload, ReduxState } from '../types';
+import {
+  values, keyBy, get,
+} from 'lodash';
+import * as API from '../api';
+import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 
-type Nft = {
-  id: number,
-  category_id: number,
-  tradeable: boolean,
-  nft_collection_id: number|null,
-  price: number,
-  author: string,
-  owner_id: number,
-  endorsers: string[]|null,
-  verified: boolean,
-  likes: string[]|null,
-  tags: string[]|null,
-  name: string,
-  description: string|null,
+export type LikePayload = {
+  fingerprint: string,
+  user_id: number,
 }
 
-const initialState: Nft[] = [
-  {
-    id: 1,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 13.36,
-    author: 'John Doe',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation',
-    description: null,
-  },
-  {
-    id: 2,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 20.12,
-    author: 'Mark Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces',
-    description: null,
-  },
-  {
-    id: 3,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 5.70,
-    author: 'Joe Hall',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Supramolecular strategies in artificial photosynthesis',
-    description: null,
-  },
-  {
-    id: 4,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 11.11,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Fermi surface transformation at the pseudogap critical point of a cuprate superconductor',
-    description: null,
-  },
-  {
-    id: 5,
-    category_id: 3,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 32.03,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'The Hitchhikers guide to biocatalysis: recent advances in the use of enzymes in organic synthesis',
-    description: null,
-  },
-  {
-    id: 6,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 10.50,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 7,
-    category_id: 2,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 4.34,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 8,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 19.38,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Design of molecular water oxidation catalysts with earth-abundant metal ions',
-    description: null,
-  },
-  {
-    id: 9,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 13.36,
-    author: 'John Doe',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation',
-    description: null,
-  },
-  {
-    id: 10,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 20.12,
-    author: 'Mark Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces',
-    description: null,
-  },
-  {
-    id: 11,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 5.70,
-    author: 'Joe Hall',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Supramolecular strategies in artificial photosynthesis',
-    description: null,
-  },
-  {
-    id: 12,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 11.11,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Fermi surface transformation at the pseudogap critical point of a cuprate superconductor',
-    description: null,
-  },
-  {
-    id: 13,
-    category_id: 3,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 32.03,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'The Hitchhikers guide to biocatalysis: recent advances in the use of enzymes in organic synthesis',
-    description: null,
-  },
-  {
-    id: 14,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 10.50,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 15,
-    category_id: 2,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 4.34,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 16,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 19.38,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Design of molecular water oxidation catalysts with earth-abundant metal ions',
-    description: null,
-  },
-  {
-    id: 17,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 13.36,
-    author: 'John Doe',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'CAMAP: Artificial neural networks unveil the role of codon arrangement in modulating MHC-I peptides presentation',
-    description: null,
-  },
-  {
-    id: 18,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 20.12,
-    author: 'Mark Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Enhanced four-wave mixing from multi-resonant silicon dimer-hole membrane metasurfaces',
-    description: null,
-  },
-  {
-    id: 19,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 5.70,
-    author: 'Joe Hall',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Supramolecular strategies in artificial photosynthesis',
-    description: null,
-  },
-  {
-    id: 20,
-    category_id: 2,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 11.11,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'Fermi surface transformation at the pseudogap critical point of a cuprate superconductor',
-    description: null,
-  },
-  {
-    id: 21,
-    category_id: 3,
-    tradeable: false,
-    nft_collection_id: null,
-    price: 32.03,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: false,
-    likes: null,
-    tags: null,
-    name: 'The Hitchhikers guide to biocatalysis: recent advances in the use of enzymes in organic synthesis',
-    description: null,
-  },
-  {
-    id: 22,
-    category_id: 1,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 10.50,
-    author: 'Jane Smith',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 23,
-    category_id: 2,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 4.34,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Effect of gut microbiota on depressive-like behaviors in mice is mediated by the endocannabinoid systems',
-    description: null,
-  },
-  {
-    id: 24,
-    category_id: 3,
-    tradeable: true,
-    nft_collection_id: null,
-    price: 19.38,
-    author: 'Bob Harrison',
-    owner_id: 1,
-    endorsers: null,
-    verified: true,
-    likes: null,
-    tags: null,
-    name: 'Design of molecular water oxidation catalysts with earth-abundant metal ions',
-    description: null,
-  },
-];
+export type NftLike = {
+  id: number,
+  user_id:number,
+  fingerprint:string,
+}
 
-export type State = Nft[];
+export type Nft = {
+  fingerprint: string,
+  tradeable: boolean,
+  price: string,
+  name: string,
+  description: string|null,
+  subject: string,
+  nft_collection: string|null,
+  category: string,
+  asset_name: string,
+  policy_id: string,
+  onchain_transaction: Object,
+  cardano_address: string,
+  tags: string[]|null,
+  likes: NftLike[],
+  endorsers: string[]|null,
+  owner: Object,
+  verified: boolean,
+}
 
-export const types: { ... } = {};
-
-export const selectors = {
-  getNfts: (state: ReduxState): State => state.nfts,
+export type State = {
+  [string]: Nft
 };
 
-export const actions: { ... } = {};
+export const types = {
+  NFT_FETCH_NFTS: 'NFT/FETCH_NFTS',
+  NFT_FETCH_NFTS_PENDING: 'NFT/FETCH_NFTS_PENDING',
+  NFT_FETCH_NFTS_REJECTED: 'NFT/FETCH_NFTS_REJECTED',
+  NFT_FETCH_NFTS_FULFILLED: 'NFT/FETCH_NFTS_FULFILLED',
+
+  NFT_CREATE_NFT: 'NFT/CREATE_NFT',
+  NFT_CREATE_NFT_PENDING: 'NFT/CREATE_NFT_PENDING',
+  NFT_CREATE_NFT_REJECTED: 'NFT/CREATE_NFT_REJECTED',
+  NFT_CREATE_NFT_FULFILLED: 'NFT/CREATE_NFT_FULFILLED',
+
+  NFT_LIKE_NFT: 'NFT/LIKE_NFT',
+  NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
+  NFT_LIKE_NFT_REJECTED: 'NFT/LIKE_NFT_REJECTED',
+  NFT_LIKE_NFT_FULFILLED: 'NFT/LIKE_NFT_FULFILLED',
+
+  NFT_DISLIKE_NFT: 'NFT/DISLIKE_NFT',
+  NFT_DISLIKE_NFT_PENDING: 'NFT/DISLIKE_NFT_PENDING',
+  NFT_DISLIKE_NFT_REJECTED: 'NFT/DISLIKE_NFT_REJECTED',
+  NFT_DISLIKE_NFT_FULFILLED: 'NFT/DISLIKE_NFT_FULFILLED',
+};
+
+export const selectors = {
+  getNfts: (state: ReduxState): Nft[] => values(state.nfts),
+};
+
+export const actions = {
+  fetchNfts: (): ReduxAction => ({
+    type: types.NFT_FETCH_NFTS,
+    payload: API.getRequest('nfts'),
+  }),
+  createNft: (payload: Object): ReduxAction => ({
+    type: types.NFT_CREATE_NFT,
+    payload: API.postRequest('nfts', { nft: payload }),
+  }),
+  likeNft: (payload: LikePayload): ReduxAction => ({
+    type: types.NFT_LIKE_NFT,
+    payload: API.postRequest('nft_likes', { like: payload }),
+  }),
+  dislikeNft: (id: number): ReduxAction => ({
+    type: types.NFT_DISLIKE_NFT,
+    payload: API.deleteRequest(`nft_likes/${id}`),
+  }),
+};
+
+const handleLikeResponse = (state: State, payload: Object): State => {
+  const nft: ?Nft = get(state, payload.fingerprint);
+  if (!nft) return state;
+
+  return { ...state, [payload.fingerprint]: payload };
+};
+
+const handleDislikeResponse = (state: State, payload: Object): State => {
+  const nft: ?Nft = get(state, payload.fingerprint);
+  if (!nft) return state;
+
+  return { ...state, [payload.fingerprint]: payload };
+};
 
 // eslint-disable-next-line default-param-last
-export const reducer = (state: State = initialState, action: ReduxActionWithPayload): State => {
+export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
+    case types.NFT_FETCH_NFTS_FULFILLED:
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
+
+    case types.NFT_CREATE_NFT_FULFILLED:
+      return state;
+
+    case types.NFT_LIKE_NFT_FULFILLED:
+      return handleLikeResponse(state, action.payload);
+    case types.NFT_DISLIKE_NFT_FULFILLED:
+      return handleDislikeResponse(state, action.payload);
+
     default:
       return state || {};
   }

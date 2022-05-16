@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
   get, has, isEmpty, omit,
 } from 'lodash';
-import { toast } from 'react-toastify';
 import { isDevelopment } from '../utils';
 import { getItem, setItem } from '../localStorage';
 import { store } from '../store';
@@ -29,12 +28,7 @@ apiClient.interceptors.request.use((config) => {
   }
 
   return config;
-}, (error) => {
-  toast.error(get(error, 'response.statusText', 'Error...'));
-
-  return error;
-},
-);
+});
 
 apiClient.interceptors.response.use((response) => {
   if (has(response, 'data._jwt')) {
@@ -52,9 +46,6 @@ apiClient.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   if (get(error, 'response.status') === 401) store.dispatch(actions.clearUser());
-  toast.error(get(error, 'response.statusText', 'Error...'));
-
-  return error;
 },
 );
 

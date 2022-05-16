@@ -23,7 +23,7 @@ class NotFound extends React.Component {
           <div className="not-found-content">
             <h2>404</h2>
             <h3>Page not found</h3>
-            <p>The page you requested could not be found.<br />Let's get you back on track!</p>
+            <p>The page you requested could not be found.<br />Let&apos;s get you back on track!</p>
             <Link to="/">Return Home</Link>
           </div>
           {graphics}

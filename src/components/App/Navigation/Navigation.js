@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MdMenu, MdClose } from 'react-icons/md';
 import Logo from '../../../assets/logo/veritheum_logo.svg';
 import MinimizedLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
@@ -37,13 +36,9 @@ class Navigation extends React.Component<Props, State> {
 
     const html = document.querySelector('html');
     if (mobileMenuOpen) {
-      if (html) {
-        html.classList.add('no-scroll');
-      }
+      html?.classList.add('no-scroll');
     } else {
-      if (html) {
-        html.classList.remove('no-scroll');
-      }
+      html?.classList.remove('no-scroll');
     }
 
     return (

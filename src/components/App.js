@@ -20,14 +20,18 @@ import CookiePolicy from './App/Pages/CookiePolicy';
 import PrivacyPolicy from './App/Pages/PrivacyPolicy';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import ScrollToTop from './App/ScrollToTop/ScrollToTop';
-import { selectors } from '../store/userStore';
+import Loader from './App/Loader/Loader';
+import { selectors as userSelectors } from '../store/userStore';
+import { selectors as globalSelectors } from '../store/globalStore';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function App(): Node {
-  const isAuthorized: boolean = useSelector((state) => !isEmpty(selectors.getUser(state)), isEqual);
+  const isAuthorized: boolean = useSelector((state) => !isEmpty(userSelectors.getUser(state)), isEqual);
+  const isLoading = useSelector(globalSelectors.checkIsLoading, isEqual);
 
   return (
     <Router>
+      {isLoading && <Loader />}
       <ToastContainer
         closeOnClick
         newestOnTop={false}
@@ -42,7 +46,7 @@ function App(): Node {
           <Route exact path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/minting-page" element={<MintingPage />} />
+          {isAuthorized && <Route path="/minting-page" element={<MintingPage />} />}
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
