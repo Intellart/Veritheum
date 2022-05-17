@@ -28,7 +28,7 @@ apiClient.interceptors.request.use((config) => {
   }
 
   return config;
-});
+}, (error) => Promise.reject(error));
 
 apiClient.interceptors.response.use((response) => {
   if (has(response, 'data._jwt')) {
@@ -46,6 +46,8 @@ apiClient.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   if (get(error, 'response.status') === 401) store.dispatch(actions.clearUser());
+
+  return Promise.reject(error);
 },
 );
 

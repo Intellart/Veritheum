@@ -7,9 +7,10 @@ import { isEmpty } from 'lodash';
 import { store } from './store';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import { setItem } from './localStorage';
+import { getItem, setItem } from './localStorage';
 import { actions as categoryActions } from './store/categoriesStore';
 import { actions as nftActions } from './store/nftStore';
+import { actions as userActions } from './store/userStore';
 import './index.css';
 
 store.subscribe(() => {
@@ -17,6 +18,8 @@ store.subscribe(() => {
   if (!isEmpty(user)) setItem('user', JSON.stringify(user));
 });
 
+const _jwt = getItem('_jwt');
+if (!isEmpty(_jwt) && _jwt) store.dispatch(userActions.validateUser(_jwt));
 store.dispatch(categoryActions.getCategories());
 store.dispatch(nftActions.fetchNfts());
 

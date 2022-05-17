@@ -110,6 +110,11 @@ export const types = {
 
   USR_CLEAR_USER: 'USR/CLEAR_USER',
 
+  USR_VALIDATE_USER: 'USR/VALIDATE_USER',
+  USR_VALIDATE_USER_PENDING: 'USR/VALIDATE_USER_PENDING',
+  USR_VALIDATE_USER_REJECTED: 'USR/VALIDATE_USER_REJECTED',
+  USR_VALIDATE_USER_FULFILLED: 'USR/VALIDATE_USER_FULFILLED',
+
   USR_FETCH_NFTS: 'USR/FETCH_NFTS',
   USR_FETCH_NFTS_PENDING: 'USR/FETCH_NFTS_PENDING',
   USR_FETCH_NFTS_REJECTED: 'USR/FETCH_NFTS_REJECTED',
@@ -149,6 +154,10 @@ export const actions = {
   }),
   clearUser: (): ReduxAction => ({
     type: types.USR_CLEAR_USER,
+  }),
+  validateUser: (jwt: string): ReduxAction => ({
+    type: types.USR_VALIDATE_USER,
+    payload: API.postRequest('auth/validate_jwt', { jwt }),
   }),
   fetchUserNfts: (endpoint: string, params: QueryParam[]|string[]): ReduxAction => ({
     type: types.USR_FETCH_NFTS,
