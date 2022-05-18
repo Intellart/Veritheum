@@ -1,12 +1,16 @@
+// @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { some, isEmpty } from 'lodash';
+import {
+  some, isEmpty, map, find, get,
+} from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import NftItem from '../NftItem/NftItem';
 import FileUpload from '../FileUpload/FileUpload';
 import MintingWizard from '../MintingWizard/MintingWizard';
 import Selectbox from '../Selectbox/Selectbox';
 import { actions as nftActions } from '../../../store/nftStore';
-import { Category } from '../../../store/categoriesStore';
+import type { Category } from '../../../store/categoriesStore';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import './MintingPage.scss';
@@ -24,12 +28,16 @@ type State = {
   mintingProcessStarted: boolean,
 }
 
-type Props = {
+type Props = {}
+
+type ReduxProps = {
+  ...Props,
+  dispatch: Function,
   profile: ProfileType,
   categories: Array<Category>
 }
 
-class MintingPage extends React.Component<Props, State> {
+class MintingPage extends React.Component<ReduxProps, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,7 +68,7 @@ class MintingPage extends React.Component<Props, State> {
   };
 
   onCategorySelect = (value) => {
-    const categoryText = this.props.categories.find(category => category.id === value)?.category_name;
+    const categoryText = find(this.props.categories, ['id', value])?.category_name;
     this.setState({
       categoryId: value,
       categoryText,
@@ -72,19 +80,22 @@ class MintingPage extends React.Component<Props, State> {
       tradeable, price, name, description, categoryId,
     } = this.state;
 
-    /*  this.props.dispatch(nftActions.createNft({
+    const randomID = (): string => uuidv4();
+
+    this.props.dispatch(nftActions.createNft({
       tradeable,
       price,
       name,
       description,
+      subject: name,
       category_id: categoryId,
       owner_id: this.props.profile.id,
-      fingerprint: 'fingerprint-example',
-      policy_id: '8001dede26bb7cbbe4ee5eae6568e763422e0a3c776b3f70878b03f1',
       onchain_transaction_id: 1,
-      asset_name: 'lion00024',
-      // TODO
-    })); */
+      cardano_address_id: get(this.props.profile, 'wallets[0]cardano_addresses[0]id'),
+      fingerprint: randomID(),
+      policy_id: randomID(),
+      asset_name: randomID(),
+    }));
 
     this.setState({ mintingProcessStarted: true });
   };
@@ -101,25 +112,18 @@ class MintingPage extends React.Component<Props, State> {
       },
     ];
 
-    const categoryOptions = this.props.categories.length > 0 && this.props.categories.map((category) => ({
+    const categoryOptions = map(this.props.categories, (category) => ({
       value: category.id,
       text: category.category_name,
     }));
 
     const {
-      // eslint-disable-next-line no-unused-vars
-      tradeable, owner, file, paperContent, name, description, categoryText, price,
-      mintingProcessStarted,
+      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted,
     } = this.state;
 
-    let fileUploaded;
-    if (file && file.name.length) {
-      fileUploaded = true;
-    } else {
-      fileUploaded = false;
-    }
+    const fileUploaded = !isEmpty(file?.name);
 
-    const disabled = tradeable ? (fileUploaded === false || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
+    const disabled = tradeable ? (!fileUploaded || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
 
     return (
       <div className="minting-page">
@@ -225,6 +229,17 @@ class MintingPage extends React.Component<Props, State> {
                       category: categoryText,
                       price,
                       owner,
+                      asset_name: '',
+                      cardano_address: '',
+                      description: '',
+                      policy_id: '',
+                      subject: '',
+                      endorsers: [],
+                      tags: [],
+                      likes: [],
+                      nft_collection: '',
+                      onchain_transaction: 0,
+                      verified: false,
                     }
                   }
                 />
@@ -242,4 +257,4 @@ const mapStateToProps = (state: ReduxState) => ({
   categories: state.categories,
 });
 
-export default (connect(mapStateToProps)(MintingPage): React$ComponentType<{}>);
+export default (connect<ReduxProps, Props>(mapStateToProps)(MintingPage): React$ComponentType<Props>);

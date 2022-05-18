@@ -5,6 +5,22 @@ import {
 import * as API from '../api';
 import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 
+export type CreatePayload = {
+  fingerprint: string,
+  tradeable: boolean,
+  price: ?string|number,
+  name: string,
+  description: string,
+  subject: string,
+  owner_id: number,
+  nft_collection_id?: number,
+  category_id: ?number,
+  asset_name: string,
+  policy_id: string,
+  onchain_transaction_id: number,
+  cardano_address_id: number,
+}
+
 export type LikePayload = {
   fingerprint: string,
   user_id: number,
@@ -19,7 +35,7 @@ export type NftLike = {
 export type Nft = {
   fingerprint: string,
   tradeable: boolean,
-  price: string,
+  price: ?string|number,
   name: string,
   description: string|null,
   subject: string,
@@ -71,7 +87,7 @@ export const actions = {
     type: types.NFT_FETCH_NFTS,
     payload: API.getRequest('nfts'),
   }),
-  createNft: (payload: Object): ReduxAction => ({
+  createNft: (payload: CreatePayload): ReduxAction => ({
     type: types.NFT_CREATE_NFT,
     payload: API.postRequest('nfts', { nft: payload }),
   }),
@@ -106,7 +122,7 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_CREATE_NFT_FULFILLED:
-      return state;
+      return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_LIKE_NFT_FULFILLED:
       return handleLikeResponse(state, action.payload);

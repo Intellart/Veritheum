@@ -220,6 +220,9 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.USR_FETCH_NFTS_FULFILLED:
       return { ...state, ...{ userNfts: { ...state.userNfts, ...keyBy(action.payload, 'fingerprint') } } };
 
+    case nftTypes.NFT_CREATE_NFT_FULFILLED:
+      return { ...state, ...{ userNfts: { ...state.userNfts, ...keyBy([action.payload], 'fingerprint') } } };
+
     case nftTypes.NFT_LIKE_NFT_FULFILLED:
       return handleLikeResponse(state, action.payload);
     case nftTypes.NFT_DISLIKE_NFT_FULFILLED:
