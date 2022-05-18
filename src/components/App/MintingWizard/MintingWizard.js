@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Selectbox from '../Selectbox/Selectbox';
 import './MintingWizard.scss';
 
@@ -205,6 +206,7 @@ class MintingWizard extends React.Component<{}, State> {
           <div className="minting-wizard-footer">
             <button className={stepNumber === 1 ? 'hide' : ''} onClick={this.previousStep}>Back</button>
             {stepNumber < 3 && <button onClick={this.nextStep}>Next</button>}
+            {stepNumber === 3 && <Link to="/profile">Finish</Link>}
           </div>
         </div>
       </div>
