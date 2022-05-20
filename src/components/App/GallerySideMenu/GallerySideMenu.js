@@ -12,6 +12,7 @@ type Props = {
   filterNftsByPrice: Function,
   initialMinPrice: number,
   initialMaxPrice: number,
+  clearFilters: Function,
 }
 
 class GallerySideMenu extends React.Component<Props, State> {
@@ -34,7 +35,7 @@ class GallerySideMenu extends React.Component<Props, State> {
     const { menuClosed } = this.state;
     const {
       filterNftsByCategory, filterNftsByPrice, initialMinPrice,
-      initialMaxPrice,
+      initialMaxPrice, clearFilters,
     } = this.props;
 
     return (
@@ -48,7 +49,7 @@ class GallerySideMenu extends React.Component<Props, State> {
           </div>
         </div>
         <div className="mobile-options-wrapper">
-          <div className="clear-filters">
+          <div className="clear-filters" onClick={clearFilters}>
             Clear
           </div>
           <div className="toggle-menu" onClick={this.closeMobileMenu}>

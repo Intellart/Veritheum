@@ -117,7 +117,7 @@ class Signin extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className="forgot-password-wrapper">
-                    <Link to="/">Forgot password?</Link>
+                    <Link to="/forgot-password">Forgot password?</Link>
                   </div>
                   <button onClick={() => this.loginUser()} disabled={some([email, password], isEmpty)}>
                     Login

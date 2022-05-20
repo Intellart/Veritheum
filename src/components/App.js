@@ -12,6 +12,7 @@ import Gallery from './App/Pages/Gallery';
 import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
+import ForgotPassword from './App/Pages/ForgotPassword';
 import Profile from './App/Pages/Profile';
 import ProfileSettings from './App/Pages/ProfileSettings/ProfileSettings';
 import MintingPage from './App/Pages/MintingPage';
@@ -46,6 +47,7 @@ function App(): Node {
           <Route exact path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           {isAuthorized && <Route path="/minting-page" element={<MintingPage />} />}
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
