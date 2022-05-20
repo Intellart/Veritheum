@@ -130,6 +130,10 @@ class GalleryContent extends React.Component<ReduxProps, State> {
     });
   };
 
+  clearFilters = () => {
+    window.location.reload();
+  };
+
   render () {
     const { isProfile } = this.props;
     const {
@@ -170,6 +174,7 @@ class GalleryContent extends React.Component<ReduxProps, State> {
           filterNftsByPrice={this.filterNftsByPrice}
           initialMinPrice={initialMinPrice}
           initialMaxPrice={initialMaxPrice}
+          clearFilters={this.clearFilters}
         />
         <div className={isProfile ? 'profile-content-area' : 'gallery-content-area'}>
           <GalleryFilters

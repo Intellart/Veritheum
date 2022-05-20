@@ -1,5 +1,6 @@
 .signin-page,
-.register-page {
+.register-page,
+.forgot-password-page {
   align-items: center;
   display: flex;
   flex: 1;
@@ -621,6 +622,44 @@
             transform: translateY(0px);
           }
         }
+      }
+    }
+  }
+}
+
+.forgot-password-page {
+  .content-wrapper {
+    .column {
+      &:first-child {
+        @media screen and (max-width: 767px) {
+          display: flex !important;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .form-wrapper {
+    margin: 0 auto;
+    max-width: 600px;
+
+    .form-header {
+      margin-bottom: 16px !important;
+    }
+
+    .form-subheader {
+      color: #11273f;
+      display: flex;
+      font-size: 14px;
+      justify-content: center;
+      line-height: 1.4;
+      margin: 0 auto 30px;
+      max-width: 400px;
+      text-align: center;
+
+      @media screen and (max-width: 767px) {
+        font-size: 12px;
+        max-width: 300px;
       }
     }
   }
