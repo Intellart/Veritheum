@@ -13,6 +13,7 @@ import { reducer as userStoreReducer, types as userStoreTypes } from './userStor
 import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
 import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
 import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
+import { reducer as exchangeRatesStoreReducer } from './exchangeRatesStore';
 import { getItem } from '../localStorage';
 import Error from '../components/App/Errors/Errors';
 import type {
@@ -141,6 +142,7 @@ export const configureStore = (
       nfts: nftStoreReducer,
       categories: categoryStoreReducer,
       studyFields: studyFieldStoreReducer,
+      exchangeRates: exchangeRatesStoreReducer,
     }),
     initialState,
     middlewareApplier,

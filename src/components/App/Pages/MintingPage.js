@@ -75,7 +75,9 @@ class MintingPage extends React.Component<ReduxProps, State> {
     });
   };
 
-  createNft = () => {
+  createNft = (e) => {
+    e.preventDefault();
+
     const {
       tradeable, price, name, description, categoryId,
     } = this.state;
@@ -136,7 +138,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
           ) : (
             <div className="row">
               <div className="column">
-                <form onSubmit={(e) => e.preventDefault()}>
+                <form onSubmit={(e) => this.createNft(e)}>
                   <div className="input-wrapper">
                     <label htmlFor="minting-nft-type-selectbox">Type</label>
                     <Selectbox
@@ -211,7 +213,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       />
                     </div>
                   )}
-                  <button onClick={this.createNft} disabled={disabled}>
+                  <button disabled={disabled}>
                     Start minting process
                   </button>
                 </form>

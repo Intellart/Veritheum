@@ -5,12 +5,16 @@ import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import FormLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import './session_pages.scss';
 
-class ForgotPassword extends React.Component<> {
+type State = {
+  email: string,
+}
+
+class ForgotPassword extends React.Component<{}, State> {
   constructor() {
     super();
     this.state = {
       email: '',
-    }
+    };
   }
 
   render () {
@@ -67,4 +71,4 @@ class ForgotPassword extends React.Component<> {
   }
 }
 
-export default ForgotPassword;
+export default (ForgotPassword: React$ComponentType<{}>);
