@@ -6,6 +6,7 @@ import {
 } from 'lodash';
 import type { Nft } from '../store/nftStore';
 import type { Profile } from '../store/userStore';
+import type { State } from '../store/exchangeRatesStore';
 
 export const formatDate = (date: Date|string|number): string|null => {
   if (!date) return null;
@@ -68,3 +69,5 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
 };
 
 export const findNftLike = (nft: Nft, userId: ?number): ?Object => find(nft.likes, ['user_id', userId]);
+
+export const calcExchangeRate = (exchangeRates: State, coin: number, currency?: 'usd'|'cad'|'eur'|'gbp' = 'usd'): number => exchangeRates[currency] * coin;

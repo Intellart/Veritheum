@@ -2,6 +2,7 @@
 import { every, values, merge } from 'lodash';
 import { types as nftTypes } from './nftStore';
 import { types as categoriesTypes } from './categoriesStore';
+import { types as exchangeRatesTypes } from './exchangeRatesStore';
 import type { ReduxState, ReduxActionWithPayload } from '../types';
 
 type Loading = {
@@ -35,10 +36,12 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
   switch (action.type) {
     case nftTypes.NFT_FETCH_NFTS_FULFILLED:
     case categoriesTypes.CATEGORY_GET_CATEGORIES_FULFILLED:
+    case exchangeRatesTypes.ER_GET_RATES_FULFILLED:
       return updateLoading(state, action.type, 'DONE');
 
     case nftTypes.NFT_FETCH_NFTS_REJECTED:
     case categoriesTypes.CATEGORY_GET_CATEGORIES_REJECTED:
+    case exchangeRatesTypes.ER_GET_RATES_REJECTED:
       return updateLoading(state, action.type, 'FAIL');
 
     default:

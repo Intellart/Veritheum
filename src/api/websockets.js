@@ -1,85 +1,73 @@
 // @flow
 import React from 'react';
-import {
-  get, isEmpty, has, forEach,
-} from 'lodash';
+import { get, isEmpty } from 'lodash';
+import { secondsToMilliseconds } from 'date-fns';
 import { toast } from 'react-toastify';
 import Error from '../components/App/Errors/Errors';
 import { isDevelopment } from '../utils';
+import { actions } from '../store/webSocketsStore';
 
-export type Message = {
-  type: string,
-  data: any,
-};
+export const retrySecondsDelay = 10;
 
-const baseURL: string = isDevelopment ? 'ws://localhost:' + get(process.env, 'REACT_APP_LOCAL_API_PORT', '3000') : get(process.env, 'REACT_APP_WS_URL', '');
+export const baseURL: string = isDevelopment ? 'ws://localhost:' + get(process.env, 'REACT_APP_LOCAL_API_PORT', '3000') : get(process.env, 'REACT_APP_WS_URL', '');
 
-export const types = {
-  WS_SUBSCRIBE_PENDING: 'WS/SUBSCRIBE_PENDING',
-  WS_SUBSCRIBE_FULFILED: 'WS/SUBSCRIBE_FULFILED',
-  WS_SUBSCRIBE_REJECTED: 'WS/SUBSCRIBE_REJECTED',
-  WS_CONNECTION_CLOSED: 'WS/CONNECTION_CLOSED',
-  WS_UPDATE: 'WS/UPDATE',
-};
-
-function initWebSockets(dispatch: Function) {
-  const webSocket = new WebSocket(baseURL + '/cable');
+function initWebSockets(webSocket: WebSocket, dispatch: Function, timeoutID?: Object) {
+  let timeOutID = clearTimeout(timeoutID);
+  const socketChannel = 'GeneralChannel';
 
   webSocket.onopen = () => {
-    dispatch({
-      type: types.WS_SUBSCRIBE_PENDING,
-    });
-
     const subscribeMessage = {
       command: 'subscribe',
       identifier: JSON.stringify({
-        channel: 'GeneralChannel',
+        channel: socketChannel,
       }),
     };
 
     webSocket.send(JSON.stringify(subscribeMessage));
+    dispatch(actions.handleConnecting({
+      statusCode: webSocket.readyState,
+    }));
   };
 
   webSocket.onerror = (error) => {
-    dispatch({
-      type: types.WS_SUBSCRIBE_REJECTED,
-      payload: error,
-    });
+    toast.error(<Error
+      error={{
+        status: 500,
+        title: 'Websocket error',
+        detail: 'Websockets has disconected unexpectedly',
+      }}
+      isObject
+    />);
 
-    const errors = get(error, 'response.data.errors');
-    const isObject = has(errors, '[0].title');
-    if (isObject) {
-      forEach(errors, (err) => toast.error(<Error error={err} isObject={isObject} />));
-    } else {
-      toast.error(<Error error={error} isObject={isObject} />);
-    }
+    dispatch(actions.handleError({
+      statusCode: webSocket.readyState,
+      lastError: error,
+    }));
 
-    initWebSockets(dispatch);
+    timeOutID = setTimeout(() => {
+      const newWebSocket = new WebSocket(baseURL + '/cable');
+      initWebSockets(newWebSocket, dispatch, timeOutID);
+    }, secondsToMilliseconds(retrySecondsDelay));
   };
 
-  webSocket.onclose = () => {
-    dispatch({
-      type: types.WS_CONNECTION_CLOSED,
-    });
-
-    initWebSockets(dispatch);
-  };
+  webSocket.onclose = () => dispatch(actions.handleClose({
+    statusCode: webSocket.readyState,
+  }));
 
   webSocket.onmessage = (event: Object) => {
     const incomingMessage = JSON.parse(event.data);
 
     if (incomingMessage.type === 'ping') return;
     if (incomingMessage.type === 'welcome') {
-      dispatch({
-        type: types.WS_SUBSCRIBE_FULFILED,
-      });
+      dispatch(actions.handleConnected({
+        statusCode: webSocket.readyState,
+        connectedTo: webSocket.url,
+        channel: socketChannel,
+      }));
     }
 
     if (!isEmpty(incomingMessage.message, 'data')) {
-      dispatch({
-        type: types.WS_UPDATE,
-        payload: incomingMessage.message,
-      });
+      dispatch(actions.handleMessage(incomingMessage.message));
     }
   };
 }
