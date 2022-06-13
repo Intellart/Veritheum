@@ -44,7 +44,7 @@ function App(): Node {
       <Navigation isAuthorized={isAuthorized} />
       <div className="main-content">
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -54,6 +54,7 @@ function App(): Node {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
           {isAuthorized && <Route path="/profile" element={<Profile />} />}
+          <Route path="/profile/:id" element={<Profile />} />
           {isAuthorized && <Route path="/settings" element={<ProfileSettings />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
         </Routes>

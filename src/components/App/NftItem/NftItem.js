@@ -2,6 +2,7 @@
 import React from 'react';
 import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from 'react-icons/io5';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import User from '../../../assets/icons/user.svg';
 import { actions } from '../../../store/nftStore';
@@ -122,12 +123,12 @@ class NftItem extends React.Component<ReduxProps> {
                     <div className="info-label">
                       Author
                     </div>
-                    <div className="author">
+                    <Link to={`/profile/${owner.id}`} className="author">
                       <div className="author-image">
                         <img src={User} alt="User" />
                       </div>
                       {owner.full_name}
-                    </div>
+                    </Link>
                   </div>
                 </>
               ) : (
