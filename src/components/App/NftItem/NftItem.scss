@@ -180,6 +180,13 @@
           font-size: 12px;
           line-height: 1.4;
           text-align: right;
+          text-decoration: none;
+          transition: 0.3s;
+
+          &:hover {
+            opacity: 0.8;
+            transition: 0.3s;
+          }
 
           @media screen and (max-width: 800px) {
             font-size: 10px;
