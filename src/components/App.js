@@ -53,7 +53,7 @@ function App(): Node {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
-          <Route path="/profile" element={<Profile />} />
+          {isAuthorized && <Route path="/profile" element={<Profile />} />}
           <Route path="/profile/:id" element={<Profile />} />
           {isAuthorized && <Route path="/settings" element={<ProfileSettings />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
