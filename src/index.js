@@ -11,6 +11,7 @@ import { getItem, setItem } from './localStorage';
 import { actions as categoryActions } from './store/categoriesStore';
 import { actions as nftActions } from './store/nftStore';
 import { actions as userActions } from './store/userStore';
+import { actions as exchangeRatesActions } from './store/exchangeRatesStore';
 import './index.css';
 
 store.subscribe(() => {
@@ -22,6 +23,7 @@ const _jwt = getItem('_jwt');
 if (!isEmpty(_jwt) && _jwt) store.dispatch(userActions.validateUser(_jwt));
 store.dispatch(categoryActions.getCategories());
 store.dispatch(nftActions.fetchNfts());
+store.dispatch(exchangeRatesActions.getRates());
 
 ReactDOM.render(
   <React.StrictMode>

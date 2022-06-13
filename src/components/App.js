@@ -22,6 +22,7 @@ import PrivacyPolicy from './App/Pages/PrivacyPolicy';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import ScrollToTop from './App/ScrollToTop/ScrollToTop';
 import Loader from './App/Loader/Loader';
+import WebSocketElement from './App/WebSocket/WebSocketElement';
 import { selectors as userSelectors } from '../store/userStore';
 import { selectors as globalSelectors } from '../store/globalStore';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -33,6 +34,7 @@ function App(): Node {
   return (
     <Router>
       {isLoading && <Loader />}
+      <WebSocketElement />
       <ToastContainer
         closeOnClick
         newestOnTop={false}

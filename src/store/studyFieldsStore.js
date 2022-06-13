@@ -1,6 +1,5 @@
 // @flow
 import * as API from '../api';
-// eslint-disable-next-line no-unused-vars
 import type { ReduxAction, ReduxState, ReduxActionWithPayload } from '../types';
 
 export type StudyField = {

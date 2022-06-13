@@ -6,8 +6,10 @@ import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import User from '../../../assets/icons/user.svg';
 import { actions } from '../../../store/nftStore';
-import { findNftLike } from '../../../utils';
+import { calcExchangeRate, findNftLike } from '../../../utils';
+import { selectors as exchangeRatesSelectors } from '../../../store/exchangeRatesStore';
 import type { Nft, NftLike } from '../../../store/nftStore';
+import type { State as ExchangeRates } from '../../../store/exchangeRatesStore';
 import type { ReduxState } from '../../../types';
 import './NftItem.scss';
 
@@ -20,6 +22,7 @@ type ReduxProps = {
   ...Props,
   dispatch: Function,
   userId: ?number,
+  exchangeRates: ExchangeRates,
 }
 
 class NftItem extends React.Component<ReduxProps> {
@@ -41,7 +44,9 @@ class NftItem extends React.Component<ReduxProps> {
   };
 
   render () {
-    const { data, trending, userId } = this.props;
+    const {
+      data, trending, userId, exchangeRates,
+    } = this.props;
     const {
       tradeable, category, name, verified, owner, price,
     } = data;
@@ -115,7 +120,7 @@ class NftItem extends React.Component<ReduxProps> {
                     <div className="price-info">
                       {price} ADA
                       <div className="to-dollars">
-                        ≈ $ 12.75
+                        ≈ $ {calcExchangeRate(exchangeRates, Number(price), 'usd')}
                       </div>
                     </div>
                   </div>
@@ -169,6 +174,7 @@ class NftItem extends React.Component<ReduxProps> {
 
 const mapStateToProps = (state: ReduxState) => ({
   userId: get(state, 'user.profile.id'),
+  exchangeRates: exchangeRatesSelectors.getExchangeRates(state),
 });
 
 export default (connect<ReduxProps, Props>(mapStateToProps)(NftItem): React$ComponentType<Props>);

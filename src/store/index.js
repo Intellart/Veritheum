@@ -13,6 +13,8 @@ import { reducer as userStoreReducer, types as userStoreTypes } from './userStor
 import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
 import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
 import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
+import { reducer as exchangeRatesStoreReducer, types as exchangeRatesTypes } from './exchangeRatesStore';
+import { reducer as webSocketsStoreReducer } from './webSocketsStore';
 import { getItem } from '../localStorage';
 import Error from '../components/App/Errors/Errors';
 import type {
@@ -141,6 +143,8 @@ export const configureStore = (
       nfts: nftStoreReducer,
       categories: categoryStoreReducer,
       studyFields: studyFieldStoreReducer,
+      exchangeRates: exchangeRatesStoreReducer,
+      webSockets: webSocketsStoreReducer,
     }),
     initialState,
     middlewareApplier,
@@ -159,6 +163,7 @@ const initialReduxState: Object = {
     loading: {
       [nftStoreTypes.NFT_FETCH_NFTS]: 'PENDING',
       [categoriesStoreTypes.CATEGORY_GET_CATEGORIES]: 'PENDING',
+      [exchangeRatesTypes.ER_GET_RATES]: 'PENDING',
     },
   },
 };
