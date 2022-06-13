@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, isEqual, map } from 'lodash';
 import { VscGlobe } from 'react-icons/vsc';
 import {
   MdCollectionsBookmark, MdEdit,
@@ -10,6 +10,7 @@ import {
 import { IoLogoTwitter, IoSettings, IoHeart } from 'react-icons/io5';
 import { FaDiscord } from 'react-icons/fa';
 import GalleryContent from '../GalleryContent/GalleryContent';
+import Loader from '../Loader/Loader';
 import { formatDate, getAllUserWalletAddresses } from '../../../utils';
 import { actions, selectors } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
@@ -21,25 +22,84 @@ import type { ReduxState } from '../../../types';
 import './Profile.scss';
 
 type Props = {
-  profile: ProfileType,
-  userNfts: Nft[],
+  profile: ?ProfileType,
+  userNfts: ?Nft[],
   dispatch: Function,
 }
 
-class Profile extends React.Component<Props> {
+type State = {
+  isFetchingNfts: boolean,
+}
+
+class Profile extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isFetchingNfts: false,
+    };
+  }
+
   componentDidMount() {
-    if (isEmpty(this.props.userNfts)) {
+    const userId = window.location.pathname.replace('/profile/', '');
+
+    if (userId !== '/profile' && isEmpty(this.props.profile)) {
+      this.props.dispatch(actions.fetchUserById(userId));
+
+      return;
+    }
+
+    if (userId === '/profile' && isEmpty(this.props.userNfts) && this.props.profile) {
       const addressIDs = getAllUserWalletAddresses(this.props.profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
         { key: 'match_any', query: 'true' },
+        // $FlowFixMe
         { key: 'owner_id', query: String(this.props.profile.id) },
         ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
+        // $FlowFixMe
         { key: 'user_id', query: String(this.props.profile.id) },
       ];
       this.props.dispatch(actions.fetchUserNfts('nfts', nftsQuery));
       this.props.dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const userId = window.location.pathname.replace('/profile/', '');
+    const isSameSelectedUser = isEqual(this.props.profile, prevProps.profile) || Number(userId) === this.props.profile?.id;
+    const shouldFetchNfts = !this.state.isFetchingNfts && userId !== '/profile' && isSameSelectedUser && isEmpty(this.props.userNfts);
+
+    if (userId !== '/profile' && !isSameSelectedUser) {
+      this.props.dispatch(actions.fetchUserById(userId));
+
+      return;
+    }
+
+    if (shouldFetchNfts && this.props.profile) {
+      const addressIDs = getAllUserWalletAddresses(this.props.profile.wallets, 'id');
+      const nftsQuery: QueryParam[] = [
+        { key: 'match_any', query: 'true' },
+        // $FlowFixMe
+        { key: 'owner_id', query: String(this.props.profile.id) },
+        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
+      ];
+      const likesQuery: QueryParam[] = [
+        // $FlowFixMe
+        { key: 'user_id', query: String(this.props.profile.id) },
+      ];
+      this.props.dispatch(actions.fetchUserNfts('nfts', nftsQuery));
+      this.props.dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      this.setState({ isFetchingNfts: true });
+    }
+  }
+
+  componentWillUnmount() {
+    const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
+    const shouldClearSelectedUser = hasUserIdParam && (!isEmpty(this.props.profile) || !isEmpty(this.props.userNfts));
+
+    if (shouldClearSelectedUser) {
+      this.props.dispatch(actions.clearCurrentSelectedUser());
     }
   }
 
@@ -86,6 +146,8 @@ class Profile extends React.Component<Props> {
       </div>
     );
 
+    if (isEmpty(profile) || !profile) return <Loader />;
+
     return (
       <div className="profile-page">
         <div className="upper-profile-page-wrapper">
@@ -104,13 +166,13 @@ class Profile extends React.Component<Props> {
         </div>
         <div className="lower-profile-page-wrapper">
           <div className="toolbar-links">
-            <Link to="/profile">
+            <Link to={window.location.pathname}>
               <VscGlobe />
             </Link>
-            <Link to="/profile">
+            <Link to={window.location.pathname}>
               <IoLogoTwitter />
             </Link>
-            <Link to="/profile">
+            <Link to={window.location.pathname}>
               <FaDiscord />
             </Link>
             <Link to="/settings">
@@ -125,10 +187,13 @@ class Profile extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: ReduxState) => {
-  const { profile } = state.user;
-  const userNfts = selectors.getUserNfts(state);
+  const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
+  const profile = selectors.getUser(state, hasUserIdParam);
+  const userNfts = selectors.getUserNfts(state, hasUserIdParam);
 
-  return { profile, userNfts };
+  return {
+    profile, userNfts,
+  };
 };
 
 export default (connect(mapStateToProps)(Profile): React$ComponentType<{}>);

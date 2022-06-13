@@ -12,6 +12,7 @@ import { selectors as userSelectors } from '../../../store/userStore';
 import { buildUserGalleryNftList } from '../../../utils';
 import type { Nft } from '../../../store/nftStore';
 import type { Profile } from '../../../store/userStore';
+import type { ReduxState } from '../../../types';
 
 type Props = {
   isProfile?: boolean,
@@ -194,10 +195,16 @@ class GalleryContent extends React.Component<ReduxProps, State> {
   }
 }
 
-const mapStateToProps = state => ({
-  profile: userSelectors.getUser(state),
-  nftList: nftSelectors.getNfts(state),
-  userNfts: userSelectors.getUserNfts(state),
-});
+const mapStateToProps = (state: ReduxState) => {
+  const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
+  const profile = userSelectors.getUser(state, hasUserIdParam);
+  const userNfts = userSelectors.getUserNfts(state, hasUserIdParam);
+
+  return {
+    profile,
+    nftList: nftSelectors.getNfts(state),
+    userNfts,
+  };
+};
 
 export default (connect<ReduxProps, Props>(mapStateToProps, null)(GalleryContent): React$ComponentType<Props>);

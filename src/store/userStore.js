@@ -75,6 +75,8 @@ export type State = {
   profile: Profile,
   orcidAccount: Object,
   userNfts: { [string]: Nft },
+  currentSelectedUser: Profile|null,
+  currentSelectedUserNfts: { [string]: Nft }|null,
 };
 
 export const types = {
@@ -109,6 +111,7 @@ export const types = {
   USR_UPDATE_USER_FULFILLED: 'USR/UPDATE_USER_FULFILLED',
 
   USR_CLEAR_USER: 'USR/CLEAR_USER',
+  USR_CLEAR_CURRENT_SELECTED_USER: 'USR/CLEAR_CURRENT_SELECTED_USER',
 
   USR_VALIDATE_USER: 'USR/VALIDATE_USER',
   USR_VALIDATE_USER_PENDING: 'USR/VALIDATE_USER_PENDING',
@@ -119,12 +122,17 @@ export const types = {
   USR_FETCH_NFTS_PENDING: 'USR/FETCH_NFTS_PENDING',
   USR_FETCH_NFTS_REJECTED: 'USR/FETCH_NFTS_REJECTED',
   USR_FETCH_NFTS_FULFILLED: 'USR/FETCH_NFTS_FULFILLED',
+
+  USR_FETCH_USER_BY_ID: 'USR/FETCH_USER_BY_ID',
+  USR_FETCH_USER_BY_ID_PENDING: 'USR/FETCH_USER_BY_ID_PENDING',
+  USR_FETCH_USER_BY_ID_REJECTED: 'USR/FETCH_USER_BY_ID_REJECTED',
+  USR_FETCH_USER_BY_ID_FULFILLED: 'USR/FETCH_USER_BY_ID_FULFILLED',
 };
 
 export const selectors = {
-  getUser: (state: ReduxState): Profile => state.user.profile,
+  getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
-  getUserNfts: (state: ReduxState): Nft[] => values(state.user.userNfts),
+  getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
 };
 
 export const actions = {
@@ -163,6 +171,13 @@ export const actions = {
     type: types.USR_FETCH_NFTS,
     payload: API.getRequest(endpoint, params),
   }),
+  fetchUserById: (userId: string|number): ReduxAction => ({
+    type: types.USR_FETCH_USER_BY_ID,
+    payload: API.getRequest('users/' + userId),
+  }),
+  clearCurrentSelectedUser: (): ReduxAction => ({
+    type: types.USR_CLEAR_CURRENT_SELECTED_USER,
+  }),
 };
 
 const logoutUser = (): State => {
@@ -184,6 +199,13 @@ const handleDislikeResponse = (state: State, payload: Object): State => {
   if (isAuthor || isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
 
   return { ...state, userNfts: omit(state.userNfts, payload.fingerprint) };
+};
+
+const handleUserNfts = (state: State, payload: Nft[]): State => {
+  const userId = window.location.pathname.replace('/profile/', '');
+  const saveToState: string = userId === '/profile' ? 'userNfts' : 'currentSelectedUserNfts';
+
+  return { ...state, ...{ [saveToState]: { ...state[saveToState], ...keyBy(payload, 'fingerprint') } } };
 };
 
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
@@ -217,8 +239,14 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.USR_CLEAR_USER:
       return logoutUser();
 
+    case types.USR_CLEAR_CURRENT_SELECTED_USER:
+      return { ...state, currentSelectedUser: null, currentSelectedUserNfts: null };
+
+    case types.USR_FETCH_USER_BY_ID_FULFILLED:
+      return { ...state, currentSelectedUser: action.payload };
+
     case types.USR_FETCH_NFTS_FULFILLED:
-      return { ...state, ...{ userNfts: { ...state.userNfts, ...keyBy(action.payload, 'fingerprint') } } };
+      return handleUserNfts(state, action.payload);
 
     case nftTypes.NFT_CREATE_NFT_FULFILLED:
       return { ...state, ...{ userNfts: { ...state.userNfts, ...keyBy([action.payload], 'fingerprint') } } };
