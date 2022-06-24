@@ -1,7 +1,7 @@
 // @flow
-import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useLocation, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty, isEqual, map } from 'lodash';
 import { VscGlobe } from 'react-icons/vsc';
 import {
@@ -15,185 +15,179 @@ import { formatDate, getAllUserWalletAddresses } from '../../../utils';
 import { actions, selectors } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
-import type { Profile as ProfileType } from '../../../store/userStore';
-import type { Nft } from '../../../store/nftStore';
-import type { QueryParam } from '../../../api';
-import type { ReduxState } from '../../../types';
 import './Profile.scss';
 
-type Props = {
-  profile: ?ProfileType,
-  userNfts: ?Nft[],
-  dispatch: Function,
-}
+function Profile(): Node {
+  const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
+  const profile = useSelector((state) => selectors.getUser(state, hasUserIdParam));
+  const userNfts = useSelector((state) => selectors.getUserNfts(state, hasUserIdParam));
+  const dispatch = useDispatch();
+  const [isFetchingNfts, setIsFetchingNfts] = useState(false);
+  const userId = useParams().id;
+  const location = useLocation();
 
-type State = {
-  isFetchingNfts: boolean,
-}
+  useEffect(() => {
+    dispatch(actions.clearCurrentSelectedUser());
 
-class Profile extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFetchingNfts: false,
-    };
-  }
-
-  componentDidMount() {
-    const userId = window.location.pathname.replace('/profile/', '');
-
-    if (userId !== '/profile' && isEmpty(this.props.profile)) {
-      this.props.dispatch(actions.fetchUserById(userId));
+    if (userId && isEmpty(profile)) {
+      dispatch(actions.fetchUserById(userId));
 
       return;
     }
 
-    if (userId === '/profile' && isEmpty(this.props.userNfts) && this.props.profile) {
-      const addressIDs = getAllUserWalletAddresses(this.props.profile.wallets, 'id');
+    if (!userId && isEmpty(userNfts) && profile) {
+      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
         { key: 'match_any', query: 'true' },
         // $FlowFixMe
-        { key: 'owner_id', query: String(this.props.profile.id) },
+        { key: 'owner_id', query: String(profile.id) },
         ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
-        { key: 'user_id', query: String(this.props.profile.id) },
+        { key: 'user_id', query: String(profile.id) },
       ];
-      this.props.dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      this.props.dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  componentDidUpdate(prevProps: Props) {
-    const userId = window.location.pathname.replace('/profile/', '');
-    const isSameSelectedUser = isEqual(this.props.profile, prevProps.profile) || Number(userId) === this.props.profile?.id;
-    const shouldFetchNfts = !this.state.isFetchingNfts && userId !== '/profile' && isSameSelectedUser && isEmpty(this.props.userNfts);
+  useEffect(() => {
+    const isSameSelectedUser = isEqual(profile) || Number(userId) === profile?.id;
+    const shouldFetchNfts = !isFetchingNfts && userId && isSameSelectedUser && isEmpty(userNfts);
 
-    if (userId !== '/profile' && !isSameSelectedUser) {
-      this.props.dispatch(actions.fetchUserById(userId));
+    if (userId && !isSameSelectedUser) {
+      dispatch(actions.fetchUserById(userId));
 
       return;
     }
 
-    if (shouldFetchNfts && this.props.profile) {
-      const addressIDs = getAllUserWalletAddresses(this.props.profile.wallets, 'id');
+    if (shouldFetchNfts && profile) {
+      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
         { key: 'match_any', query: 'true' },
         // $FlowFixMe
-        { key: 'owner_id', query: String(this.props.profile.id) },
+        { key: 'owner_id', query: String(profile.id) },
         ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
-        { key: 'user_id', query: String(this.props.profile.id) },
+        { key: 'user_id', query: String(profile.id) },
       ];
-      this.props.dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      this.props.dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
-      this.setState({ isFetchingNfts: true });
+      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      setIsFetchingNfts(true);
     }
-  }
+  }, [profile, userId, isFetchingNfts, userNfts, dispatch]);
 
-  componentWillUnmount() {
-    const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
-    const shouldClearSelectedUser = hasUserIdParam && (!isEmpty(this.props.profile) || !isEmpty(this.props.userNfts));
+  useEffect(() => {
+    dispatch(actions.clearCurrentSelectedUser());
 
-    if (shouldClearSelectedUser) {
-      this.props.dispatch(actions.clearCurrentSelectedUser());
+    if (userId && isEmpty(profile)) {
+      dispatch(actions.fetchUserById(userId));
+
+      return;
     }
-  }
 
-  render () {
-    const { profile } = this.props;
-    const tabs = [
-      {
-        label: 'Collected',
-        value: {
-          id: 'collected',
-          nft: 'owner.id',
-          user: 'id',
-        },
-        icon: <MdCollectionsBookmark />,
+    if (!userId && isEmpty(userNfts) && profile) {
+      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
+      const nftsQuery: QueryParam[] = [
+        { key: 'match_any', query: 'true' },
+        // $FlowFixMe
+        { key: 'owner_id', query: String(profile.id) },
+        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
+      ];
+      const likesQuery: QueryParam[] = [
+        // $FlowFixMe
+        { key: 'user_id', query: String(profile.id) },
+      ];
+      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
+
+  const tabs = [
+    {
+      label: 'Collected',
+      value: {
+        id: 'collected',
+        nft: 'owner.id',
+        user: 'id',
       },
-      {
-        label: 'Created',
-        value: {
-          id: 'created',
-          nft: 'cardano_address',
-          user: 'wallets',
-        },
-        icon: <MdEdit />,
+      icon: <MdCollectionsBookmark />,
+    },
+    {
+      label: 'Created',
+      value: {
+        id: 'created',
+        nft: 'cardano_address',
+        user: 'wallets',
       },
-      {
-        label: 'Liked',
-        value: {
-          id: 'liked',
-          nft: 'likes',
-          user: 'id',
-        },
-        icon: <IoHeart />,
+      icon: <MdEdit />,
+    },
+    {
+      label: 'Liked',
+      value: {
+        id: 'liked',
+        nft: 'likes',
+        user: 'id',
       },
-    ];
+      icon: <IoHeart />,
+    },
+  ];
 
-    const graphics = (
-      <div className="graphics-wrapper">
-        <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
-        <div className="logo-graphic right"><img src={Logo} alt="Veritheum logo" /></div>
-        <div className="circle-graphic gr-1" />
-        <div className="circle-graphic gr-2" />
-        <div className="circle-graphic gr-3" />
-        <div className="circle-graphic gr-4" />
-      </div>
-    );
+  const graphics = (
+    <div className="graphics-wrapper">
+      <div className="logo-graphic left"><img src={Logo} alt="Veritheum logo" /></div>
+      <div className="logo-graphic right"><img src={Logo} alt="Veritheum logo" /></div>
+      <div className="circle-graphic gr-1" />
+      <div className="circle-graphic gr-2" />
+      <div className="circle-graphic gr-3" />
+      <div className="circle-graphic gr-4" />
+    </div>
+  );
 
-    if (isEmpty(profile) || !profile) return <Loader />;
+  if (isEmpty(profile) || !profile) return <Loader />;
 
-    return (
-      <div className="profile-page">
-        <div className="upper-profile-page-wrapper">
-          <div className="user-info">
-            <div className="user-image">
-              <img src={UserImagePlaceholder} alt="User" />
-            </div>
-            <div className="user-name">
-              {profile.full_name}
-            </div>
-            <div className="user-date-joined">
-              Joined: {formatDate(profile.created_at)}
-            </div>
+  return (
+    <div className="profile-page">
+      <div className="upper-profile-page-wrapper">
+        <div className="user-info">
+          <div className="user-image">
+            <img src={UserImagePlaceholder} alt="User" />
           </div>
-          {graphics}
+          <div className="user-name">
+            {profile.full_name}
+          </div>
+          <div className="user-date-joined">
+            Joined: {formatDate(profile.created_at)}
+          </div>
         </div>
-        <div className="lower-profile-page-wrapper">
-          <div className="toolbar-links">
-            <Link to={window.location.pathname}>
-              <VscGlobe />
-            </Link>
-            <Link to={window.location.pathname}>
-              <IoLogoTwitter />
-            </Link>
-            <Link to={window.location.pathname}>
-              <FaDiscord />
-            </Link>
+        {graphics}
+      </div>
+      <div className="lower-profile-page-wrapper">
+        <div className="toolbar-links">
+          <Link to={window.location.pathname}>
+            <VscGlobe />
+          </Link>
+          <Link to={window.location.pathname}>
+            <IoLogoTwitter />
+          </Link>
+          <Link to={window.location.pathname}>
+            <FaDiscord />
+          </Link>
+          {!userId && (
             <Link to="/settings">
               <IoSettings />
             </Link>
-          </div>
-          <GalleryContent tabs={tabs} isProfile />
+          )}
         </div>
+        <GalleryContent tabs={tabs} isProfile />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-const mapStateToProps = (state: ReduxState) => {
-  const hasUserIdParam = window.location.pathname.replace('/profile/', '') !== '/profile';
-  const profile = selectors.getUser(state, hasUserIdParam);
-  const userNfts = selectors.getUserNfts(state, hasUserIdParam);
-
-  return {
-    profile, userNfts,
-  };
-};
-
-export default (connect(mapStateToProps)(Profile): React$ComponentType<{}>);
+export default Profile;
