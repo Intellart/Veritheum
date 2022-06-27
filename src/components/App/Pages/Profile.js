@@ -15,6 +15,7 @@ import { formatDate, getAllUserWalletAddresses } from '../../../utils';
 import { actions, selectors } from '../../../store/userStore';
 import Logo from '../../../assets/graphics/veritheum_logo_cb.png';
 import UserImagePlaceholder from '../../../assets/icons/user.svg';
+import type { QueryParam } from '../../../api';
 import './Profile.scss';
 
 function Profile(): Node {

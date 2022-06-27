@@ -2,7 +2,7 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
-  filter, get, reduce, some, includes, map, find,
+  filter, get, reduce, some, includes, map, find, floor,
 } from 'lodash';
 import type { Nft } from '../store/nftStore';
 import type { Profile } from '../store/userStore';
@@ -70,4 +70,4 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
 
 export const findNftLike = (nft: Nft, userId: ?number): ?Object => find(nft.likes, ['user_id', userId]);
 
-export const calcExchangeRate = (exchangeRates: State, coin: number, currency?: 'usd'|'cad'|'eur'|'gbp' = 'usd'): number => exchangeRates[currency] * coin;
+export const calcExchangeRate = (exchangeRates: ?State, coin: number, currency?: 'usd'|'cad'|'eur'|'gbp' = 'usd'): number => floor(exchangeRates ? exchangeRates[currency] * coin : 1.00, 6);
