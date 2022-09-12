@@ -1,0 +1,43 @@
+.popup-content {
+    min-width: fit-content;
+    max-width: 400px;
+    padding: 5px;
+}
+
+.wallet-wrapper {
+
+    .select-label {
+        text-align: center;
+        margin: 10px;
+    }
+
+    .wallet-choice-wrapper {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-gap: 8px;
+        align-items: center;
+        margin: 5px auto;
+        width: 95%;
+
+        .wallet-choice {
+            border: 1px solid rgb(192, 192, 192);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            text-align: center;
+
+            a {
+                color: #11273f;
+                text-decoration: none;
+
+                &:hover {
+                    color: #475b71;
+                    transition: 0.3s;
+                }
+            }
+        }
+    }
+
+}
+

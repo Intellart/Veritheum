@@ -1,0 +1,229 @@
+.text-right {
+  text-align: right;
+}
+
+.wallet-choice {
+  display: flex;
+  flex-direction: row;
+}
+
+.wallet-page {
+  overflow-x: hidden;
+
+  .content-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 20px auto 80px;
+    //max-width: 1340px;
+    padding: 0 20px;
+    width: calc(100vw - 40px);
+
+    @media screen and (max-width: 767px) {
+      margin: 60px auto 80px;
+      font-size: 0.7em;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .wallet-actions {
+      display: flex;
+      margin: 0 auto;
+    }
+
+    .wallet-dash {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      width: 90vw;
+      max-width: 95vw;
+
+      .wallet-info, .wallet-more-info {
+        .row {
+          display: flex;
+          flex-wrap: wrap;
+          border-bottom: 1px solid #ddd;
+
+          @media only screen and (max-width: 767px) {
+            flex-direction: column;
+          }
+        }
+
+        .column {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          margin: 5px;
+        }
+
+        .wallet-utxos {
+          padding: 0 5px;
+        }
+      }
+
+      .toggle-more-info {
+        border-bottom: 1px solid rgba(207, 217, 221, 0.6);
+        display: flex;
+        justify-content: space-between;
+        user-select: none;
+        padding: 5px;
+        transition: 0.3s;
+        color: #11273f;
+
+        &:hover {
+          background: #f9f9f9;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+      }
+
+
+      .utxo-table {
+        font-size: 0.8em;
+        margin: 0 auto;
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: auto;
+
+        td, th {
+          border: 1px solid rgb(147, 147, 147);
+          border-radius: 5px;
+          padding: 8px;
+        }
+
+        tr:hover {background-color: #ddd;}
+
+        th {
+          padding-top: 10px;
+          padding-bottom: 10px;
+          text-align: left;
+          background-color: #d3d3d3;
+          color: rgba(17, 39, 63, 0.8);
+        }
+      }
+
+      .wallet-nfts {
+        .wallet-nfts-label {
+          padding: 0 5px;
+        }
+
+        .nft-item-img {
+          margin: 10px auto;
+        }
+
+        .nft-item-wrapper {
+          //max-width: 250px;
+        }
+
+        .nft-item-name-wrapper {
+          min-height: 20px;
+        }
+
+        .nft-item-bottom-info {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.8em;
+          padding: 5px 0;
+        }
+      }
+
+      .metadata-section {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 280px;
+        max-height: 140px;
+        overflow-y: scroll;
+
+        .metadata-code {
+          background-color: rgb(243, 243, 243);
+          font-size: 10px;
+
+          pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+          }
+        }
+      }
+
+      .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+
+        label {
+          color: rgba(17, 39, 63, 0.9);
+          font-family: "SoraMedium";
+          font-size: 16px;
+          letter-spacing: -0.16px;
+          margin-bottom: 6px;
+          text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+          @media screen and (max-width: 767px) {
+            font-size: 14px;
+          }
+        }
+
+        input {
+          background: #fff;
+          border-radius: 4px;
+          border: 1px solid #d5d5d5;
+          color: #11273f;
+          font-size: 14px;
+          letter-spacing: -0.14px;
+          padding: 15px 25px;
+
+          @media screen and (max-width: 767px) {
+            font-size: 12px;
+          }
+
+          &:focus,
+          &:focus-visible {
+            border: 1px solid rgba(17, 39, 63, 0.2);
+            box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.1);
+            outline: none;
+            transition: 0.3s;
+          }
+
+          &::placeholder {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+
+    .nft-actions {
+      margin: 5px auto;
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  button {
+    color: #11273f;
+    font-size: 14px;
+    border-radius: 4px;
+    margin: 0 6px;
+    padding: 8px 20px;
+    transition: 0.3s;
+
+    &.outline {
+      background: #fff;
+      border: solid 2px #11273f;
+      box-shadow: 0px 1px 3px 0 rgba(0, 0, 0, 0.04);
+
+      &:hover {
+        background: #11273f;
+        color: rgba(255, 255, 255, 0.84);
+        cursor: pointer;
+      }
+    }
+  }
+}
