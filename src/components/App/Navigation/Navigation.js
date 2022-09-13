@@ -5,6 +5,8 @@ import Logo from '../../../assets/logo/veritheum_logo.svg';
 import MinimizedLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
 import ProfileMenu from './ProfileMenu/ProfileMenu';
+import WalletConnector from '../WalletConnector/WalletConnector';
+import { fetchPlutusContractNftData } from '../../../utils/helpers';
 import './Navigation.scss';
 
 type Props = {
@@ -61,6 +63,7 @@ class Navigation extends React.Component<Props, State> {
                 {isAuthorized ? (
                   <>
                     <Link to="/minting-page" className="outline" onClick={this.closeMobileMenu}>Create</Link>
+                    <WalletConnector id="wallet-connector" onClick={this.closeMobileMenu}/>
                     <ProfileMenu closeMobileMenu={this.closeMobileMenu} />
                   </>
                 ) : (

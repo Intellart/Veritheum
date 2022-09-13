@@ -8,6 +8,7 @@ import type { ReduxState, ReduxActionWithPayload } from '../types';
 type Loading = {
   [string]: string
 }
+
 export type State = {
   loading: Loading
 };
@@ -17,8 +18,6 @@ export const types: Object = {};
 export const selectors = {
   checkIsLoading: (state: ReduxState): boolean => !every(values(state.global.loading), (ty) => ty === 'DONE'),
 };
-
-export const actions: { ... } = {};
 
 const updateLoading = (state: State, type: string, loadingState: string): State => {
   let key = type;

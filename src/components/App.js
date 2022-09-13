@@ -19,6 +19,7 @@ import MintingPage from './App/Pages/MintingPage';
 import TermsOfUse from './App/Pages/TermsOfUse';
 import CookiePolicy from './App/Pages/CookiePolicy';
 import PrivacyPolicy from './App/Pages/PrivacyPolicy';
+import WalletPage from './App/Pages/WalletPage';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import ScrollToTop from './App/ScrollToTop/ScrollToTop';
 import Loader from './App/Loader/Loader';
@@ -56,6 +57,7 @@ function App(): Node {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
           {isAuthorized && <Route path="/profile" element={<Profile />} />}
+          {isAuthorized && <Route path="/wallet-page" element={<WalletPage />} />}
           <Route path="/profile/:id" element={<Profile />} />
           {isAuthorized && <Route path="/settings" element={<ProfileSettings />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />

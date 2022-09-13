@@ -15,6 +15,7 @@ import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from '
 import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
 import { reducer as exchangeRatesStoreReducer, types as exchangeRatesTypes } from './exchangeRatesStore';
 import { reducer as webSocketsStoreReducer } from './webSocketsStore';
+import { reducer as walletStoreReducer } from './walletStore';
 import { getItem } from '../localStorage';
 import Error from '../components/App/Errors/Errors';
 import type {
@@ -145,6 +146,7 @@ export const configureStore = (
       studyFields: studyFieldStoreReducer,
       exchangeRates: exchangeRatesStoreReducer,
       webSockets: webSocketsStoreReducer,
+      wallet: walletStoreReducer,
     }),
     initialState,
     middlewareApplier,
@@ -166,6 +168,60 @@ const initialReduxState: Object = {
       [exchangeRatesTypes.ER_GET_RATES]: 'PENDING',
     },
   },
-};
+  wallet: {
+    isOpen: false,
+    whichWalletSelected: undefined,
+    walletFound: false,
+    walletIsEnabled: false,
+    walletName: undefined,
+    walletIcon: undefined,
+    walletAPIVersion: undefined,
+    wallets: [],
+
+    networkId: undefined,
+    balance: undefined,
+    Utxos: [],
+    Nfts: [],
+    CollatUtxos: [],
+    changeAddress: undefined,
+    rewardAddress: undefined,
+    usedAddress: undefined,
+
+    txBody: undefined,
+    txBodyCborHex_unsigned: "",
+    txBodyCborHex_signed: "",
+    submittedTxHash: "",
+
+    addressBech32SendADA: "addr_test1qrt7j04dtk4hfjq036r2nfewt59q8zpa69ax88utyr6es2ar72l7vd6evxct69wcje5cs25ze4qeshejy828h30zkydsu4yrmm",
+    lovelaceToSend: 3000000,
+    assetNameHex: "",
+    assetPolicyIdHex: "",
+    assetAmountToSend: 1,
+    addressScriptBech32: "addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c",
+    datumStr: "12345678",
+    plutusScriptCborHex: "4e4d01000033222220051200120011",
+    transactionIdLocked: "",
+    transactionIndxLocked: 0,
+    lovelaceLocked: 3000000,
+    manualFee: 900000,
+
+    protocolParams: {
+      linearFee: {
+          minFeeA: "44",
+          minFeeB: "155381",
+      },
+      minUtxo: "34482",
+      poolDeposit: "500000000",
+      keyDeposit: "2000000",
+      maxValSize: 5000,
+      maxTxSize: 16384,
+      priceMem: 0.0577,
+      priceStep: 0.0000721,
+      coinsPerUtxoWord: "34482",
+    },
+
+    plutusNfts: []
+  }
+}
 
 export const store: any = configureStore(initialReduxState);
