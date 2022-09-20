@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { isEmpty, isEqual } from 'lodash';
 import Home from './App/Pages/Home';
 import Gallery from './App/Pages/Gallery';
+import MarketPlace from './App/MarketPlace/MarketPlace';
 import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
 import Register from './App/Pages/Register';
@@ -49,17 +50,23 @@ function App(): Node {
         <Routes>
           <Route index element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          {isAuthorized && <Route path="/minting-page" element={<MintingPage />} />}
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
-          {isAuthorized && <Route path="/profile" element={<Profile />} />}
-          {isAuthorized && <Route path="/wallet-page" element={<WalletPage />} />}
+
+          {isAuthorized && (
+            <>
+              <Route path="/wallet-page" element={<WalletPage />} />
+              <Route path="/minting-page" element={<MintingPage />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<ProfileSettings />} />
+            </>
+          )}
           <Route path="/profile/:id" element={<Profile />} />
-          {isAuthorized && <Route path="/settings" element={<ProfileSettings />} />}
           <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
         </Routes>
       </div>

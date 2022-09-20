@@ -7,7 +7,8 @@ export type TransactionUnspentOutput = {
 }
 
 export type Nft = {
-    asset: string
+    asset: string,
+    data?: Object,
 }
 
 export type Utxo = {

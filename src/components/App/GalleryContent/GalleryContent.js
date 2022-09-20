@@ -143,7 +143,7 @@ class GalleryContent extends React.Component<ReduxProps, State> {
       galleryTabs,
     } = this.state;
 
-    let filteredNftList = get(galleryNftList, selectedTab, []);
+    let filteredNftList: Nft[] = get(galleryNftList, selectedTab, []);
 
     // Filter by search input or type
     filteredNftList = filter(filteredNftList, (nft: Nft) => {

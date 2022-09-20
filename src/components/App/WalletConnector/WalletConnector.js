@@ -126,11 +126,12 @@ const mapStateToProps = (state) => {
 };
 
 class WalletConnector extends Component<ReduxProps> {
-  handleWalletSelect = (obj, wallet) => {
+  handleWalletSelect = (close, wallet) => {
     const whichWalletSelected = wallet;
     this.props.dispatch(actions.saveWallet({ whichWalletSelected }));
     this.props.dispatch(actions.refreshData({ ...this.props, whichWalletSelected }));
     this.props.dispatch(actions.saveWallet({ isOpen: !this.props.isOpen }));
+    close();
   };
 
   // handleClick = () => {
@@ -185,21 +186,22 @@ class WalletConnector extends Component<ReduxProps> {
     // const isWalletEnabled = this.props.walletIsEnabled;
 
     return (
-      <Popup trigger={<Link to='#' className='outline'>Wallet</Link>} modal>
-        <div className='wallet-wrapper'>
-          <h5 className='select-label'>Select wallet:</h5>
-          <div className='wallet-choice-wrapper'>
-            {map(this.props.wallets, (wallet, i) => (
-              <div className="wallet-choice" key={i}>
-                <Link to='/wallet-page' onClick={(e) => this.handleWalletSelect(e, wallet)}>
-                  <img src={window.cardano[wallet].icon} width={24} height={24} alt={wallet} />
-                  <div className='wallet-label'>{window.cardano[wallet].name}</div>
-                </Link>
-              </div>
-            ),
-            )}
+      <Popup trigger={<Link to='#' className='outline'>Wallet</Link>} modal closeOnEscape>
+        {(close) => (
+          <div className='wallet-wrapper'>
+            <h5 className='select-label'>Select wallet:</h5>
+            <div className='wallet-choice-wrapper'>
+              {map(this.props.wallets, (wallet, i) => (
+                <div className="wallet-choice" key={i}>
+                  <Link to='/wallet-page' onClick={() => this.handleWalletSelect(close, wallet)}>
+                    <img src={window.cardano[wallet].icon} width={24} height={24} alt={wallet} />
+                    <div className='wallet-label'>{window.cardano[wallet].name}</div>
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </Popup>
     );
   }

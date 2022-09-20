@@ -220,7 +220,7 @@ const initialReduxState: Object = {
       coinsPerUtxoWord: '34482',
     },
 
-    plutusNfts: [],
+    plutusNfts: {},
   },
 };
 

@@ -66,7 +66,7 @@ export let API: any;
  * Fetches data from Cardano API for the asset
  * @returns {Object}
  */
-export const getAssetData = (asset: string): any | void => {
+export const getAssetData = (asset: string): any => {
   if (asset !== 'lovelace') {
     const test = axios.get(`https://cardano-testnet.blockfrost.io/api/v0/assets/${asset}`, {
       headers: {
@@ -84,14 +84,19 @@ export const getAssetData = (asset: string): any | void => {
  * @returns {Nft[]}
  */
 export const fetchNftData = (nfts: Nft[]): Nft[] => {
-  const newNfts = [...nfts];
-  newNfts.forEach((nft: Object) => {
+  const newNfts = [];
+  for (let index = 0; index < nfts.length; index++) {
+    const nft = nfts[index];
+    const newNft = { ...nft };
+
     const handleAsync = async () => {
-      const nftData = await getAssetData(nft.asset);
-      nft.data = nftData;
+      const nftData = await getAssetData(newNft.asset);
+      newNft.data = nftData;
     };
-    if (!get(nft, 'data')) handleAsync();
-  });
+
+    if (!get(newNft, 'data')) handleAsync();
+    newNfts.push(newNft);
+  }
 
   return newNfts;
 };
@@ -112,27 +117,26 @@ export const getPlutusContractData = (address: string): any => {
  * Fetches data from Cardano API for all assets in the Plutus script
  * @returns {Array}
  */
-export const fetchPlutusContractNftData = async (props: ReduxProps): Promise<any[]> => {
+export const fetchPlutusContractNftData = async (): Promise<any[]> => {
   const PlutusAddress = 'addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c';
   const data = await getPlutusContractData(PlutusAddress);
   const nftArray = [];
 
   if (data) {
-    const assets = data.amount.slice(0, 100);
-    assets.forEach(nft => {
+    const assets = data.amount?.slice(0, 100);
+    for (let index = 0; index < assets.length; index++) {
+      const nft = assets[index];
+      const newNft = { ...nft };
+
       const handleAsync = async () => {
-        const asset = nft.unit;
-        const assetData = await getAssetData(asset);
-        nft.data = assetData;
+        newNft.data = await getAssetData(newNft.unit);
       };
 
       if (!get(nft, 'data')) handleAsync();
-      nftArray.push(nft);
-    });
+      nftArray.push(newNft);
+    }
     // console.log(assets);
   }
-
-  props.dispatch(actions.saveWallet({ plutusNfts: nftArray }));
 
   return nftArray;
 };

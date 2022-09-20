@@ -58,6 +58,7 @@ class Navigation extends React.Component<Props, State> {
             <div className="links-wrapper">
               <Link to="/" onClick={this.closeMobileMenu}>Home</Link>
               <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
+              <Link to="/marketplace" onClick={this.closeMobileMenu}>Marketplace</Link>
               <div className="group">
                 {isAuthorized ? (
                   <>
@@ -85,4 +86,4 @@ class Navigation extends React.Component<Props, State> {
   }
 }
 
-export default ((Navigation): React$ComponentType<Props>);
+export default (Navigation: React$ComponentType<Props>);
