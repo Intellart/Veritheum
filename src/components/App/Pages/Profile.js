@@ -1,5 +1,6 @@
 // @flow
 import React, { useEffect, useState } from 'react';
+import type { Node } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty, isEqual, map } from 'lodash';

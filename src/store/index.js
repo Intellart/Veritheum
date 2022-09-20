@@ -188,40 +188,40 @@ const initialReduxState: Object = {
     usedAddress: undefined,
 
     txBody: undefined,
-    txBodyCborHex_unsigned: "",
-    txBodyCborHex_signed: "",
-    submittedTxHash: "",
+    txBodyCborHex_unsigned: '',
+    txBodyCborHex_signed: '',
+    submittedTxHash: '',
 
-    addressBech32SendADA: "addr_test1qrt7j04dtk4hfjq036r2nfewt59q8zpa69ax88utyr6es2ar72l7vd6evxct69wcje5cs25ze4qeshejy828h30zkydsu4yrmm",
+    addressBech32SendADA: 'addr_test1qrt7j04dtk4hfjq036r2nfewt59q8zpa69ax88utyr6es2ar72l7vd6evxct69wcje5cs25ze4qeshejy828h30zkydsu4yrmm',
     lovelaceToSend: 3000000,
-    assetNameHex: "",
-    assetPolicyIdHex: "",
+    assetNameHex: '',
+    assetPolicyIdHex: '',
     assetAmountToSend: 1,
-    addressScriptBech32: "addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c",
-    datumStr: "12345678",
-    plutusScriptCborHex: "4e4d01000033222220051200120011",
-    transactionIdLocked: "",
+    addressScriptBech32: 'addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c',
+    datumStr: '12345678',
+    plutusScriptCborHex: '4e4d01000033222220051200120011',
+    transactionIdLocked: '',
     transactionIndxLocked: 0,
     lovelaceLocked: 3000000,
     manualFee: 900000,
 
     protocolParams: {
       linearFee: {
-          minFeeA: "44",
-          minFeeB: "155381",
+        minFeeA: '44',
+        minFeeB: '155381',
       },
-      minUtxo: "34482",
-      poolDeposit: "500000000",
-      keyDeposit: "2000000",
+      minUtxo: '34482',
+      poolDeposit: '500000000',
+      keyDeposit: '2000000',
       maxValSize: 5000,
       maxTxSize: 16384,
       priceMem: 0.0577,
       priceStep: 0.0000721,
-      coinsPerUtxoWord: "34482",
+      coinsPerUtxoWord: '34482',
     },
 
-    plutusNfts: []
-  }
-}
+    plutusNfts: [],
+  },
+};
 
 export const store: any = configureStore(initialReduxState);
