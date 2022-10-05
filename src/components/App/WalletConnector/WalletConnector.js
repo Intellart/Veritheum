@@ -198,7 +198,7 @@ class WalletConnector extends Component<ReduxProps, State> {
         const wallets = [];
 
         for (const key in window.cardano) {
-            if (window.cardano[key].enable && wallets.indexOf(key) === -1 && !includes(['eternl', 'yoroi'], key)) {
+            if (window.cardano[key].enable && wallets.indexOf(key) === -1 && !includes(['eternl', 'yoroi', 'typhon', 'typhoncip30'], key)) {
                 wallets.push(key);
             }
         }

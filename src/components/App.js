@@ -27,6 +27,7 @@ import WebSocketElement from './App/WebSocket/WebSocketElement';
 import { selectors as userSelectors } from '../store/userStore';
 import { selectors as globalSelectors } from '../store/globalStore';
 import 'react-toastify/dist/ReactToastify.min.css';
+import '../styles/index.scss';
 
 function App(): Node {
   const isAuthorized: boolean = useSelector((state) => !isEmpty(userSelectors.getUser(state)), isEqual);
