@@ -22,7 +22,7 @@ type ApiArrayError = {
 
 type Props = {
   error: ApiArrayError|ApiObjectError,
-  isObject: boolean,
+  isObject?: boolean,
 }
 
 function Error(props: Props): Node {

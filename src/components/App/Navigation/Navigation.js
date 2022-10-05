@@ -6,7 +6,6 @@ import MinimizedLogo from '../../../assets/logo/veritheum_logo_only.svg';
 import NavigationFilter from '../NavigationFilter/NavigationFilter';
 import ProfileMenu from './ProfileMenu/ProfileMenu';
 import WalletConnector from '../WalletConnector/WalletConnector';
-import { fetchPlutusContractNftData } from '../../../utils/helpers';
 import './Navigation.scss';
 
 type Props = {
@@ -59,11 +58,12 @@ class Navigation extends React.Component<Props, State> {
             <div className="links-wrapper">
               <Link to="/" onClick={this.closeMobileMenu}>Home</Link>
               <Link to="/gallery" onClick={this.closeMobileMenu}>Explore</Link>
+              <Link to="/marketplace" onClick={this.closeMobileMenu}>Marketplace</Link>
               <div className="group">
                 {isAuthorized ? (
                   <>
                     <Link to="/minting-page" className="outline" onClick={this.closeMobileMenu}>Create</Link>
-                    <WalletConnector id="wallet-connector" onClick={this.closeMobileMenu}/>
+                    <WalletConnector id="wallet-connector" onClick={this.closeMobileMenu} />
                     <ProfileMenu closeMobileMenu={this.closeMobileMenu} />
                   </>
                 ) : (
@@ -86,4 +86,4 @@ class Navigation extends React.Component<Props, State> {
   }
 }
 
-export default ((Navigation): React$ComponentType<Props>);
+export default (Navigation: React$ComponentType<Props>);

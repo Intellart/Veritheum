@@ -1,4 +1,6 @@
 // @flow
+/* eslint-disable camelcase */
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from 'react-icons/io5';
 import { connect } from 'react-redux';
@@ -8,8 +10,9 @@ import User from '../../../assets/icons/user.svg';
 import { actions } from '../../../store/nftStore';
 import { calcExchangeRate, findNftLike } from '../../../utils';
 import { selectors as exchangeRatesSelectors } from '../../../store/exchangeRatesStore';
-import { buildRedeemTokenFromPlutusScript } from '../../../utils/helpers'
+import { buildRedeemTokenFromPlutusScript } from '../../../utils/helpers';
 import type { Nft, NftLike } from '../../../store/nftStore';
+import type { Utxo } from '../../../store/walletStore';
 import type { State as ExchangeRates } from '../../../store/exchangeRatesStore';
 import type { ReduxState } from '../../../types';
 import './NftItem.scss';
@@ -57,10 +60,10 @@ class NftItem extends React.Component<ReduxProps> {
 
   render () {
     const {
-      data, trending, userId, exchangeRates
+      data, trending, userId, exchangeRates,
     } = this.props;
     const {
-      tradeable, category, name, verified, owner, price, asset_name, policy_id
+      tradeable, category, name, verified, owner, price, asset_name, policy_id,
     } = data;
     const like = findNftLike(data, userId);
 
@@ -192,17 +195,17 @@ class NftItem extends React.Component<ReduxProps> {
 const mapStateToProps = (state: ReduxState) => ({
   userId: get(state, 'user.profile.id'),
   exchangeRates: exchangeRatesSelectors.getExchangeRates(state),
-  protocolParams: get(state, "wallet.protocolParams", {}),
-  addressScriptBech32: get(state, "wallet.addressScriptBech32", ''),
-  changeAddress: get(state, "wallet.changeAddress", ''),
-  assetAmountToSend: get(state, "wallet.assetAmountToSend", 0),
-  transactionIdLocked: get(state, "wallet.transactionIdLocked", ''),
-  transactionIndxLocked: get(state, "wallet.transactionIndxLocked", 0),
-  manualFee: get(state, "wallet.manualFee", 0),
-  plutusScriptCborHex: get(state, "wallet.plutusScriptCborHex", ''),
-  lovelaceLocked: get(state, "wallet.lovelaceLocked", 0),
-  CollatUtxos: get(state, "wallet.CollatUtxos", []),
-  datumStr: get(state, "wallet.datumStr", '')
+  protocolParams: get(state, 'wallet.protocolParams', {}),
+  addressScriptBech32: get(state, 'wallet.addressScriptBech32', ''),
+  changeAddress: get(state, 'wallet.changeAddress', ''),
+  assetAmountToSend: get(state, 'wallet.assetAmountToSend', 0),
+  transactionIdLocked: get(state, 'wallet.transactionIdLocked', ''),
+  transactionIndxLocked: get(state, 'wallet.transactionIndxLocked', 0),
+  manualFee: get(state, 'wallet.manualFee', 0),
+  plutusScriptCborHex: get(state, 'wallet.plutusScriptCborHex', ''),
+  lovelaceLocked: get(state, 'wallet.lovelaceLocked', 0),
+  CollatUtxos: get(state, 'wallet.CollatUtxos', []),
+  datumStr: get(state, 'wallet.datumStr', ''),
 });
 
-export default (connect<ReduxProps, Props>(mapStateToProps)(NftItem): React$ComponentType<Props>);
+export default (connect(mapStateToProps)(NftItem): React$ComponentType<Props>);

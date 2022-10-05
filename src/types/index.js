@@ -7,6 +7,7 @@ import type { State as CategoryState } from '../store/categoriesStore';
 import type { State as StudyFieldsState } from '../store/studyFieldsStore';
 import type { State as ExchangeRatesState } from '../store/exchangeRatesStore';
 import type { State as WebSocketState } from '../store/webSocketsStore';
+import type { Wallet as WalletState } from '../store/walletStore';
 
 export type ReduxState = {
   user: UserState,
@@ -16,6 +17,7 @@ export type ReduxState = {
   studyFields: StudyFieldsState,
   exchangeRates: ExchangeRatesState,
   webSockets: WebSocketState,
+  wallet: WalletState,
 };
 
 export type BaseReduxAction = {

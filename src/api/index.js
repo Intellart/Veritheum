@@ -1,5 +1,4 @@
 // @flow
-import { axios } from 'axios';
 import {
   isEmpty, join, map, has, trimEnd,
 } from 'lodash';
