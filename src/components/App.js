@@ -62,8 +62,7 @@ function App(): Node {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
           {!isAdmin && <Route path="/admin" element={<AdminSignin />} />}
-
-          {<Route path='/admin-page' element={<AdminPage />} />}
+          {isAdmin && <Route path='/admin-page' element={<AdminPage />} />}
           {isAuthorized && (
             <>
               <Route path="/wallet-page" element={<WalletPage />} />
@@ -73,7 +72,7 @@ function App(): Node {
             </>
           )}
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
+          <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} isAdmin={isAdmin} />} />
         </Routes>
       </div>
     </Router>

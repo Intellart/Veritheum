@@ -152,7 +152,7 @@ export const types = {
 };
 
 export const selectors = {
-  getAdmin: (state: ReduxState, isCurrentAdmin?: boolean): Admin|null => (isCurrentAdmin ? state.user.currentAdmin : null),
+  getAdmin: (state: ReduxState): Admin|null => state.user.currentAdmin,
   getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
   getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
@@ -257,7 +257,7 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.USR_LOGIN_ADMIN_FULFILLED:
       toast.success('Admin successfully logged in!');
 
-      return state;
+      return { ...state, ...{ currentAdmin: action.payload } };
 
     case types.USR_LOGOUT_ADMIN_FULFILLED:
       toast.success('Admin successfully logged out!');

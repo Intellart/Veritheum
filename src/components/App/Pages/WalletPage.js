@@ -92,7 +92,7 @@ function WalletPage(): Node {
   // }`;
 
   const hideComponent = () => {
-    setShowHideMoreInfo(showHideMoreInfo);
+    setShowHideMoreInfo(!showHideMoreInfo);
   };
 
   // onNftSelect(nft) {
