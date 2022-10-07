@@ -1,5 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { get, map } from 'lodash';
+import { actions } from '../../../store/nftStore';
+import type { Nft } from '../../../store/nftStore';
 
 // NFTs view
 // - approve minting and selling
@@ -8,17 +12,33 @@ import { Link } from 'react-router-dom';
 // - user count
 
 type Props = {
-    isAdmin: boolean,
+    dispatch: Function,
+    createdNfts: Nft[],
+    sellNfts: Nft[],
 }
 
-class AdminPage extends React.Component<Props, State> {
+const mapStateToProps = (state) => {
+    const createdNfts = get(state, 'nft.createdNfts', []);
+    const sellNfts = get(state, 'nft.sellNfts', []);
+
+    return {
+        createdNfts,
+        sellNfts,
+    };
+  };
+
+class AdminPage extends React.Component<ReduxProps, State> {
     constructor() {
       super();
       this.state = {};
     }
 
+
     render () {
         const { isAdmin } = this.props;
+        const userList = [];
+        const createdNfts = this.props.dispatch(actions.fetchCreatedNfts());
+        const sellNfts = this.props.dispatch(actions.fetchSellNfts());
 
         return (
             <div className='page-wrapper'>
@@ -31,25 +51,23 @@ class AdminPage extends React.Component<Props, State> {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
-                                            <th>First name</th>
-                                            <th>Last name</th>
+                                            <th>ID</th>
+                                            <th>Full name</th>
                                             <th>Email</th>
+                                            <th>ORCID ID</th>
+                                            <th>Registered on</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Alfreds Futterkiste</td>
-                                            <td>Maria Anders</td>
-                                            <td>Germany</td>
-                                            <td>Germany</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Centro comercial Moctezuma</td>
-                                            <td>Francisco Chang</td>
-                                            <td>Mexico</td>
-                                            <td>Mexico</td>
-                                        </tr>
+                                        {map(userList, (userKey, i) => (
+                                            <tr key={i} className="mint-nfts-row">
+                                                <td className="mint-nfts-data">{userKey?.id}</td>
+                                                <td className="mint-nfts-data">{userKey?.full_name}</td>
+                                                <td className="mint-nfts-data">{userKey?.email}</td>
+                                                <td className="mint-nfts-data">{userKey?.orcid_id}</td>
+                                                <td className="mint-nfts-data">{userKey?.created_at}</td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -62,20 +80,28 @@ class AdminPage extends React.Component<Props, State> {
                                         <tr>
                                             <th>ID</th>
                                             <th>User</th>
+                                            <th>User email</th>
+                                            <th>User ORCID</th>
+                                            <th>Created on</th>
+                                            <th>JPG/PDF</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Alfreds Futterkiste</td>
-                                            <td>Maria Anders</td>
-                                            <td>Germany</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Centro comercial Moctezuma</td>
-                                            <td>Francisco Chang</td>
-                                            <td>Mexico</td>
-                                        </tr>
+                                        {map(createdNfts, (nftKey, i) => (
+                                            <tr key={i} className="mint-nfts-row">
+                                                <td className="mint-nfts-data">{nftKey.fingerprint}</td>
+                                                <td className="mint-nfts-data">{nftKey.owner?.full_name}</td>
+                                                <td className="mint-nfts-data">{nftKey.owner?.email}</td>
+                                                <td className="mint-nfts-data">{nftKey.owner?.orcid_id}</td>
+                                                <td className="mint-nfts-data">{nftKey.created_at}</td>
+                                                <td className="mint-nfts-data">{nftKey.url}</td>
+                                                <td className="mint-nfts-actions">
+                                                    <button onClick={() => this.approveSellOfNft(nftKey.fingerprint)}>Approve</button>
+                                                    <button onClick={() => this.declineSellOfNft(nftKey.fingerprint)}>Decline</button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -88,20 +114,32 @@ class AdminPage extends React.Component<Props, State> {
                                         <tr>
                                             <th>ID</th>
                                             <th>User</th>
+                                            <th>User email</th>
+                                            <th>User ORCID</th>
+                                            <th>Created on</th>
+                                            <th>Name</th>
+                                            <th>JPG/PDF</th>
+                                            <th>Price</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Alfreds Futterkiste</td>
-                                            <td>Maria Anders</td>
-                                            <td>Germany</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Centro comercial Moctezuma</td>
-                                            <td>Francisco Chang</td>
-                                            <td>Mexico</td>
-                                        </tr>
+                                        {map(sellNfts, (nftKey, i) => (
+                                            <tr key={i} className="sell-nfts-row">
+                                                <td className="sell-nfts-data">{nftKey.fingerprint}</td>
+                                                <td className="sell-nfts-data">{nftKey.owner?.full_name}</td>
+                                                <td className="sell-nfts-data">{nftKey.owner?.email}</td>
+                                                <td className="sell-nfts-data">{nftKey.owner?.orcid_id}</td>
+                                                <td className="sell-nfts-data">{nftKey.created_at}</td>
+                                                <td className="sell-nfts-data">{nftKey.name}</td>
+                                                <td className="sell-nfts-data">{nftKey.url}</td>
+                                                <td className="sell-nfts-data">{nftKey.price}</td>
+                                                <td className="sell-nfts-actions">
+                                                    <button onClick={() => this.approveSellOfNft(nftKey.fingerprint)}>Approve</button>
+                                                    <button onClick={() => this.declineSellOfNft(nftKey.fingerprint)}>Decline</button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -113,4 +151,4 @@ class AdminPage extends React.Component<Props, State> {
     }
 }
 
-export default ((AdminPage): React$ComponentType<Props>);
+export default (connect(mapStateToProps)(AdminPage): React$ComponentType<Props>);

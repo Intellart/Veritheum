@@ -34,7 +34,7 @@ function CatchAllRoute(props: Props): Node {
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthorized]);
+  }, [isAuthorized, isAdmin]);
 
   return <NotFound />;
 }

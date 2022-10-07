@@ -139,7 +139,7 @@ function WalletPage(): Node {
       <div className="content-wrapper">
         <h1>My Wallet</h1>
         <div className='wallet-actions'>
-          <button className='outline' onClick={() => refreshData(redux)}>Refresh wallet data</button>
+          <button className='outline' onClick={() => refreshData(redux, dispatch)}>Refresh wallet data</button>
           <button className='outline' onClick={() => disableWallet(redux, dispatch)}>Disconnect wallet</button>
         </div>
 
