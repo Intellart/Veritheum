@@ -7,12 +7,13 @@ import {
   map, get, toNumber, isArray, isEqual,
 } from 'lodash';
 import {
-  refreshData, disableWallet, buildSendTokenToPlutusScript,
+  disableWallet, buildSendTokenToPlutusScript,
 } from '../../../utils/helpers';
 import './WalletPage.scss';
 import '../NftItem/NftItem.scss';
 import '../NftList/NftList.scss';
 import './session_pages.scss';
+import { actions } from '../../../store/walletStore';
 import type { Utxo, Nft } from '../../../store/walletStore';
 // import { BlockFrostAPI } from '@blockfrost/blockfrost-js';
 
@@ -110,6 +111,10 @@ function WalletPage(): Node {
     buildSendTokenToPlutusScript(nftKey, redux, dispatch);
   };
 
+  const handleRefresh = () => {
+    dispatch(actions.refreshData(redux));
+  };
+
   const getNftImage = (nftKey): Node => {
     if (nftKey.data?.onchain_metadata) {
       const img = nftKey.data.onchain_metadata.image;
@@ -139,7 +144,7 @@ function WalletPage(): Node {
       <div className="content-wrapper">
         <h1>My Wallet</h1>
         <div className='wallet-actions'>
-          <button className='outline' onClick={() => refreshData(redux, dispatch)}>Refresh wallet data</button>
+          <button className='outline' onClick={handleRefresh}>Refresh wallet data</button>
           <button className='outline' onClick={() => disableWallet(redux, dispatch)}>Disconnect wallet</button>
         </div>
 

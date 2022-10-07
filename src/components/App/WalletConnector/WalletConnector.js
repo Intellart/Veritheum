@@ -149,14 +149,14 @@ class WalletConnector extends Component<ReduxProps> {
      *
      * @param count The current try count.
      */
-    pollWallets = (count = 0) => {
-        const wallets = [];
+  pollWallets = (count = 0) => {
+    const wallets = [];
 
-        for (const key in window.cardano) {
-            if (window.cardano[key].enable && wallets.indexOf(key) === -1 && !includes(['eternl', 'yoroi', 'typhon', 'typhoncip30'], key)) {
-                wallets.push(key);
-            }
-        }
+    for (const key in window.cardano) {
+      if (window.cardano[key].enable && wallets.indexOf(key) === -1 && !includes(['eternl', 'yoroi', 'typhon', 'typhoncip30'], key)) {
+        wallets.push(key);
+      }
+    }
 
     if (wallets.length === 0 && count < 2) {
       setTimeout(() => {

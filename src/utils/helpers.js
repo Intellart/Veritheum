@@ -146,14 +146,13 @@ export const fetchPlutusContractNftData = async (): Promise<any[]> => {
  * from the wallet asking to approve the connection of this app to the wallet.
  * @returns {Promise<boolean>}
  */
-export const enableWallet = async (props: Object, dispatch: Function): Promise<boolean> => {
+export const enableWallet = async (props: Object): Promise<boolean> => {
   const walletKey = props.whichWalletSelected;
   const response = await window.cardano[walletKey].enable();
 
   if (response) {
     API = response;
     // console.log('Wallet enabled.');
-    dispatch(actions.saveWallet({ walletIsEnabled: true }));
 
     return true;
   }
@@ -193,10 +192,9 @@ export const disableWallet = (props: Object, dispatch: Function) => {
      * Checks if the wallet is running in the browser. Does this for Nami, Eternl and Flint wallets.
      * @returns {boolean}
      */
-export const checkIfWalletFound = (props: Object, dispatch: Function): boolean => {
+export const checkIfWalletFound = (props: Object): boolean => {
   const walletKey = props.whichWalletSelected;
   const walletFound = !!window?.cardano?.[walletKey];
-  dispatch(actions.saveWallet({ walletFound }));
 
   return walletFound;
 };
@@ -205,11 +203,10 @@ export const checkIfWalletFound = (props: Object, dispatch: Function): boolean =
  * Checks if a connection has been established with the wallet.
  * @returns {Promise<boolean>}
  */
-export const checkIfWalletEnabled = async (props: Object, dispatch: Function): Promise<boolean> => {
+export const checkIfWalletEnabled = async (props: Object): Promise<boolean> => {
   let walletIsEnabled = false;
   const walletName = props.whichWalletSelected;
   walletIsEnabled = await window.cardano[walletName].isEnabled();
-  dispatch(actions.saveWallet({ walletIsEnabled }));
 
   return walletIsEnabled;
 };
@@ -219,11 +216,10 @@ export const checkIfWalletEnabled = async (props: Object, dispatch: Function): P
  * For other tokens you need to look into the full UTXO list.
  * @returns {Promise<void>}
  */
-export const getBalance = async (props: Object, dispatch: Function): Promise<?number> => {
+export const getBalance = async (props: Object): Promise<?number> => {
   try {
     const balanceCBORHex = await API.getBalance();
     const balance = Value.from_bytes(Buffer.from(balanceCBORHex, 'hex')).coin().to_str();
-    dispatch(actions.saveWallet({ balance }));
 
     return balance;
   } catch (err) {
@@ -239,10 +235,9 @@ export const getBalance = async (props: Object, dispatch: Function): Promise<?nu
  * 1 = mainnet
  * @returns {Promise<void>}
  */
-export const getNetworkId = async (props: Object, dispatch: Function): Promise<?number> => {
+export const getNetworkId = async (props: Object): Promise<?number> => {
   try {
     const networkId = await API.getNetworkId();
-    dispatch(actions.saveWallet({ networkId }));
 
     return networkId;
   } catch (err) {
@@ -256,10 +251,9 @@ export const getNetworkId = async (props: Object, dispatch: Function): Promise<?
  * Get the API version used by the wallets, writes the value to state.
  * @returns {*}
  */
-export const getAPIVersion = (props: Object, dispatch: Function): string => {
+export const getAPIVersion = (props: Object): string => {
   const walletKey = props.whichWalletSelected;
   const walletAPIVersion = window?.cardano?.[walletKey].apiVersion;
-  dispatch(actions.saveWallet({ walletAPIVersion }));
 
   return walletAPIVersion;
 };
@@ -268,10 +262,9 @@ export const getAPIVersion = (props: Object, dispatch: Function): string => {
  * Get the name of the wallet (nami, eternl, flint) and store it in state.
  * @returns {*}
  */
-export const getWalletName = (props: Object, dispatch: Function): string => {
+export const getWalletName = (props: Object): string => {
   const walletKey = props.whichWalletSelected;
   const walletName = window?.cardano?.[walletKey].name;
-  dispatch(actions.saveWallet({ walletName }));
 
   return walletName;
 };
@@ -285,7 +278,7 @@ export const getWalletName = (props: Object, dispatch: Function): string => {
  * The amount of collateral to use is set in the wallet
  * @returns {Promise<void>}
  */
-export const getCollateral = async (props: Object, dispatch: Function): Promise<?any[]> => {
+export const getCollateral = async (props: Object): Promise<?any[]> => {
   const CollatUtxos = [];
 
   try {
@@ -303,8 +296,6 @@ export const getCollateral = async (props: Object, dispatch: Function): Promise<
       CollatUtxos.push(utxo);
     }
 
-    dispatch(actions.saveWallet({ CollatUtxos }));
-
     return CollatUtxos;
   } catch (err) {
     toast.error(<Error error={err} />);
@@ -318,11 +309,10 @@ export const getCollateral = async (props: Object, dispatch: Function): Promise<
  * as change when building transactions.
  * @returns {Promise<void>}
  */
-export const getChangeAddress = async (props: Object, dispatch: Function): Promise<?string> => {
+export const getChangeAddress = async (props: Object): Promise<?string> => {
   try {
     const raw = await API.getChangeAddress();
     const changeAddress = Address.from_bytes(Buffer.from(raw, 'hex')).to_bech32();
-    dispatch(actions.saveWallet({ changeAddress }));
 
     return changeAddress;
   } catch (err) {
@@ -336,12 +326,11 @@ export const getChangeAddress = async (props: Object, dispatch: Function): Promi
  * This is the Staking address into which rewards from staking get paid into
  * @returns {Promise<void>}
  */
-export const getRewardAddresses = async (props: Object, dispatch: Function): Promise<?string> => {
+export const getRewardAddresses = async (props: Object): Promise<?string> => {
   try {
     const raw = await API.getRewardAddresses();
     const rawFirst = raw[0];
     const rewardAddress = Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
-    dispatch(actions.saveWallet({ rewardAddress }));
 
     return rewardAddress;
   } catch (err) {
@@ -355,7 +344,7 @@ export const getRewardAddresses = async (props: Object, dispatch: Function): Pro
  * Gets previsouly used addresses
  * @returns {Promise<void>}
  */
-export const getUsedAddresses = async (props: Object, dispatch: Function): Promise<?string> => {
+export const getUsedAddresses = async (props: Object): Promise<?string> => {
   try {
     let usedAddress = '';
     const raw = await API.getUsedAddresses();
@@ -363,8 +352,6 @@ export const getUsedAddresses = async (props: Object, dispatch: Function): Promi
     if (rawFirst) {
       usedAddress = Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
     }
-
-    dispatch(actions.saveWallet({ usedAddress }));
 
     return usedAddress;
   } catch (err) {
@@ -378,7 +365,7 @@ export const getUsedAddresses = async (props: Object, dispatch: Function): Promi
  * Gets the UTXOs from the user's wallet and then stores them in an object in the state.
  * @returns {Promise<void>}
  */
-export const getUtxos = async (props: Object, dispatch: Function): Promise<?{Utxos: Utxo[], Nfts: Nft[]}> => {
+export const getUtxos = async (props: Object): Promise<?{Utxos: Utxo[], Nfts: Nft[]}> => {
   const Utxos = [];
   const Nfts = [];
 
@@ -430,8 +417,6 @@ export const getUtxos = async (props: Object, dispatch: Function): Promise<?{Utx
       Utxos.push(obj);
     }
 
-    dispatch(actions.saveWallet({ Utxos, Nfts }));
-
     return { Utxos, Nfts };
   } catch (err) {
     toast.error(<Error error={err} />);
@@ -444,22 +429,22 @@ export const getUtxos = async (props: Object, dispatch: Function): Promise<?{Utx
 * Refresh all the data from the user's wallet
 * @returns {Promise<void>}
 */
-export const refreshData = async (props: Object, dispatch: Function): Promise<Object> => {
+export const refreshData = async (props: Object): Promise<Object> => {
   try {
-    const walletFound = checkIfWalletFound(props, dispatch);
+    const walletFound = checkIfWalletFound(props);
     if (walletFound) {
-      const walletAPIVersion = getAPIVersion(props, dispatch);
-      const walletName = getWalletName(props, dispatch);
-      const walletEnabled = await enableWallet(props, dispatch);
+      const walletAPIVersion = getAPIVersion(props);
+      const walletName = getWalletName(props);
+      const walletEnabled = await enableWallet(props);
       if (walletEnabled) {
-        const networkID = await getNetworkId(props, dispatch);
-        const balance = await getBalance(props, dispatch);
-        const utxosAndNfts = await getUtxos(props, dispatch);
+        const networkID = await getNetworkId(props);
+        const balance = await getBalance(props);
+        const utxosAndNfts = await getUtxos(props);
         const nfts = utxosAndNfts?.Nfts ? fetchNftData(utxosAndNfts.Nfts) : null;
-        const collatUtxos = await getCollateral(props, dispatch);
-        const changeAddress = await getChangeAddress(props, dispatch);
-        const rewardAddress = await getRewardAddresses(props, dispatch);
-        const usedAddress = await getUsedAddresses(props, dispatch);
+        const collatUtxos = await getCollateral(props);
+        const changeAddress = await getChangeAddress(props);
+        const rewardAddress = await getRewardAddresses(props);
+        const usedAddress = await getUsedAddresses(props);
 
         return {
           walletAPIVersion,
