@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useState } from 'react';
 import type { Node } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   map, get, toNumber, isArray, isEqual,
 } from 'lodash';
@@ -17,7 +17,6 @@ import type { Utxo, Nft } from '../../../store/walletStore';
 // import { BlockFrostAPI } from '@blockfrost/blockfrost-js';
 
 export type ReduxProps = {
-    dispatch: Function,
     whichWalletSelected: string,
     walletName: string,
     balance: number,
@@ -57,6 +56,7 @@ function WalletPage(): Node {
     lovelaceToSend: get(state, 'wallet.lovelaceToSend', 0),
     plutusNfts: get(state, 'wallet.plutusNfts', {}),
   }), isEqual);
+  const dispatch = useDispatch();
   const [showHideMoreInfo, setShowHideMoreInfo] = useState(false);
   const nfts = redux.Nfts;
   const utxos = redux.Utxos;
@@ -107,7 +107,7 @@ function WalletPage(): Node {
 
   const sellNft = (nftKey) => {
     // setNftState(nftKey);
-    buildSendTokenToPlutusScript(nftKey, redux);
+    buildSendTokenToPlutusScript(nftKey, redux, dispatch);
   };
 
   const getNftImage = (nftKey): Node => {
@@ -140,7 +140,7 @@ function WalletPage(): Node {
         <h1>My Wallet</h1>
         <div className='wallet-actions'>
           <button className='outline' onClick={() => refreshData(redux)}>Refresh wallet data</button>
-          <button className='outline' onClick={() => disableWallet(redux)}>Disconnect wallet</button>
+          <button className='outline' onClick={() => disableWallet(redux, dispatch)}>Disconnect wallet</button>
         </div>
 
         <div className='wallet-dash'>

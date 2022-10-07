@@ -1,6 +1,37 @@
-.admin-page-wrapper {
+.admin-dashboard {
+    background-color: #11273f;
+    color: #ffffff;
     border: 1px solid #cfd9dd;
     border-radius: 10px;
     box-shadow: 0px 2px 5.9px 0.1px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    padding: 25px;
+    margin: 20px auto;
+    width: 100%;
+}
+
+.sections {
+    margin: 0 auto;
+}
+
+.users-section,
+.mint-nfts-section,
+.sell-nfts-section {
+    margin: 5px auto;
+
+    .users-table,
+    .mint-nfts-table,
+    .sell-nfts-table {
+        table {
+            width: 100%;
+            border: 1px solid #cfd9dd;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #cfd9dd;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    }
 }

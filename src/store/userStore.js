@@ -42,6 +42,14 @@ export type Profile = {
   wallets: Wallet[],
 }
 
+type Admin = {
+  id: number,
+  email: string,
+  role: number,
+  created_at: string,
+  updated_at: string,
+}
+
 type LoginCredentials = {
   email: string,
   password: string,
@@ -77,9 +85,23 @@ export type State = {
   userNfts: { [string]: Nft },
   currentSelectedUser: Profile|null,
   currentSelectedUserNfts: { [string]: Nft }|null,
+  currentAdmin: Admin|null
 };
 
 export const types = {
+  USR_LOGIN_ADMIN: 'USR/LOGIN_ADMIN',
+  USR_LOGIN_ADMIN_PENDING: 'USR/LOGIN_ADMIN_PENDING',
+  USR_LOGIN_ADMIN_REJECTED: 'USR/LOGIN_ADMIN_REJECTED',
+  USR_LOGIN_ADMIN_FULFILLED: 'USR/LOGIN_ADMIN_FULFILLED',
+
+  USR_LOGOUT_ADMIN: 'USR/LOGOUT_ADMIN',
+  USR_LOGOUT_ADMIN_PENDING: 'USR/LOGOUT_ADMIN_PENDING',
+  USR_LOGOUT_ADMIN_REJECTED: 'USR/LOGOUT_ADMIN_REJECTED',
+  USR_LOGOUT_ADMIN_FULFILLED: 'USR/LOGOUT_ADMIN_FULFILLED',
+
+  USR_CLEAR_ADMIN: 'USR/CLEAR_ADMIN',
+  USR_CLEAR_CURRENT_ADMIN: 'USR/CLEAR_CURRENT_ADMIN',
+
   USR_LOGIN_USER: 'USR/LOGIN_USER',
   USR_LOGIN_USER_PENDING: 'USR/LOGIN_USER_PENDING',
   USR_LOGIN_USER_REJECTED: 'USR/LOGIN_USER_REJECTED',
@@ -130,12 +152,27 @@ export const types = {
 };
 
 export const selectors = {
+  getAdmin: (state: ReduxState, isCurrentAdmin?: boolean): Admin|null => (isCurrentAdmin ? state.user.currentAdmin : null),
   getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
   getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
 };
 
 export const actions = {
+  loginAdmin: (payload: LoginCredentials): ReduxAction => ({
+    type: types.USR_LOGIN_ADMIN,
+    payload: API.postRequest('admin/session', { admin: payload }),
+  }),
+  logoutAdmin: (): ReduxAction => ({
+    type: types.USR_LOGOUT_ADMIN,
+    payload: API.deleteRequest('admin/session'),
+  }),
+  clearAdmin: (): ReduxAction => ({
+    type: types.USR_CLEAR_ADMIN,
+  }),
+  clearCurrentAdmin: (): ReduxAction => ({
+    type: types.USR_CLEAR_CURRENT_ADMIN,
+  }),
   loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_LOGIN_USER,
     payload: API.postRequest('auth/session', { user: payload }),
@@ -187,6 +224,13 @@ const logoutUser = (): State => {
   return {};
 };
 
+const logoutAdmin = (): State => {
+  removeItem('_jwt');
+  removeItem('admin');
+
+  return {};
+};
+
 const handleLikeResponse = (state: State, payload: Object): State => ({ ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } });
 
 const handleDislikeResponse = (state: State, payload: Object): State => {
@@ -210,6 +254,22 @@ const handleUserNfts = (state: State, payload: Nft[]): State => {
 
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
+    case types.USR_LOGIN_ADMIN_FULFILLED:
+      toast.success('Admin successfully logged in!');
+
+      return state;
+
+    case types.USR_LOGOUT_ADMIN_FULFILLED:
+      toast.success('Admin successfully logged out!');
+
+      return logoutAdmin();
+
+    case types.USR_CLEAR_ADMIN:
+      return logoutAdmin();
+
+    case types.USR_CLEAR_CURRENT_ADMIN:
+      return { ...state, currentAdmin: null };
+
     case types.USR_LOGIN_USER_FULFILLED:
     case types.USR_LOGIN_USER_ORCID_FULFILLED:
       toast.success('User successfully logged in!');

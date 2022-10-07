@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import Popup from 'reactjs-popup';
 import {
   some, isEmpty, map, find, get,
 } from 'lodash';
@@ -13,6 +14,7 @@ import { actions as nftActions } from '../../../store/nftStore';
 import type { Category } from '../../../store/categoriesStore';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
+import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
 
 type State = {
@@ -79,7 +81,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     e.preventDefault();
 
     const {
-      tradeable, price, name, description, categoryId,
+      tradeable, price, name, description, categoryId, file
     } = this.state;
 
     const randomID = (): string => uuidv4();
@@ -97,10 +99,40 @@ class MintingPage extends React.Component<ReduxProps, State> {
       fingerprint: randomID(),
       policy_id: randomID(),
       asset_name: randomID(),
+      file: file
     }));
 
     this.setState({ mintingProcessStarted: true });
   };
+
+  finishJSON = (e) => {
+    this.createNft(e);
+
+    const json = this.createJSON();
+    console.log(json);
+  }
+
+  // for JSON parsing
+  createJSON = () => {
+    const jsonFile = {
+      fingerprint: this.state.fingerprint,
+      policy_id: this.state.policy_id,
+      asset_name: this.state.asset_name,
+      price: this.state.price,
+      name: this.state.name,
+      description: this.state.description,
+      subject: this.state.subject,
+      owner_id: this.state.owner_id,
+      onchain_transaction_id: this.state.onchain_transaction_id,
+      cardano_address_id: this.state.cardano_address_id,
+      tradeable: this.state.tradeable,
+      file: this.state.file,
+      paperContent: this.state.paperContent
+    }
+
+    const json = JSON.stringify(jsonFile);
+    return json;
+  }
 
   render () {
     const typeOptions = [
@@ -120,12 +152,14 @@ class MintingPage extends React.Component<ReduxProps, State> {
     }));
 
     const {
-      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted,
+      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted, fingerprint, policy_id, asset_name
     } = this.state;
 
     const fileUploaded = !isEmpty(file?.name);
 
     const disabled = tradeable ? (!fileUploaded || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
+
+    const jsonFile = this.createJSON();
 
     return (
       <div className="minting-page">
@@ -134,11 +168,18 @@ class MintingPage extends React.Component<ReduxProps, State> {
             <h2>Create item</h2>
           </div>
           {mintingProcessStarted ? (
-            <MintingWizard />
+            <Popup trigger='start-minting-btn' modal closeOnEscape>
+              {(close) => (
+                <div className='content-wrapper'>
+                  <pre>{jsonFile}</pre>
+                </div>
+              )}
+            </Popup>
+            //<MintingWizard />
           ) : (
             <div className="row">
               <div className="column">
-                <form onSubmit={(e) => this.createNft(e)}>
+                <form onSubmit={(e) => this.finishJSON(e)}>
                   <div className="input-wrapper">
                     <label htmlFor="minting-nft-type-selectbox">Type</label>
                     <Selectbox
@@ -153,6 +194,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       <FileUpload
                         file={file}
                         handleFileUpload={this.handleFileUpload}
+                        onChange={(e) => this.setState({ file: e.target.files[0] })}
                       />
                     </div>
                   ) : (
@@ -213,12 +255,13 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       />
                     </div>
                   )}
-                  <button disabled={disabled}>
+                  <button id='start-minting-btn' disabled={disabled} onClick={() => this.createJSON()}>
                     Start minting process
                   </button>
                 </form>
               </div>
               <div className="column">
+                <div>{}</div>
                 <div className="subheader">
                   Preview item
                 </div>
@@ -231,10 +274,10 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       category: categoryText,
                       price,
                       owner,
-                      asset_name: '',
+                      asset_name,
                       cardano_address: '',
-                      description: '',
-                      policy_id: '',
+                      description,
+                      policy_id,
                       subject: '',
                       endorsers: [],
                       tags: [],
@@ -242,6 +285,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       nft_collection: '',
                       onchain_transaction: 0,
                       verified: false,
+                      file: file
                     }
                   }
                 />
@@ -254,9 +298,16 @@ class MintingPage extends React.Component<ReduxProps, State> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
-  profile: state.user.profile,
-  categories: state.categories,
-});
+const mapStateToProps = (state: ReduxState) => {
+  const profile = state.user.profile;
+  const categories = state.categories;
+  const fingerprint = state.fingerprint;
+  const policy_id = state.policy_id;
+  const asset_name = state.asset_name;
+  const paperContent = state.paperContent;
+  const file = state.file;
+
+  return {profile, categories, fingerprint, policy_id, asset_name, paperContent, file};
+};
 
 export default (connect<ReduxProps, Props>(mapStateToProps)(MintingPage): React$ComponentType<Props>);

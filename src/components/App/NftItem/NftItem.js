@@ -63,7 +63,7 @@ class NftItem extends React.Component<ReduxProps> {
       data, trending, userId, exchangeRates,
     } = this.props;
     const {
-      tradeable, category, name, verified, owner, price, asset_name, policy_id,
+      tradeable, category, name, verified, owner, price, asset_name, policy_id, file,
     } = data;
     const like = findNftLike(data, userId);
 
@@ -81,6 +81,9 @@ class NftItem extends React.Component<ReduxProps> {
             <div className="trending-nft-item-top-info">
               <div className="name">
                 {name}
+              </div>
+              <div className="nft-image">
+                <img src={file}></img>
               </div>
             </div>
             <div className="trending-nft-item-bottom-info">
@@ -104,6 +107,9 @@ class NftItem extends React.Component<ReduxProps> {
             <div className="nft-item-name-wrapper">
               <div className="nft-item-name">
                 {name}
+              </div>
+              <div className="nft-image">
+                <img src={file}></img>
               </div>
             </div>
             <div className="nft-item-top-info">

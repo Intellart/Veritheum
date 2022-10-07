@@ -19,6 +19,7 @@ export type CreatePayload = {
   policy_id: string,
   onchain_transaction_id: number,
   cardano_address_id: number,
+  url: string
 }
 
 export type LikePayload = {
@@ -50,6 +51,7 @@ export type Nft = {
   endorsers: string[]|null,
   owner: Object,
   verified: boolean,
+  file: string
 }
 
 export type State = {

@@ -161,9 +161,9 @@ export const enableWallet = async (props: Object): Promise<boolean> => {
   return false;
 };
 
-export const disableWallet = (props: Object) => {
+export const disableWallet = (props: Object, dispatch: Function) => {
   API = undefined;
-  props.dispatch(actions.saveWallet({
+  dispatch(actions.saveWallet({
     isOpen: false,
     whichWalletSelected: undefined,
     walletFound: false,
@@ -549,6 +549,7 @@ export const initTransactionBuilder = (protocolParams: Object): any => {
  */
 export const getTxUnspentOutputs = (props: Object): any => {
   const txOutputs = TransactionUnspentOutputs.new();
+
   for (const utxo of props.Utxos) {
     txOutputs.add(utxo.TransactionUnspentOutput);
   }
@@ -556,7 +557,7 @@ export const getTxUnspentOutputs = (props: Object): any => {
   return txOutputs;
 };
 
-export const buildSendTokenToPlutusScript = async (nftKey: Object, state: Object) => {
+export const buildSendTokenToPlutusScript = async (nftKey: Object, state: Object, dispatch: Function) => {
   const txBuilder = await initTransactionBuilder(state.protocolParams);
   const ScriptAddress = Address.from_bech32(state.addressScriptBech32);
   const shelleyChangeAddress = Address.from_bech32(state.changeAddress);

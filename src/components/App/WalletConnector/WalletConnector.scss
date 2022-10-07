@@ -27,14 +27,15 @@
             padding: 10px;
             text-align: center;
 
+            &:hover {
+                color: #7a7b8f;
+                transition: 0.3s;
+                box-shadow: 1px 1px 4px #7a7b8f;
+            }
+
             a {
                 color: #11273f;
                 text-decoration: none;
-
-                &:hover {
-                    color: #475b71;
-                    transition: 0.3s;
-                }
             }
         }
     }

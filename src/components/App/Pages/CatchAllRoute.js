@@ -7,16 +7,23 @@ import NotFound from './NotFound/NotFound';
 
 type Props = {
   isAuthorized: boolean,
+  isAdmin: boolean,
 }
 
 function CatchAllRoute(props: Props): Node {
   const navigate = useNavigate();
   const location = useLocation().pathname;
-  const { isAuthorized } = props;
+  const { isAuthorized, isAdmin } = props;
 
   useEffect(() => {
     if (isAuthorized && includes(['/sign_in'], location)) {
       navigate('/profile', {
+        replace: true,
+      });
+    }
+
+    if (isAdmin && includes(['/admin'], location)) {
+      navigate('/admin-page', {
         replace: true,
       });
     }

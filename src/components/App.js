@@ -12,6 +12,7 @@ import Gallery from './App/Pages/Gallery';
 import MarketPlace from './App/MarketPlace/MarketPlace';
 import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
+import AdminSignin from './App/Pages/AdminSignin';
 import Register from './App/Pages/Register';
 import ForgotPassword from './App/Pages/ForgotPassword';
 import Profile from './App/Pages/Profile';
@@ -21,6 +22,7 @@ import TermsOfUse from './App/Pages/TermsOfUse';
 import CookiePolicy from './App/Pages/CookiePolicy';
 import PrivacyPolicy from './App/Pages/PrivacyPolicy';
 import WalletPage from './App/Pages/WalletPage';
+import AdminPage from './App/AdminPage/AdminPage';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import ScrollToTop from './App/ScrollToTop/ScrollToTop';
 import Loader from './App/Loader/Loader';
@@ -32,6 +34,7 @@ import '../styles/index.scss';
 
 function App(): Node {
   const isAuthorized: boolean = useSelector((state) => !isEmpty(userSelectors.getUser(state)), isEqual);
+  const isAdmin: boolean = useSelector((state) => !isEmpty(userSelectors.getAdmin(state)), isEqual);
   const isLoading = useSelector(globalSelectors.checkIsLoading, isEqual);
 
   return (
@@ -58,7 +61,9 @@ function App(): Node {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
+          {!isAdmin && <Route path="/admin" element={<AdminSignin />} />}
 
+          {<Route path='/admin-page' element={<AdminPage />} />}
           {isAuthorized && (
             <>
               <Route path="/wallet-page" element={<WalletPage />} />
