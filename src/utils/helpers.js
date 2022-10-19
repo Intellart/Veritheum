@@ -223,6 +223,7 @@ export const getBalance = async (props: Object): Promise<?number> => {
 
     return balance;
   } catch (err) {
+    // TODO: research error
     toast.error(<Error error={err} />);
   }
 

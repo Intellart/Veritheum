@@ -58,8 +58,6 @@ export type Nft = {
 
 export type State = {
   [string]: Nft,
-  createdNfts: Nft[],
-  sellNfts: Nft[],
 };
 
 export const types = {
@@ -82,42 +80,10 @@ export const types = {
   NFT_DISLIKE_NFT_PENDING: 'NFT/DISLIKE_NFT_PENDING',
   NFT_DISLIKE_NFT_REJECTED: 'NFT/DISLIKE_NFT_REJECTED',
   NFT_DISLIKE_NFT_FULFILLED: 'NFT/DISLIKE_NFT_FULFILLED',
-
-  NFT_FETCH_CREATED_NFTS: 'NFT/FETCH_CREATED_NFTS',
-  NFT_FETCH_CREATED_NFTS_PENDING: 'NFT/FETCH_CREATED_NFTS_PENDING',
-  NFT_FETCH_CREATED_NFTS_REJECTED: 'NFT/FETCH_CREATED_NFTS_REJECTED',
-  NFT_FETCH_CREATED_NFTS_FULFILLED: 'NFT/FETCH_CREATED_NFTS_FULFILLED',
-
-  NFT_APPROVE_CREATED_NFT: 'NFT/APPROVE_CREATED_NFT',
-  NFT_APPROVE_CREATED_NFT_PENDING: 'NFT/APPROVE_CREATED_NFT_PENDING',
-  NFT_APPROVE_CREATED_NFT_REJECTED: 'NFT/APPROVE_CREATED_NFT_REJECTED',
-  NFT_APPROVE_CREATED_NFT_FULFILLED: 'NFT/APPROVE_CREATED_NFT_FULFILLED',
-
-  NFT_DECLINE_CREATED_NFT: 'NFT/DECLINE_CREATED_NFT',
-  NFT_DECLINE_CREATED_NFT_PENDING: 'NFT/DECLINE_CREATED_NFT_PENDING',
-  NFT_DECLINE_CREATED_NFT_REJECTED: 'NFT/DECLINE_CREATED_NFT_REJECTED',
-  NFT_DECLINE_CREATED_NFT_FULFILLED: 'NFT/DECLINE_CREATED_NFT_FULFILLED',
-
-  NFT_FETCH_SELL_NFTS: 'NFT/FETCH_SELL_NFTS',
-  NFT_FETCH_SELL_NFTS_PENDING: 'NFT/FETCH_SELL_NFTS_PENDING',
-  NFT_FETCH_SELL_NFTS_REJECTED: 'NFT/FETCH_SELL_NFTS_REJECTED',
-  NFT_FETCH_SELL_NFTS_FULFILLED: 'NFT/FETCH_SELL_NFTS_FULFILLED',
-
-  NFT_APPROVE_SELL_NFT: 'NFT/APPROVE_SELL_NFT',
-  NFT_APPROVE_SELL_NFT_PENDING: 'NFT/APPROVE_SELL_NFT_PENDING',
-  NFT_APPROVE_SELL_NFT_REJECTED: 'NFT/APPROVE_SELL_NFT_REJECTED',
-  NFT_APPROVE_SELL_NFT_FULFILLED: 'NFT/APPROVE_SELL_NFT_FULFILLED',
-
-  NFT_DECLINE_SELL_NFT: 'NFT/DECLINE_SELL_NFT',
-  NFT_DECLINE_SELL_NFT_PENDING: 'NFT/DECLINE_SELL_NFT_PENDING',
-  NFT_DECLINE_SELL_NFT_REJECTED: 'NFT/DECLINE_SELL_NFT_REJECTED',
-  NFT_DECLINE_SELL_NFT_FULFILLED: 'NFT/DECLINE_SELL_NFT_FULFILLED',
 };
 
 export const selectors = {
   getNfts: (state: ReduxState): Nft[] => values(state.nfts),
-  getCreatedNfts: (state: ReduxState): Nft[] => values(state.createdNfts),
-  getSellNfts: (state: ReduxState): Nft[] => values(state.sellNfts),
 };
 
 export const actions = {
@@ -136,30 +102,6 @@ export const actions = {
   dislikeNft: (id: number): ReduxAction => ({
     type: types.NFT_DISLIKE_NFT,
     payload: API.deleteRequest(`nft_likes/${id}`),
-  }),
-  fetchCreatedNfts: (): ReduxAction => ({
-    type: types.NFT_FETCH_CREATED_NFTS,
-    payload: API.getRequest('created_nfts'),
-  }),
-  approveCreatedNft: (fingerprint: string): ReduxAction => ({
-    type: types.NFT_APPROVE_CREATED_NFT,
-    payload: API.postRequest(`created_nfts/${fingerprint}`),
-  }),
-  declineCreatedNft: (fingerprint: string): ReduxAction => ({
-    type: types.NFT_DECLINE_CREATED_NFT,
-    payload: API.deleteRequest(`created_nfts/${fingerprint}`),
-  }),
-  fetchSellNfts: (): ReduxAction => ({
-    type: types.NFT_FETCH_SELL_NFTS,
-    payload: API.getRequest('sell_nfts'),
-  }),
-  approveSellNft: (fingerprint: string): ReduxAction => ({
-    type: types.NFT_APPROVE_SELL_NFT,
-    payload: API.postRequest(`sell_nfts/${fingerprint}`),
-  }),
-  declineSellNft: (fingerprint: string): ReduxAction => ({
-    type: types.NFT_DECLINE_SELL_NFT,
-    payload: API.deleteRequest(`sell_nfts/${fingerprint}`),
   }),
 };
 
@@ -190,20 +132,6 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return handleLikeResponse(state, action.payload);
     case types.NFT_DISLIKE_NFT_FULFILLED:
       return handleDislikeResponse(state, action.payload);
-
-    case types.NFT_FETCH_CREATED_NFTS_FULFILLED:
-    case types.NFT_FETCH_SELL_NFTS_FULFILLED:
-      return { ...state, ...keyBy(action.payload, 'fingerprint') }
-
-    case types.NFT_APPROVE_CREATED_NFT_FULFILLED:
-      return toast.success('NFT approved for minting.');
-    case types.NFT_APPROVE_SELL_NFT_FULFILLED:
-      return toast.success('NFT approved for selling.');
-
-    case types.NFT_DECLINE_CREATED_NFT_FULFILLED:
-      return toast.success('NFT minting successfully declined.');
-    case types.NFT_DECLINE_SELL_NFT_FULFILLED:
-      return toast.success('Sale of NFT successfully declined.');
 
     default:
       return state || {};

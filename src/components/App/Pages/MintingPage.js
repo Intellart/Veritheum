@@ -159,8 +159,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
     const disabled = tradeable ? (!fileUploaded || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
 
-    const jsonFile = this.createJSON();
-
     return (
       <div className="minting-page">
         <div className="content-wrapper">
@@ -168,14 +166,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
             <h2>Create item</h2>
           </div>
           {mintingProcessStarted ? (
-            <Popup trigger='start-minting-btn' modal closeOnEscape>
-              {(close) => (
-                <div className='content-wrapper'>
-                  <pre>{jsonFile}</pre>
-                </div>
-              )}
-            </Popup>
-            //<MintingWizard />
+            <MintingWizard />
           ) : (
             <div className="row">
               <div className="column">

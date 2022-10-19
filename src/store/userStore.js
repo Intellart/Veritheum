@@ -85,7 +85,8 @@ export type State = {
   userNfts: { [string]: Nft },
   currentSelectedUser: Profile|null,
   currentSelectedUserNfts: { [string]: Nft }|null,
-  currentAdmin: Admin|null
+  currentAdmin: Admin|null,
+  allUsers: { [string]: Profile },
 };
 
 export const types = {
@@ -101,6 +102,11 @@ export const types = {
 
   USR_CLEAR_ADMIN: 'USR/CLEAR_ADMIN',
   USR_CLEAR_CURRENT_ADMIN: 'USR/CLEAR_CURRENT_ADMIN',
+
+  USR_FETCH_ALL_USERS: 'USR/FETCH_ALL_USERS',
+  USR_FETCH_ALL_USERS_PENDING: 'USR/FETCH_ALL_USERS_PENDING',
+  USR_FETCH_ALL_USERS_REJECTED: 'USR/FETCH_ALL_USERS_REJECTED',
+  USR_FETCH_ALL_USERS_FULFILLED: 'USR/FETCH_ALL_USERS_FULFILLED',
 
   USR_LOGIN_USER: 'USR/LOGIN_USER',
   USR_LOGIN_USER_PENDING: 'USR/LOGIN_USER_PENDING',
@@ -156,6 +162,7 @@ export const selectors = {
   getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
   getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
+  getAllUsers: (state: ReduxState): Profile[] => values(state.user.allUsers),
 };
 
 export const actions = {
@@ -173,13 +180,17 @@ export const actions = {
   clearCurrentAdmin: (): ReduxAction => ({
     type: types.USR_CLEAR_CURRENT_ADMIN,
   }),
+  fetchAllUsers: (): ReduxAction => ({
+    type: types.USR_ADMIN_FETCH_USERS,
+    payload: API.getRequest('users'),
+  }),
   loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_LOGIN_USER,
     payload: API.postRequest('auth/session', { user: payload }),
   }),
   loginUserORCID: (payload: CredentialsORCID): ReduxAction => ({
     type: types.USR_LOGIN_USER_ORCID,
-    payload: API.orcidOAuth('auth/session/orcid', { orcid: payload }),
+    payload: API.orcidOAuth('auth/orcid/session', { orcid: payload }),
   }),
   logoutUser: (): ReduxAction => ({
     type: types.USR_LOGOUT_USER,
@@ -191,7 +202,7 @@ export const actions = {
   }),
   registerUserORCID: (payload: CredentialsORCID): ReduxAction => ({
     type: types.USR_CONNECT_ORCID,
-    payload: API.orcidOAuth('auth/user/orcid', { orcid: payload }),
+    payload: API.orcidOAuth('auth/orcid/user', { orcid: payload }),
   }),
   updateUser: (payload: UpdatePayload): ReduxAction => ({
     type: types.USR_UPDATE_USER,
@@ -269,6 +280,9 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
 
     case types.USR_CLEAR_CURRENT_ADMIN:
       return { ...state, currentAdmin: null };
+
+    case types.USR_FETCH_ALL_USERS_FULFILLED:
+      return { ...state, ...{ allUsers: { ...state.allUsers, ...keyBy([action.payload], 'id') } }};
 
     case types.USR_LOGIN_USER_FULFILLED:
     case types.USR_LOGIN_USER_ORCID_FULFILLED:

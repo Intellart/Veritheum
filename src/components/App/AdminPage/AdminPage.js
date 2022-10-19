@@ -1,9 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { get, map } from 'lodash';
-import { actions } from '../../../store/nftStore';
+import { actions as createdNftActions } from '../../../store/createdNftStore';
+import { actions as sellNftActions } from '../../../store/sellNftStore';
+import { actions as userActions, selectors } from '../../../store/userStore';
 import type { Nft } from '../../../store/nftStore';
+import type { Profile } from '../../../store/userStore';
 
 // NFTs view
 // - approve minting and selling
@@ -13,17 +16,20 @@ import type { Nft } from '../../../store/nftStore';
 
 type Props = {
     dispatch: Function,
-    createdNfts: Nft[],
-    sellNfts: Nft[],
+    createdNfts: { [string]: Nft },
+    sellNfts: { [string]: Nft },
+    allUsers: { [string]: Profile },
 }
 
 const mapStateToProps = (state) => {
-  const createdNfts = get(state, 'nft.createdNfts', []);
-  const sellNfts = get(state, 'nft.sellNfts', []);
+  const createdNfts = get(state, 'createdNfts', {});
+  const sellNfts = get(state, 'sellNfts', {});
+  const allUsers = get(state, 'user.allUsers', {});
 
   return {
     createdNfts,
     sellNfts,
+    allUsers,
   };
 };
 
@@ -34,13 +40,30 @@ class AdminPage extends React.Component<ReduxProps, State> {
   }
 
   componentDidMount() {
-    this.props.dispatch(actions.fetchCreatedNfts());
-    this.props.dispatch(actions.fetchSellNfts());
+    this.props.dispatch(createdNftActions.fetchCreatedNfts());
+    this.props.dispatch(sellNftActions.fetchSellNfts());
+    this.props.dispatch(userActions.fetchAllUsers());
+  }
+
+  approveMintOfNft(fingerprint: string) {
+    this.props.dispatch(createdNftActions.approveCreatedNft(fingerprint));
+  }
+
+  declineMintOfNft(fingerprint: string) {
+    this.props.dispatch(createdNftActions.declineCreatedNft(fingerprint));
+  }
+
+  approveSellOfNft(fingerprint: string) {
+    this.props.dispatch(sellNftActions.approveSellNft(fingerprint));
+  }
+
+  declineSellOfNft(fingerprint: string) {
+    this.props.dispatch(sellNftActions.declineSellNft(fingerprint));
   }
 
   render () {
-    const { createdNfts, sellNfts } = this.props;
-    const userList = [];
+    const { createdNfts, sellNfts, allUsers } = this.props;
+    console.log(allUsers);
 
     return (
       <div className='page-wrapper'>
@@ -61,13 +84,13 @@ class AdminPage extends React.Component<ReduxProps, State> {
                     </tr>
                   </thead>
                   <tbody>
-                    {map(userList, (userKey, i) => (
+                    {map(allUsers, (userKey, i) => (
                       <tr key={i} className="mint-nfts-row">
-                        <td className="mint-nfts-data">{userKey?.id}</td>
-                        <td className="mint-nfts-data">{userKey?.full_name}</td>
-                        <td className="mint-nfts-data">{userKey?.email}</td>
-                        <td className="mint-nfts-data">{userKey?.orcid_id}</td>
-                        <td className="mint-nfts-data">{userKey?.created_at}</td>
+                        <td className="mint-nfts-data">{userKey.id}</td>
+                        <td className="mint-nfts-data">{userKey.full_name}</td>
+                        <td className="mint-nfts-data">{userKey.email}</td>
+                        <td className="mint-nfts-data">{userKey.orcid_id}</td>
+                        <td className="mint-nfts-data">{userKey.created_at}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -99,8 +122,8 @@ class AdminPage extends React.Component<ReduxProps, State> {
                         <td className="mint-nfts-data">{nftKey.created_at}</td>
                         <td className="mint-nfts-data">{nftKey.url}</td>
                         <td className="mint-nfts-actions">
-                          <button onClick={() => this.approveSellOfNft(nftKey.fingerprint)}>Approve</button>
-                          <button onClick={() => this.declineSellOfNft(nftKey.fingerprint)}>Decline</button>
+                          <button onClick={() => this.approveMintOfNft(nftKey.fingerprint)}>Approve</button>
+                          <button onClick={() => this.declineMintOfNft(nftKey.fingerprint)}>Decline</button>
                         </td>
                       </tr>
                     ))}

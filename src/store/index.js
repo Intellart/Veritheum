@@ -11,6 +11,8 @@ import { isPromise } from '../utils';
 import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer, types as userStoreTypes } from './userStore';
 import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
+import { reducer as createdNftStoreReducer, types as createdNftStoreTypes } from './createdNftStore';
+import { reducer as sellNftStoreReducer, types as sellNftStoreTypes } from './sellNftStore';
 import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
 import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
 import { reducer as exchangeRatesStoreReducer, types as exchangeRatesTypes } from './exchangeRatesStore';
@@ -28,6 +30,8 @@ import type {
 const ignoreErrors = [
   userStoreTypes.USR_FETCH_NFTS,
   nftStoreTypes.NFT_FETCH_NFTS,
+  createdNftStoreTypes.NFT_FETCH_CREATED_NFTS,
+  sellNftStoreTypes.NFT_FETCH_SELL_NFTS,
   categoriesStoreTypes.CATEGORY_GET_CATEGORIES,
   studyFieldStoreTypes.STUDY_FIELD_GET_STUDY_FIELDS,
 ];
@@ -142,6 +146,8 @@ export const configureStore = (
       global: globalStoreReducer,
       user: userStoreReducer,
       nfts: nftStoreReducer,
+      createdNfts: createdNftStoreReducer,
+      sellNfts: sellNftStoreReducer,
       categories: categoryStoreReducer,
       studyFields: studyFieldStoreReducer,
       exchangeRates: exchangeRatesStoreReducer,
