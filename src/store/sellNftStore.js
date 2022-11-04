@@ -1,6 +1,6 @@
 // @flow
 import {
-  values, keyBy, get,
+  values, keyBy, omit,
 } from 'lodash';
 import { toast } from 'react-toastify';
 import * as API from '../api';
@@ -36,15 +36,15 @@ export const selectors = {
 export const actions = {
   fetchSellNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_SELL_NFTS,
-    payload: API.getRequest('sell_nfts'),
+    payload: API.getRequest('nfts/nfts_sell_requests'),
   }),
   approveSellNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_APPROVE_SELL_NFT,
-    payload: API.postRequest(`sell_nfts/approve?id=${fingerprint}`),
+    payload: API.putRequest(`nfts/${fingerprint}/accept_sell`),
   }),
   declineSellNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_DECLINE_SELL_NFT,
-    payload: API.deleteRequest(`sell_nfts/decline?id=${fingerprint}`),
+    payload: API.putRequest(`nfts/${fingerprint}/reject_sell`),
   }),
 };
 
@@ -55,10 +55,14 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_APPROVE_SELL_NFT_FULFILLED:
-      return toast.success('NFT approved for selling.');
+      toast.success('NFT approved for selling.');
 
-      case types.NFT_DECLINE_SELL_NFT_FULFILLED:
-      return toast.success('Sale of NFT successfully declined.');
+      return { ...omit({ ...state }, action.payload.fingerprint) };
+
+    case types.NFT_DECLINE_SELL_NFT_FULFILLED:
+      toast.success('NFT approved for selling.');
+
+      return { ...omit({ ...state }, action.payload.fingerprint) };
 
     default:
       return state || {};

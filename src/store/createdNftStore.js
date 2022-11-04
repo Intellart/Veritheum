@@ -1,12 +1,11 @@
 // @flow
 import {
-  values, keyBy, get,
+  values, keyBy, omit,
 } from 'lodash';
 import { toast } from 'react-toastify';
 import * as API from '../api';
 import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 import type { Nft } from './nftStore';
-
 
 export type State = {
   [string]: Nft,
@@ -36,38 +35,31 @@ export const selectors = {
 export const actions = {
   fetchCreatedNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_CREATED_NFTS,
-    payload: API.getRequest('created_nfts'),
+    payload: API.getRequest('nfts'),
   }),
   approveCreatedNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_APPROVE_CREATED_NFT,
-    payload: API.postRequest(`created_nfts/approve?id=${fingerprint}`),
+    payload: API.putRequest(`nfts/${fingerprint}/accept_minting`),
   }),
   declineCreatedNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_DECLINE_CREATED_NFT,
-    payload: API.deleteRequest(`created_nfts/decline?id=${fingerprint}`),
+    payload: API.putRequest(`nfts/${fingerprint}/reject_minting`),
   }),
 };
 
-const handleDeclineResponse = (state: State): State => {
-  const nfts: ?Nft[] = get(state);
-  if (!nfts) return state;
-
-  return { ...state };
-};
-
-// eslint-disable-next-line default-param-last
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
     case types.NFT_FETCH_CREATED_NFTS_FULFILLED:
-      return { ...state, ...keyBy(action.payload, 'fingerprint') }
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_APPROVE_CREATED_NFT_FULFILLED:
-      return toast.success('NFT approved for minting.');
+      toast.success('NFT approved for minting.');
+
+      return { ...omit({ ...state }, action.payload.fingerprint) };
     case types.NFT_DECLINE_CREATED_NFT_FULFILLED:
-      // TODO: find out why this is returning an error
-      // state should be updated
-      return handleDeclineResponse(state);
-      //return toast.success('NFT minting successfully declined.');
+      toast.success('NFT rejected for minting.');
+
+      return { ...omit({ ...state }, action.payload.fingerprint) };
 
     default:
       return state || {};

@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { get, map } from 'lodash';
 import { actions as createdNftActions } from '../../../store/createdNftStore';
 import { actions as sellNftActions } from '../../../store/sellNftStore';
-import { actions as userActions, selectors } from '../../../store/userStore';
+import { actions as userActions } from '../../../store/userStore';
 import type { Nft } from '../../../store/nftStore';
 import type { Profile } from '../../../store/userStore';
 
@@ -36,13 +35,35 @@ const mapStateToProps = (state) => {
 class AdminPage extends React.Component<ReduxProps, State> {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      createdNfts: this.props?.createdNfts,
+      sellNfts: this.props?.sellNfts,
+      allUsers: this.props?.allUsers,
+    };
   }
 
   componentDidMount() {
     this.props.dispatch(createdNftActions.fetchCreatedNfts());
     this.props.dispatch(sellNftActions.fetchSellNfts());
     this.props.dispatch(userActions.fetchAllUsers());
+  }
+
+  componentDidUpdate() {
+    if (this.state.sellNfts !== this.props.sellNfts) {
+      this.setState({
+        sellNfts: this.props.sellNfts,
+      });
+    }
+    if (this.state.allUsers !== this.props.allUsers) {
+      this.setState({
+        allUsers: this.props.allUsers,
+      });
+    }
+    if (this.state.createdNfts !== this.props.createdNfts) {
+      this.setState({
+        createdNfts: this.props.createdNfts,
+      });
+    }
   }
 
   approveMintOfNft(fingerprint: string) {
@@ -62,8 +83,7 @@ class AdminPage extends React.Component<ReduxProps, State> {
   }
 
   render () {
-    const { createdNfts, sellNfts, allUsers } = this.props;
-    console.log(allUsers);
+    const { createdNfts, sellNfts, allUsers } = this.state;
 
     return (
       <div className='page-wrapper'>
@@ -98,7 +118,7 @@ class AdminPage extends React.Component<ReduxProps, State> {
               </div>
             </div>
             <div className='mint-nfts-section'>
-              <h4>NFTs for minting</h4>
+              <h4>NFT - requests for minting</h4>
               <div className='mint-nfts-table'>
                 <table>
                   <thead>
@@ -132,7 +152,7 @@ class AdminPage extends React.Component<ReduxProps, State> {
               </div>
             </div>
             <div className='sell-nfts-section'>
-              <h4>NFTs for selling</h4>
+              <h4>NFT - Requests for sell</h4>
               <div className='sell-nfts-table'>
                 <table>
                   <thead>

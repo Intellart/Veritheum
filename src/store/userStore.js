@@ -80,7 +80,7 @@ type UpdatePayload = {
 }
 
 export type State = {
-  profile: Profile,
+  profile: Profile|null,
   orcidAccount: Object,
   userNfts: { [string]: Nft },
   currentSelectedUser: Profile|null,
@@ -181,7 +181,7 @@ export const actions = {
     type: types.USR_CLEAR_CURRENT_ADMIN,
   }),
   fetchAllUsers: (): ReduxAction => ({
-    type: types.USR_ADMIN_FETCH_USERS,
+    type: types.USR_FETCH_ALL_USERS,
     payload: API.getRequest('users'),
   }),
   loginUser: (payload: LoginCredentials): ReduxAction => ({
@@ -248,7 +248,9 @@ const handleDislikeResponse = (state: State, payload: Object): State => {
   const nft: ?Nft = get(state, `userNfts.${payload.fingerprint}`);
   if (!nft) return state;
 
+  // $FlowFixMe
   const isOwner = get(nft.owner.id) === get(state.profile.id);
+  // $FlowFixMe
   const isAuthor = includes(getAllUserWalletAddresses(state.profile.wallets, 'address'), nft.cardano_address);
 
   if (isAuthor || isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
@@ -263,12 +265,25 @@ const handleUserNfts = (state: State, payload: Nft[]): State => {
   return { ...state, ...{ [saveToState]: { ...state[saveToState], ...keyBy(payload, 'fingerprint') } } };
 };
 
+const handleSilentLogin = (state: State, payload: {user: Profile|Admin, is_admin: boolean}): State => {
+  if (payload.is_admin) {
+    // $FlowFixMe
+    return { ...state, currentAdmin: payload.user };
+  }
+
+  // $FlowFixMe
+  return { ...state, profile: payload.user };
+};
+
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
+    case types.USR_VALIDATE_USER_FULFILLED:
+      return handleSilentLogin(state, action.payload);
+
     case types.USR_LOGIN_ADMIN_FULFILLED:
       toast.success('Admin successfully logged in!');
 
-      return { ...state, ...{ currentAdmin: action.payload } };
+      return { ...state, ...{ currentAdmin: action.payload, profile: null } };
 
     case types.USR_LOGOUT_ADMIN_FULFILLED:
       toast.success('Admin successfully logged out!');
@@ -282,13 +297,13 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, currentAdmin: null };
 
     case types.USR_FETCH_ALL_USERS_FULFILLED:
-      return { ...state, ...{ allUsers: { ...state.allUsers, ...keyBy([action.payload], 'id') } }};
+      return { ...state, ...{ allUsers: { ...state.allUsers, ...keyBy(action.payload, 'id') } } };
 
     case types.USR_LOGIN_USER_FULFILLED:
     case types.USR_LOGIN_USER_ORCID_FULFILLED:
       toast.success('User successfully logged in!');
 
-      return { ...state, ...{ profile: action.payload } };
+      return { ...state, ...{ profile: action.payload, currentAdmin: null } };
 
     case types.USR_CONNECT_ORCID_FULFILLED:
       toast.success('Thank you for connecting your ORCID iD!');
