@@ -39,7 +39,6 @@ export type Profile = {
   social_links: string[],
   created_at: string,
   updated_at: string,
-  wallets: Wallet[],
 }
 
 type Admin = {

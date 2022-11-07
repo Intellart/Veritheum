@@ -2,8 +2,8 @@
 import {
   values, keyBy, get,
 } from 'lodash';
-import { toast } from 'react-toastify';
 import * as API from '../api';
+import { jsonToFormData } from '../utils';
 import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 
 export type CreatePayload = {
@@ -12,15 +12,11 @@ export type CreatePayload = {
   price: ?string|number,
   name: string,
   description: string,
-  subject: string,
   owner_id: number,
-  nft_collection_id?: number,
-  category_id: ?number,
+  // category_id: ?number,
   asset_name: string,
   policy_id: string,
-  onchain_transaction_id: number,
-  cardano_address_id: number,
-  url: string
+  // cardano_address_id: number,
 }
 
 export type LikePayload = {
@@ -93,7 +89,7 @@ export const actions = {
   }),
   createNft: (payload: CreatePayload): ReduxAction => ({
     type: types.NFT_CREATE_NFT,
-    payload: API.postRequest('nfts', { nft: payload }),
+    payload: API.postRequest('nfts', jsonToFormData('nft', payload)),
   }),
   likeNft: (payload: LikePayload): ReduxAction => ({
     type: types.NFT_LIKE_NFT,

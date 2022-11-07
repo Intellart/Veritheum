@@ -2,7 +2,7 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
-  filter, get, reduce, some, includes, map, find, floor,
+  filter, get, reduce, some, includes, map, find, floor, isObject, forEach, isArray,
 } from 'lodash';
 import type { Nft } from '../store/nftStore';
 import type { Profile } from '../store/userStore';
@@ -71,3 +71,27 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
 export const findNftLike = (nft: Nft, userId: ?number): ?Object => find(nft.likes, ['user_id', userId]);
 
 export const calcExchangeRate = (exchangeRates: ?State, coin: number, currency?: 'usd'|'cad'|'eur'|'gbp' = 'usd'): number => floor(exchangeRates ? exchangeRates[currency] * coin : 1.00, 6);
+
+export const jsonToFormData = (rootParam: string, payload: Object): FormData => {
+  const formData = new FormData();
+
+  const buildFormData = (data: any, parentKey?: string) => {
+    const isValidObject = !(data instanceof Date) && !(data instanceof File) && !(data instanceof Blob);
+
+    if (data && isObject(data) && isValidObject) {
+      forEach(data, (val: any, key: string|number) => {
+        const propertyPath = isArray(data) ? '[]' : `[${key}]`;
+
+        buildFormData(data[key], parentKey ? parentKey + propertyPath : String(key));
+      });
+
+      return;
+    }
+
+    if (parentKey) formData.append(parentKey, data);
+  };
+
+  buildFormData({ [rootParam]: payload });
+
+  return formData;
+};

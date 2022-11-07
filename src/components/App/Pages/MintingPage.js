@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import Popup from 'reactjs-popup';
 import {
   some, isEmpty, map, find, get,
 } from 'lodash';
@@ -81,7 +80,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     e.preventDefault();
 
     const {
-      tradeable, price, name, description, categoryId, file
+      tradeable, price, name, description, categoryId, file,
     } = this.state;
 
     const randomID = (): string => uuidv4();
@@ -91,48 +90,17 @@ class MintingPage extends React.Component<ReduxProps, State> {
       price,
       name,
       description,
-      subject: name,
-      category_id: categoryId,
+      // category_id: categoryId,
       owner_id: this.props.profile.id,
-      onchain_transaction_id: 1,
-      cardano_address_id: get(this.props.profile, 'wallets[0]cardano_addresses[0]id'),
+      // cardano_address_id: get(this.props.profile, 'wallets[0]cardano_addresses[0]id'),
       fingerprint: randomID(),
       policy_id: randomID(),
       asset_name: randomID(),
-      file: file
+      file,
     }));
 
     this.setState({ mintingProcessStarted: true });
   };
-
-  finishJSON = (e) => {
-    this.createNft(e);
-
-    const json = this.createJSON();
-    console.log(json);
-  }
-
-  // for JSON parsing
-  createJSON = () => {
-    const jsonFile = {
-      fingerprint: this.state.fingerprint,
-      policy_id: this.state.policy_id,
-      asset_name: this.state.asset_name,
-      price: this.state.price,
-      name: this.state.name,
-      description: this.state.description,
-      subject: this.state.subject,
-      owner_id: this.state.owner_id,
-      onchain_transaction_id: this.state.onchain_transaction_id,
-      cardano_address_id: this.state.cardano_address_id,
-      tradeable: this.state.tradeable,
-      file: this.state.file,
-      paperContent: this.state.paperContent
-    }
-
-    const json = JSON.stringify(jsonFile);
-    return json;
-  }
 
   render () {
     const typeOptions = [
@@ -152,7 +120,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     }));
 
     const {
-      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted, fingerprint, policy_id, asset_name
+      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted,
     } = this.state;
 
     const fileUploaded = !isEmpty(file?.name);
@@ -170,7 +138,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
           ) : (
             <div className="row">
               <div className="column">
-                <form onSubmit={(e) => this.finishJSON(e)}>
+                <form onSubmit={(e) => this.createNft(e)}>
                   <div className="input-wrapper">
                     <label htmlFor="minting-nft-type-selectbox">Type</label>
                     <Selectbox
@@ -246,7 +214,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       />
                     </div>
                   )}
-                  <button id='start-minting-btn' disabled={disabled} onClick={() => this.createJSON()}>
+                  <button id='start-minting-btn' disabled={disabled}>
                     Start minting process
                   </button>
                 </form>
@@ -257,27 +225,29 @@ class MintingPage extends React.Component<ReduxProps, State> {
                   Preview item
                 </div>
                 <NftItem
-                  data={
-                    {
-                      fingerprint: '',
-                      tradeable,
-                      name,
-                      category: categoryText,
-                      price,
-                      owner,
-                      asset_name,
-                      cardano_address: '',
-                      description,
-                      policy_id,
-                      subject: '',
-                      endorsers: [],
-                      tags: [],
-                      likes: [],
-                      nft_collection: '',
-                      onchain_transaction: 0,
-                      verified: false,
-                      file: file
-                    }
+                  data={{
+                    status: '',
+                    fingerprint: '',
+                    tradeable,
+                    name,
+                    category: categoryText,
+                    price,
+                    owner,
+                    // eslint-disable-next-line camelcase
+                    asset_name: '',
+                    cardano_address: '',
+                    description,
+                    // eslint-disable-next-line camelcase
+                    policy_id: '',
+                    subject: '',
+                    endorsers: [],
+                    tags: [],
+                    likes: [],
+                    nft_collection: '',
+                    onchain_transaction: 0,
+                    verified: false,
+                    file,
+                  }
                   }
                 />
               </div>
@@ -290,15 +260,10 @@ class MintingPage extends React.Component<ReduxProps, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => {
-  const profile = state.user.profile;
-  const categories = state.categories;
-  const fingerprint = state.fingerprint;
-  const policy_id = state.policy_id;
-  const asset_name = state.asset_name;
-  const paperContent = state.paperContent;
-  const file = state.file;
+  const { profile } = state.user;
+  const { categories } = state;
 
-  return {profile, categories, fingerprint, policy_id, asset_name, paperContent, file};
+  return { profile, categories };
 };
 
 export default (connect<ReduxProps, Props>(mapStateToProps)(MintingPage): React$ComponentType<Props>);
