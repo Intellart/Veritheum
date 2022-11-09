@@ -11,6 +11,7 @@
     margin: 10px;
     min-width: 232px;
     padding: 20px;
+    position: relative;
 
     @media screen and (max-width: 800px) {
       margin: 5px;
@@ -23,9 +24,15 @@
       justify-content: center;
       margin-bottom: 16px;
       min-height: 80px;
+      position: relative;
 
       .nft-item-name {
         color: #11273f;
+        font-weight: 600;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 200;
         display: -webkit-box;
         font-family: "SoraMedium";
         font-size: 14px;
@@ -40,6 +47,18 @@
         @media screen and (max-width: 800px) {
           font-size: 12px;
         }
+      }
+    }
+
+    .nft-image {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        opacity: 0.5;
       }
     }
 
@@ -133,7 +152,9 @@
         margin-bottom: 25px;
 
         &.align-end {
-          justify-content: flex-end;
+          position: absolute;
+          bottom: 20px;
+          right: 20px;
         }
 
         &:last-child {
@@ -288,7 +309,7 @@
           font-family: "SoraMedium";
           font-size: 12px;
           margin-top: -9px;
-          padding: 8px 20px;
+          padding: 10px 20px;
           text-align: center;
           transition: 0.3s;
 

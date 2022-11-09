@@ -29,6 +29,7 @@ import Loader from './App/Loader/Loader';
 import WebSocketElement from './App/WebSocket/WebSocketElement';
 import { selectors as userSelectors } from '../store/userStore';
 import { selectors as globalSelectors } from '../store/globalStore';
+import { selectors as nftSelectors } from '../store/nftStore';
 import 'react-toastify/dist/ReactToastify.min.css';
 import '../styles/index.scss';
 
@@ -36,6 +37,7 @@ function App(): Node {
   const isAuthorized: boolean = useSelector((state) => !isEmpty(userSelectors.getUser(state)), isEqual);
   const isAdmin: boolean = useSelector((state) => !isEmpty(userSelectors.getAdmin(state)), isEqual);
   const isLoading = useSelector(globalSelectors.checkIsLoading, isEqual);
+  const NftsList = useSelector(state => nftSelectors.getNfts(state));
 
   return (
     <Router>
@@ -49,7 +51,7 @@ function App(): Node {
         rtl={false}
       />
       <ScrollToTop />
-      <Navigation isAuthorized={isAuthorized} />
+      <Navigation isAuthorized={isAuthorized} isAdmin={isAdmin} NftsList={NftsList} />
       <div className="main-content">
         <Routes>
           <Route index element={<Home />} />

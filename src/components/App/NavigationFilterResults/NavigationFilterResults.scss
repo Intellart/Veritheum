@@ -1,0 +1,14 @@
+.filter-results-wrapper {
+  position: absolute;
+  top: 70px;
+  left: 137px;
+  border: 1px solid whitesmoke;
+  background: white;
+  min-width: 250px;
+  .nft-result {
+    padding: 8px;
+    &:hover {
+        cursor: pointer;
+    }
+  }
+}

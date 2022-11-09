@@ -24,7 +24,6 @@ class TrendingToday extends React.Component<Props> {
             <NftItem
               key={nft.fingerprint}
               data={nft}
-              trending
             />
           );
         })}
@@ -32,26 +31,26 @@ class TrendingToday extends React.Component<Props> {
     );
 
     const getSlides = () => {
-      if (nftList.length > 0 && nftList.length <= 6) {
+      if (nftList.length > 0 && nftList.length <= 4) {
         return (
           <div className="trending-today">
             <Carousel
               autoPlay
               showThumbs={false}
             >
-              {getSlide(0, 5)}
+              {getSlide(0, 3)}
             </Carousel>
           </div>
         );
-      } else if (nftList.length >= 7 && nftList.length < 13) {
+      } else if (nftList.length >= 5 && nftList.length < 9) {
         return (
           <div className="trending-today">
             <Carousel
               autoPlay
               showThumbs={false}
             >
-              {getSlide(0, 5)}
-              {getSlide(6, 11)}
+              {getSlide(0, 3)}
+              {getSlide(4, 8)}
             </Carousel>
           </div>
         );

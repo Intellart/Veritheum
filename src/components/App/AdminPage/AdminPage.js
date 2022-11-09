@@ -140,7 +140,7 @@ class AdminPage extends React.Component<ReduxProps, State> {
                         <td className="mint-nfts-data">{nftKey.owner?.email}</td>
                         <td className="mint-nfts-data">{nftKey.owner?.orcid_id}</td>
                         <td className="mint-nfts-data">{nftKey.created_at}</td>
-                        <td className="mint-nfts-data">{nftKey.url}</td>
+                        <td className="mint-nfts-data"><a href={nftKey.url} target="_blank" rel="noopener noreferrer">{nftKey.url ? 'Link to Nft' : '-'}</a></td>
                         <td className="mint-nfts-actions">
                           <button onClick={() => this.approveMintOfNft(nftKey.fingerprint)}>Approve</button>
                           <button onClick={() => this.declineMintOfNft(nftKey.fingerprint)}>Decline</button>

@@ -112,15 +112,6 @@ function Profile(): Node {
 
   const tabs = [
     {
-      label: 'Collected',
-      value: {
-        id: 'collected',
-        nft: 'owner.id',
-        user: 'id',
-      },
-      icon: <MdCollectionsBookmark />,
-    },
-    {
       label: 'Created',
       value: {
         id: 'created',
@@ -171,15 +162,21 @@ function Profile(): Node {
       </div>
       <div className="lower-profile-page-wrapper">
         <div className="toolbar-links">
-          <Link to={window.location.pathname}>
-            <VscGlobe />
-          </Link>
-          <Link to={window.location.pathname}>
-            <IoLogoTwitter />
-          </Link>
-          <Link to={window.location.pathname}>
-            <FaDiscord />
-          </Link>
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <VscGlobe />
+            </Link>
+          ) : null}
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <IoLogoTwitter />
+            </Link>
+          ) : null}
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <FaDiscord />
+            </Link>
+          ) : null}
           {!userId && (
             <Link to="/settings">
               <IoSettings />

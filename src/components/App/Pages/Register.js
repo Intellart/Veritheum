@@ -1,12 +1,13 @@
 // @flow
 import React from 'react';
+import Select from 'react-select';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import {
   some, isEmpty, get, isEqual, map,
 } from 'lodash';
-import Selectbox from '../Selectbox/Selectbox';
+// import Selectbox from '../Selectbox/Selectbox';
 import Footer from '../Footer/Footer';
 import { actions as userActions, selectors as orcidSelectors } from '../../../store/userStore';
 import { actions as studyFieldActions, selectors as studyFieldsSelectors, type StudyField } from '../../../store/studyFieldsStore';
@@ -113,11 +114,11 @@ class Register extends React.Component<ReduxProps, State> {
 
     const { studyFields } = this.props;
 
-    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    let studyFieldsOptions: Object[] = [];
     if (studyFields) {
       studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (studyField: StudyField) => ({
         value: studyField.id,
-        text: studyField.field_name,
+        label: studyField.field_name,
       }))];
     }
 
@@ -186,10 +187,13 @@ class Register extends React.Component<ReduxProps, State> {
                   <div className="input-wrapper">
                     <label htmlFor="field-of-study-input">Field of study</label>
                     <div className="selectbox-wrapper" id="field-of-study-input">
-                      <Selectbox
+                      <Select
+                        isMulti
+                        name="studyFieldOptions"
                         options={studyFieldsOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
                         onChange={this.onOptionSelect}
-                        preselected
                       />
                     </div>
                   </div>
