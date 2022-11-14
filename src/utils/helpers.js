@@ -68,9 +68,10 @@ export let API: any;
  */
 export const getAssetData = (asset: string): any => {
   if (asset !== 'lovelace') {
-    const test = axios.get(`https://cardano-testnet.blockfrost.io/api/v0/assets/${asset}`, {
+    const url = get(process.env, 'REACT_APP_BLOCKFROST_PREVIEW_URL');
+    const test = axios.get(url + `/assets/${asset}`, {
       headers: {
-        project_id: get(process.env, 'REACT_APP_BLOCKFROST_API_KEY'),
+        project_id: get(process.env, 'REACT_APP_BLOCKFROST_PREVIEW_API_KEY'),
       },
     }).then((response) => response.data);
 
@@ -102,9 +103,10 @@ export const fetchNftData = (nfts: Nft[]): Nft[] => {
 };
 
 export const getPlutusContractData = (address: string): any => {
-  const test = axios.get(`https://cardano-testnet.blockfrost.io/api/v0/addresses/${address}`, {
+  const url = get(process.env, 'REACT_APP_BLOCKFROST_PREVIEW_URL');
+  const test = axios.get(url + `/addresses/${address}`, {
     headers: {
-      project_id: get(process.env, 'REACT_APP_BLOCKFROST_API_KEY'),
+      project_id: get(process.env, 'REACT_APP_BLOCKFROST_PREVIEW_API_KEY'),
     },
   }).then((response) => response.data).catch((err) => {
     toast.error(<Error error={err} />);

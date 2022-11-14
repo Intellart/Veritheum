@@ -2,7 +2,7 @@
 import {
   isEmpty, join, map, has, trimEnd,
 } from 'lodash';
-import apiClient from './axios';
+import { apiClient, apiCopsClient } from './axios';
 
 export type QueryParam = {
   key: string,
@@ -53,4 +53,17 @@ export const orcidOAuth = async (finalEndpoint: string, payload: any): Promise<a
 
     return response.data;
   }
+};
+
+// CardanoOps
+export const postBuildTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/build_tx', payload);
+
+  return response.data;
+};
+
+export const postSubmitTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/submit_tx', payload);
+
+  return response.data;
 };

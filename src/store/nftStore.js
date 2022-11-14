@@ -16,7 +16,7 @@ export type CreatePayload = {
   // category_id: ?number,
   asset_name: string,
   policy_id: string,
-  // cardano_address_id: number,
+  file: string,
 }
 
 export type LikePayload = {
@@ -48,8 +48,9 @@ export type Nft = {
   endorsers: string[]|null,
   owner: Object,
   verified: boolean,
-  file: string,
+  url: string,
   status: string,
+  nft_id: number,
 }
 
 export type State = {

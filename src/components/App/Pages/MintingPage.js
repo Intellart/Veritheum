@@ -15,6 +15,7 @@ import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
+import { postBuildTx, postSubmitTx } from '../../../api'
 
 type State = {
   tradeable: boolean,
@@ -41,6 +42,12 @@ type ReduxProps = {
 class MintingPage extends React.Component<ReduxProps, State> {
   constructor(props) {
     super(props);
+
+    this.startNftMinting = this.startNftMinting.bind(this);
+    this.createNft = this.createNft.bind(this);
+    this.signTx = this.signTx.bind(this);
+    this.sendTxAndWitnessBack = this.sendTxAndWitnessBack.bind(this);
+
     this.state = {
       tradeable: true,
       owner: '',
@@ -76,6 +83,15 @@ class MintingPage extends React.Component<ReduxProps, State> {
     });
   };
 
+  startNftMinting = (e) => {
+    e.preventDefault();
+
+    this.createNft(e);
+    this.prepareSender();
+  }
+
+  // here we first save the NFT to the db, then build the tx and ask the user to sign
+  // TODO: If the user hasn't connected his wallet, prompt him to do so
   createNft = (e) => {
     e.preventDefault();
 
@@ -92,15 +108,75 @@ class MintingPage extends React.Component<ReduxProps, State> {
       description,
       // category_id: categoryId,
       owner_id: this.props.profile.id,
-      // cardano_address_id: get(this.props.profile, 'wallets[0]cardano_addresses[0]id'),
       fingerprint: randomID(),
       policy_id: randomID(),
       asset_name: randomID(),
       file,
-    }));
+    }))
 
     this.setState({ mintingProcessStarted: true });
   };
+
+  // 0.
+  prepareSender() {
+    // TODO: check which wallet is selected and use that one
+    window.cardano.getUsedAddresses().then((senders) => {
+      window.cardano.getChangeAddress().then((change_address) => {
+        this.submitMintRequest(senders, change_address);
+      })
+    });
+  }
+
+  // 1.
+  submitMintRequest(senders, change_address) {
+    console.log(senders);
+    console.log(change_address);
+
+    // TODO: get this data from the backend
+    const newNFTId = 111;
+    const newNFTName = this.state.name;
+    const newNFTLongName = this.state.name;
+    const newNFTDescription = this.state.description;
+    const newNFTImageIPFS = 'ipfs://QmRhTTbUrPYEw3mJGGhQqQST9k86v1DPBiTTWJGKDJsVFw';//this.props.url;
+
+    const payload = JSON.stringify({
+      'senders': senders,
+      'change_address': change_address,
+      'nft_id': newNFTId,
+      'nft_name': newNFTName,
+      'nft_long_name': newNFTLongName,
+      'nft_description': newNFTDescription,
+      'nft_image_ipfs': newNFTImageIPFS
+    });
+
+    postBuildTx(payload)
+      .then(response => response)
+      .then(this.signTx);
+  }
+
+  // 2.
+  signTx(tx) {
+    console.log(tx);
+    window.cardano.signTx(tx['tx']).then((witness) => {
+        // TODO: this part needs to be handled from the backend after the admin approves the mint
+        this.sendTxAndWitnessBack(tx['tx'], witness)
+    })
+  }
+
+  // 3.
+  sendTxAndWitnessBack(tx, witness) {
+    console.log(witness)
+
+    const payload = JSON.stringify({
+      'tx': tx, 'witness': witness
+    });
+
+    postSubmitTx(payload)
+      .then(response => response)
+      .then(data => {
+          alert("Transaction: " + data["tx_id"] + " submitted!");
+      });
+  }
 
   render () {
     const typeOptions = [
@@ -120,7 +196,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     }));
 
     const {
-      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted,
+      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted
     } = this.state;
 
     const fileUploaded = !isEmpty(file?.name);
@@ -138,7 +214,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
           ) : (
             <div className="row">
               <div className="column">
-                <form onSubmit={(e) => this.createNft(e)}>
+                <form onSubmit={(e) => this.startNftMinting(e)}>
                   <div className="input-wrapper">
                     <label htmlFor="minting-nft-type-selectbox">Type</label>
                     <Selectbox
@@ -239,6 +315,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                     description,
                     // eslint-disable-next-line camelcase
                     policy_id: '',
+                    nft_id: null,
                     subject: '',
                     endorsers: [],
                     tags: [],

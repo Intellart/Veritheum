@@ -252,7 +252,7 @@ const handleDislikeResponse = (state: State, payload: Object): State => {
   // $FlowFixMe
   const isAuthor = includes(getAllUserWalletAddresses(state.profile.wallets, 'address'), nft.cardano_address);
 
-  if (isAuthor || isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
+  if (isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
 
   return { ...state, userNfts: omit(state.userNfts, payload.fingerprint) };
 };

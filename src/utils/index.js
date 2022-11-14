@@ -31,6 +31,7 @@ export const orcidOAuthLink = (path: string): string => {
   return `${baseURL}/oauth/authorize?client_id=${clientId}&response_type=code&scope=/authenticate&redirect_uri=${buildRedirectLink(path)}`;
 };
 
+// TODO: wallets table does not exist anymore, no need for addresses
 export const getAllUserWalletAddresses = (wallets: Object[], key: string): number[] => {
   const list = reduce(wallets, (result, wallet) => {
     const addresses = map(wallet.cardano_addresses, (address: Object) => address[key]);
@@ -49,9 +50,9 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
       const userVal = get(profile, tab.value.user);
 
       if (tab.value.id === 'created') {
-        const addresses = getAllUserWalletAddresses(userVal, 'address');
+        //const addresses = getAllUserWalletAddresses(userVal, 'address');
 
-        return includes(addresses, nftVal);
+        return nftVal;
       }
 
       if (tab.value.id === 'liked') return some(nftVal, ['user_id', userVal]);
