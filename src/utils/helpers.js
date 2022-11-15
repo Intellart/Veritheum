@@ -120,7 +120,7 @@ export const getPlutusContractData = (address: string): any => {
  * @returns {Array}
  */
 export const fetchPlutusContractNftData = async (): Promise<any[]> => {
-  const PlutusAddress = 'addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c';
+  const PlutusAddress = get(process.env, 'REACT_APP_PLUTUS_SCRIPT', '');
   const data = await getPlutusContractData(PlutusAddress);
   const nftArray = [];
 

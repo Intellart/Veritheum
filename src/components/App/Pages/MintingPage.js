@@ -14,7 +14,7 @@ import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
-import { postBuildTx } from '../../../api';
+import { postMintBuildTx, postSubmitTx } from '../../../api'
 
 type State = {
   tradeable: boolean,
@@ -144,7 +144,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
       'nft_image_ipfs': newNFTImageIPFS
     });
 
-    postBuildTx(payload)
+    postMintBuildTx(payload)
       .then(response => response)
       .then(this.signTx);
   }

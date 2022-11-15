@@ -2,8 +2,9 @@
 import React from 'react';
 import type { Node } from 'react';
 import { get, isArray } from 'lodash';
-// import { buildSendTokenToPlutusScript } from '../../../utils/helpers';
 import type { Nft } from '../../../store/nftStore';
+import './NftItem.scss';
+import { postBuyBuildTx, postBuySubmitTx } from '../../../api';
 
 type Props = {
   data: {
@@ -13,8 +14,46 @@ type Props = {
 };
 
 function MarketplaceNftItem(props: Props): Node {
-  const buy = () => {
-    // buildSendTokenToPlutusScript(nftKey, redux);
+  // TODO: implement close sell funcionality for NFTs owned by user
+  const submitBuyRequest = (tokenName) => {
+    let adaValue = prompt("Please enter token value (in ADA)", "2");
+
+    if (adaValue == null) {
+        return
+    } else {
+        adaValue = adaValue * 1000000;
+    }
+
+    window.cardano.getUsedAddresses().then((senders) => {
+      window.cardano.getChangeAddress().then((change_address) => {
+        const payload = JSON.stringify({
+          'senders': senders,
+          'change_address': change_address,
+          'nft_name': tokenName,
+          'nft_price': adaValue
+        });
+
+        postBuyBuildTx(payload)
+          .then(response => response)
+          .then(buySignTx);
+      });
+    });
+  };
+
+  const buySignTx = (tx) => {
+    window.cardano.signTx(tx['tx'], true).then((witness) => {
+      buySendTxAndWitnessBack(tx['tx'], witness);
+    });
+  };
+
+  const buySendTxAndWitnessBack = (tx, witness) => {
+    const payload = JSON.stringify({ 'tx': tx, 'witness': witness });
+
+    postBuySubmitTx(payload)
+      .then(response => response)
+      .then(data => {
+          alert("Transaction: " + data["tx_id"] + " submitted!");
+      });
   };
 
   const getNftImage = (): Node => {
@@ -47,7 +86,7 @@ function MarketplaceNftItem(props: Props): Node {
         <div className="nft-item-name-wrapper">
           <div className="nft-item-name">{get(props.data, 'onchain_metadata.name', '')}</div>
         </div>
-        <div className='nft-item-img'>
+        <div className='nft-image'>
           {getNftImage()}
         </div>
         {get(props.data, 'metadata') && (
@@ -61,7 +100,7 @@ function MarketplaceNftItem(props: Props): Node {
         </div>
         )}
         <div className="nft-item-bottom-info">
-          <button className='outline' onClick={() => buy()}>Buy</button>
+          <button className='outline' onClick={() => submitBuyRequest(props.data.asset)}>Buy</button>
         </div>
       </div>
     </div>

@@ -203,7 +203,7 @@ const initialReduxState: Object = {
     assetNameHex: '',
     assetPolicyIdHex: '',
     assetAmountToSend: 1,
-    addressScriptBech32: 'addr_test1wrwd4hdwm7z9uvqusmckt64999qh63dafc495rwwec9twncha7q6c',
+    addressScriptBech32: get(process.env, 'REACT_APP_PLUTUS_SCRIPT', 'addr_test1wp7gplg8rf90vu7mgmsnef5v2c7ss05aa6gfegazc9ta73c992cyw'),
     datumStr: '12345678',
     plutusScriptCborHex: '4e4d01000033222220051200120011',
     transactionIdLocked: '',
