@@ -2,12 +2,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  some, isEmpty, map, find, get,
+  some, isEmpty, map, find,
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import NftItem from '../NftItem/NftItem';
 import FileUpload from '../FileUpload/FileUpload';
-import MintingWizard from '../MintingWizard/MintingWizard';
 import Selectbox from '../Selectbox/Selectbox';
 import { actions as nftActions } from '../../../store/nftStore';
 import type { Category } from '../../../store/categoriesStore';
@@ -15,7 +14,7 @@ import type { Profile as ProfileType } from '../../../store/userStore';
 import type { ReduxState } from '../../../types';
 import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
-import { postBuildTx, postSubmitTx } from '../../../api'
+import { postBuildTx } from '../../../api';
 
 type State = {
   tradeable: boolean,
@@ -27,7 +26,7 @@ type State = {
   categoryId: number|null,
   categoryText: string,
   price: number|null,
-  mintingProcessStarted: boolean,
+  fingerprint: string,
 }
 
 type Props = {}
@@ -58,7 +57,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
       categoryId: null,
       categoryText: '',
       price: null,
-      mintingProcessStarted: false,
+      fingerprint: '',
     };
   }
 
@@ -88,7 +87,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
     this.createNft(e);
     this.prepareSender();
-  }
+  };
 
   // here we first save the NFT to the db, then build the tx and ask the user to sign
   // TODO: If the user hasn't connected his wallet, prompt him to do so
@@ -100,7 +99,8 @@ class MintingPage extends React.Component<ReduxProps, State> {
     } = this.state;
 
     const randomID = (): string => uuidv4();
-
+    const fingerprint = randomID();
+    this.setState({ fingerprint });
     this.props.dispatch(nftActions.createNft({
       tradeable,
       price,
@@ -108,13 +108,11 @@ class MintingPage extends React.Component<ReduxProps, State> {
       description,
       // category_id: categoryId,
       owner_id: this.props.profile.id,
-      fingerprint: randomID(),
+      fingerprint,
       policy_id: randomID(),
       asset_name: randomID(),
       file,
-    }))
-
-    this.setState({ mintingProcessStarted: true });
+    }));
   };
 
   // 0.
@@ -129,9 +127,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
   // 1.
   submitMintRequest(senders, change_address) {
-    console.log(senders);
-    console.log(change_address);
-
     // TODO: get this data from the backend
     const newNFTId = 111;
     const newNFTName = this.state.name;
@@ -156,26 +151,21 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
   // 2.
   signTx(tx) {
-    console.log(tx);
     window.cardano.signTx(tx['tx']).then((witness) => {
-        // TODO: this part needs to be handled from the backend after the admin approves the mint
-        this.sendTxAndWitnessBack(tx['tx'], witness)
-    })
+      // TODO: this part needs to be handled from the backend after the admin approves the mint
+      this.sendTxAndWitnessBack(tx['tx'], witness);
+    });
   }
 
   // 3.
   sendTxAndWitnessBack(tx, witness) {
-    console.log(witness)
+    const payload = {
+      tx_id: tx,
+      witness,
+    };
 
-    const payload = JSON.stringify({
-      'tx': tx, 'witness': witness
-    });
-
-    postSubmitTx(payload)
-      .then(response => response)
-      .then(data => {
-          alert("Transaction: " + data["tx_id"] + " submitted!");
-      });
+    this.props.dispatch(nftActions.updateTxAndWitness(payload, this.state.fingerprint))
+      .then(window.location.replace('/profile'));
   }
 
   render () {
@@ -196,7 +186,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     }));
 
     const {
-      tradeable, owner, file, paperContent, name, description, categoryText, price, mintingProcessStarted
+      tradeable, owner, file, paperContent, name, description, categoryText, price,
     } = this.state;
 
     const fileUploaded = !isEmpty(file?.name);
@@ -209,9 +199,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
           <div className="header">
             <h2>Create item</h2>
           </div>
-          {mintingProcessStarted ? (
-            <MintingWizard />
-          ) : (
             <div className="row">
               <div className="column">
                 <form onSubmit={(e) => this.startNftMinting(e)}>
@@ -290,8 +277,8 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       />
                     </div>
                   )}
-                  <button id='start-minting-btn' disabled={disabled}>
-                    Start minting process
+                  <button  id='start-minting-btn' disabled={disabled}>
+                    Send request for minting
                   </button>
                 </form>
               </div>
@@ -329,7 +316,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
                 />
               </div>
             </div>
-          )}
         </div>
       </div>
     );

@@ -68,6 +68,11 @@ export const types = {
   NFT_CREATE_NFT_REJECTED: 'NFT/CREATE_NFT_REJECTED',
   NFT_CREATE_NFT_FULFILLED: 'NFT/CREATE_NFT_FULFILLED',
 
+  NFT_UPDATE_TX_AND_WITNESS_NFT: 'NFT/UPDATE_TX_AND_WITNESS_NFT',
+  NFT_UPDATE_TX_AND_WITNESS_NFT_PENDING: 'NFT/UPDATE_TX_AND_WITNESS_NFT_PENDING',
+  NFT_UPDATE_TX_AND_WITNESS_NFT_REJECTED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_REJECTED',
+  NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_FULFILLED',
+
   NFT_LIKE_NFT: 'NFT/LIKE_NFT',
   NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
   NFT_LIKE_NFT_REJECTED: 'NFT/LIKE_NFT_REJECTED',
@@ -91,6 +96,10 @@ export const actions = {
   createNft: (payload: CreatePayload): ReduxAction => ({
     type: types.NFT_CREATE_NFT,
     payload: API.postRequest('nfts', jsonToFormData('nft', payload)),
+  }),
+  updateTxAndWitness: (payload: any, fingerprint: string): ReduxAction => ({
+    type: types.NFT_UPDATE_TX_AND_WITNESS_NFT,
+    payload: API.putRequest(`/nfts/${fingerprint}/update_tx_and_witness`, jsonToFormData('nft', payload)),
   }),
   likeNft: (payload: LikePayload): ReduxAction => ({
     type: types.NFT_LIKE_NFT,
@@ -123,6 +132,9 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_CREATE_NFT_FULFILLED:
+      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+
+    case types.NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_LIKE_NFT_FULFILLED:

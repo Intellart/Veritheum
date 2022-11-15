@@ -61,9 +61,3 @@ export const postBuildTx = async (payload: any): Promise<any> => {
 
   return response.data;
 };
-
-export const postSubmitTx = async (payload: any): Promise<any> => {
-  const response: any = await apiCopsClient.post('/nfts/submit_tx', payload);
-
-  return response.data;
-};
