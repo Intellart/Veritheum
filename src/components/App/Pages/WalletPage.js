@@ -123,13 +123,16 @@ function WalletPage(): Node {
   // Close sell
   // TODO: implement Close functionality on marketplace NFTs
   const closeSellSignTx = (tx) => {
+    const witnessSet = tx['witness_set']
+    const datum = tx['datum']
+
     window.cardano.signTx(tx['tx']).then((witness) => {
-      closeSellSendTxAndWitnessBack(tx['tx'], witness);
+      closeSellSendTxAndWitnessBack(tx['tx'], witness, witnessSet, datum);
     });
   };
 
-  const closeSellSendTxAndWitnessBack = (tx, witness) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness });
+  const closeSellSendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
+    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
 
     postCloseSellSubmitTx(payload)
       .then(response => response)

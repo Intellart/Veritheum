@@ -41,13 +41,16 @@ function MarketplaceNftItem(props: Props): Node {
   };
 
   const buySignTx = (tx) => {
+    const witnessSet = tx['witness_set'];
+    const datum = tx['datum'];
+
     window.cardano.signTx(tx['tx'], true).then((witness) => {
-      buySendTxAndWitnessBack(tx['tx'], witness);
+      buySendTxAndWitnessBack(tx['tx'], witness, witnessSet, datum);
     });
   };
 
-  const buySendTxAndWitnessBack = (tx, witness) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness });
+  const buySendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
+    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
 
     postBuySubmitTx(payload)
       .then(response => response)
