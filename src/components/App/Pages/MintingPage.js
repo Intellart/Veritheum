@@ -127,7 +127,10 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
   // 1.
   submitMintRequest(senders, change_address) {
-    // TODO: get this data from the backend
+    // TODO: get this data from the backend, still not implemented
+    // NFT props not updating with new data
+    const { nft_id, asset_name, description, url } = this.props;
+    console.log(nft_id, asset_name, description, url);
     const newNFTId = 111;
     const newNFTName = this.state.name;
     const newNFTLongName = this.state.name;
@@ -152,7 +155,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
   // 2.
   signTx(tx) {
     window.cardano.signTx(tx['tx']).then((witness) => {
-      // TODO: this part needs to be handled from the backend after the admin approves the mint
       this.sendTxAndWitnessBack(tx['tx'], witness);
     });
   }

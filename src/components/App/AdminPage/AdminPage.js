@@ -7,12 +7,6 @@ import { actions as userActions } from '../../../store/userStore';
 import type { Nft } from '../../../store/nftStore';
 import type { Profile } from '../../../store/userStore';
 
-// NFTs view
-// - approve minting and selling
-
-// Page Statistics view
-// - user count
-
 type Props = {
     dispatch: Function,
     createdNfts: { [string]: Nft },

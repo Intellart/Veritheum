@@ -4,18 +4,20 @@ import React, { useState } from 'react';
 import type { Node } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  map, get, toNumber, isArray, isEqual,
+  map, get, toNumber, isArray, isEqual, includes,
 } from 'lodash';
-import {
-  disableWallet, buildSendTokenToPlutusScript,
-} from '../../../utils/helpers';
+import { disableWallet } from '../../../utils/helpers';
+import { submitSellRequest } from '../../../utils/plutus_helpers';
 import './WalletPage.scss';
 import '../NftItem/NftItem.scss';
 import '../NftList/NftList.scss';
 import './session_pages.scss';
 import { actions } from '../../../store/walletStore';
 import type { Utxo, Nft } from '../../../store/walletStore';
-import { postCloseSellBuildTx, postCloseSellSubmitTx, postSellBuildTx, postSellSubmitTx } from '../../../api';
+import {
+  postCloseSellBuildTx, postCloseSellSubmitTx, postSellBuildTx, postSellSubmitTx
+} from '../../../api';
+import NftItem from '../NftItem/NftItem';
 
 export type ReduxProps = {
     whichWalletSelected: string,
@@ -35,6 +37,8 @@ export type ReduxProps = {
     assetAmountToSend: number,
     lovelaceToSend: number,
     plutusNfts: Object[],
+    policyId: string,
+    nftList: Nft[],
 }
 
 function WalletPage(): Node {
@@ -56,115 +60,28 @@ function WalletPage(): Node {
     assetAmountToSend: get(state, 'wallet.assetAmountToSend', 0),
     lovelaceToSend: get(state, 'wallet.lovelaceToSend', 0),
     plutusNfts: get(state, 'wallet.plutusNfts', {}),
+    policyId: get(state, 'wallet.policyId', ''),
+    nftList: get(state, 'nfts', []),
   }), isEqual);
   const dispatch = useDispatch();
   const [showHideMoreInfo, setShowHideMoreInfo] = useState(false);
   const nfts = redux.Nfts;
   const utxos = redux.Utxos;
-  const { plutusNfts } = redux;
+  const { plutusNfts, policyId, nftList } = redux;
+  const ourPolicy = '72b78f568429ff5375317b844b7224f30e3576cd53cde6296ddcf6ca';
 
   const hideComponent = () => {
     setShowHideMoreInfo(!showHideMoreInfo);
   };
 
-  // setNftState(nftKey) {
-  //   setState({
-  //     assetNameHex: nftKey.data.asset_name,
-  //     assetPolicyIdHex: nftKey.data.policy_id,
-  //   });
-  // }
-
-  // Initiate sell
-  const signSellTx = (tx) => {
-    const datum = tx['datum']
-    const address = tx['address']
-
-    window.cardano.signTx(tx['tx']).then((witness) => {
-      sendSellTxAndWitnessBack(tx['tx'], witness, datum, address);
-    });
-  };
-
-  const sendSellTxAndWitnessBack = (tx, witness, datum, address) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'datum': datum, 'address': address });
-
-    postSellSubmitTx(payload)
-      .then(response => response)
-      .then(data => {
-        alert("Transaction: " + data["tx_id"] + " submitted!");
-      });
-  };
-
-  const sellToken = (tokenName) => {
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
-
-    window.cardano.getUsedAddresses().then((senders) => {
-      window.cardano.getChangeAddress().then((change_address) => {
-
-        const payload = JSON.stringify({
-          'senders': senders,
-          'change_address': change_address,
-          'nft_name': tokenName,
-          'ada_lovelace': adaValue
-        });
-
-        postSellBuildTx(payload)
-          .then(response => {console.log(response); return response;})
-          .then(signSellTx);
-      });
-    });
-  };
-
-  // Close sell
-  // TODO: implement Close functionality on marketplace NFTs
-  const closeSellSignTx = (tx) => {
-    const witnessSet = tx['witness_set']
-    const datum = tx['datum']
-
-    window.cardano.signTx(tx['tx']).then((witness) => {
-      closeSellSendTxAndWitnessBack(tx['tx'], witness, witnessSet, datum);
-    });
-  };
-
-  const closeSellSendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
-
-    postCloseSellSubmitTx(payload)
-      .then(response => response)
-      .then(data => {
-          alert("Transaction: " + data["tx_id"] + " submitted!");
-      });
-  };
-
-  const submitCloseSellRequest = (senders, change_address, tokenName) => {
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
-
-    const payload = JSON.stringify({
-        'senders': senders,
-        'change_address': change_address,
-        'nft_name': tokenName,
-        'nft_price': adaValue
-    });
-
-    postCloseSellBuildTx(payload)
-      .then(response => response)
-      .then(closeSellSignTx);
-  };
-
   const handleRefresh = () => {
     dispatch(actions.refreshData(redux));
   };
+
+  const findNft = () => {
+    const ind = includes(collection, target);
+    return nftList[ind];
+  }
 
   const getNftImage = (nftKey): Node => {
     if (nftKey.data?.onchain_metadata) {
@@ -269,7 +186,7 @@ function WalletPage(): Node {
                       )}
                       <div className="nft-item-bottom-info">
                         <div className="info-label column">Quantity: {nftKey.data?.quantity}</div>
-                        <button className='outline' onClick={() => sellToken(nftKey.asset)}>Sell</button>
+                        <button className='outline' onClick={() => submitSellRequest(nftKey.asset)}>Sell</button>
                       </div>
                     </div>
                   </div>

@@ -51,6 +51,7 @@ export type Nft = {
   url: string,
   status: string,
   nft_id: number,
+  seller_address: string,
 }
 
 export type State = {
@@ -72,6 +73,11 @@ export const types = {
   NFT_UPDATE_TX_AND_WITNESS_NFT_PENDING: 'NFT/UPDATE_TX_AND_WITNESS_NFT_PENDING',
   NFT_UPDATE_TX_AND_WITNESS_NFT_REJECTED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_REJECTED',
   NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_FULFILLED',
+
+  NFT_UPDATE_SELLER: 'NFT/UPDATE_SELLER',
+  NFT_UPDATE_SELLER_PENDING: 'NFT/UPDATE_SELLER_PENDING',
+  NFT_UPDATE_SELLER_REJECTED: 'NFT/UPDATE_SELLER_REJECTED',
+  NFT_UPDATE_SELLER_FULFILLED: 'NFT/UPDATE_SELLER_FULFILLED',
 
   NFT_LIKE_NFT: 'NFT/LIKE_NFT',
   NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
@@ -100,6 +106,10 @@ export const actions = {
   updateTxAndWitness: (payload: any, fingerprint: string): ReduxAction => ({
     type: types.NFT_UPDATE_TX_AND_WITNESS_NFT,
     payload: API.putRequest(`/nfts/${fingerprint}/update_tx_and_witness`, jsonToFormData('nft', payload)),
+  }),
+  updateSeller: (payload: any, fingerprint: string): ReduxAction => ({
+    type: types.NFT_UPDATE_SELLER,
+    payload: API.putRequest(`/nfts/${fingerprint}/update_seller`, jsonToFormData('nft', payload)),
   }),
   likeNft: (payload: LikePayload): ReduxAction => ({
     type: types.NFT_LIKE_NFT,
@@ -135,6 +145,9 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED:
+      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+
+      case types.NFT_UPDATE_SELLER_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_LIKE_NFT_FULFILLED:

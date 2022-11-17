@@ -35,7 +35,7 @@ export const selectors = {
 export const actions = {
   fetchCreatedNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_CREATED_NFTS,
-    payload: API.getRequest('nfts'),
+    payload: API.getRequest('nfts/index_mint_request'),
   }),
   approveCreatedNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_APPROVE_CREATED_NFT,

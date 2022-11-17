@@ -10,7 +10,7 @@ import User from '../../../assets/icons/user.svg';
 import { actions } from '../../../store/nftStore';
 import { calcExchangeRate, findNftLike } from '../../../utils';
 import { selectors as exchangeRatesSelectors } from '../../../store/exchangeRatesStore';
-import { buildRedeemTokenFromPlutusScript } from '../../../utils/helpers';
+import { submitSellRequest, submitCloseSellRequest, submitBuyRequest } from '../../../utils/plutus_helpers';
 import type { Nft, NftLike } from '../../../store/nftStore';
 import type { Utxo } from '../../../store/walletStore';
 import type { State as ExchangeRates } from '../../../store/exchangeRatesStore';
@@ -27,17 +27,6 @@ type ReduxProps = {
   dispatch: Function,
   userId: ?number,
   exchangeRates: ExchangeRates,
-  protocolParams: Object,
-  addressScriptBech32: string,
-  changeAddress: string,
-  assetAmountToSend: number,
-  transactionIdLocked: string,
-  transactionIndxLocked: number,
-  manualFee: number,
-  plutusScriptCborHex: string,
-  lovelaceLocked: number,
-  CollatUtxos: Utxo[],
-  datumStr: string
 }
 
 class NftItem extends React.Component<ReduxProps> {
@@ -157,14 +146,25 @@ class NftItem extends React.Component<ReduxProps> {
                     </Link>
                   </div>
                   <div className='group'>
-                    <button className='buy-nft-btn' onClick={() => buildRedeemTokenFromPlutusScript(asset_name, policy_id, this.props)}>
+                    {/* Implement filtering based on NFT owner and tradeable attributes:
+                        - Buy should be visible only on Marketplace NFTs
+                        - Sell should be visible only on WalletPage NFTs
+                        - Close sell should be visible only on Marketplace NFTs, and only for owner of that NFT */}
+                    <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name)}>
                       Buy
+                    </button>
+                    <button className='sell-nft-btn' onClick={() => submitSellRequest(asset_name)}>
+                      Sell
+                    </button>
+                    <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name)}>
+                      Close sale
                     </button>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="group">
+                    {/* TODO: implement endorsers on an NFT */}
                     <div className="info-label">
                       Endorsed by
                     </div>
@@ -201,17 +201,6 @@ class NftItem extends React.Component<ReduxProps> {
 const mapStateToProps = (state: ReduxState) => ({
   userId: get(state, 'user.profile.id'),
   exchangeRates: exchangeRatesSelectors.getExchangeRates(state),
-  protocolParams: get(state, 'wallet.protocolParams', {}),
-  addressScriptBech32: get(state, 'wallet.addressScriptBech32', ''),
-  changeAddress: get(state, 'wallet.changeAddress', ''),
-  assetAmountToSend: get(state, 'wallet.assetAmountToSend', 0),
-  transactionIdLocked: get(state, 'wallet.transactionIdLocked', ''),
-  transactionIndxLocked: get(state, 'wallet.transactionIndxLocked', 0),
-  manualFee: get(state, 'wallet.manualFee', 0),
-  plutusScriptCborHex: get(state, 'wallet.plutusScriptCborHex', ''),
-  lovelaceLocked: get(state, 'wallet.lovelaceLocked', 0),
-  CollatUtxos: get(state, 'wallet.CollatUtxos', []),
-  datumStr: get(state, 'wallet.datumStr', ''),
 });
 
 export default (connect(mapStateToProps)(NftItem): React$ComponentType<Props>);

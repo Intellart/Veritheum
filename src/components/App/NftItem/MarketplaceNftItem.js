@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import { get, isArray } from 'lodash';
 import type { Nft } from '../../../store/nftStore';
 import './NftItem.scss';
-import { postBuyBuildTx, postBuySubmitTx } from '../../../api';
+import { submitBuyRequest } from '../../../utils/plutus_helpers';
 
 type Props = {
   data: {
@@ -14,51 +14,7 @@ type Props = {
 };
 
 function MarketplaceNftItem(props: Props): Node {
-  // TODO: implement close sell funcionality for NFTs owned by user
-  const submitBuyRequest = (tokenName) => {
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
-
-    window.cardano.getUsedAddresses().then((senders) => {
-      window.cardano.getChangeAddress().then((change_address) => {
-        const payload = JSON.stringify({
-          'senders': senders,
-          'change_address': change_address,
-          'nft_name': tokenName,
-          'nft_price': adaValue
-        });
-
-        postBuyBuildTx(payload)
-          .then(response => response)
-          .then(buySignTx);
-      });
-    });
-  };
-
-  const buySignTx = (tx) => {
-    const witnessSet = tx['witness_set'];
-    const datum = tx['datum'];
-
-    window.cardano.signTx(tx['tx'], true).then((witness) => {
-      buySendTxAndWitnessBack(tx['tx'], witness, witnessSet, datum);
-    });
-  };
-
-  const buySendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
-
-    postBuySubmitTx(payload)
-      .then(response => response)
-      .then(data => {
-          alert("Transaction: " + data["tx_id"] + " submitted!");
-      });
-  };
-
+  // TODO: get the image directly from url if NFT image does not have ipfs image format
   const getNftImage = (): Node => {
     if (props.data?.onchain_metadata) {
       const img = props.data.onchain_metadata.image;
