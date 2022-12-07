@@ -23,7 +23,7 @@ export const selectors = {
 export const actions = {
   getCategories: (): ReduxAction => ({
     type: types.CATEGORY_GET_CATEGORIES,
-    payload: API.getRequest('categories'),
+    payload: API.getRequest('intellart/categories'),
   }),
 };
 

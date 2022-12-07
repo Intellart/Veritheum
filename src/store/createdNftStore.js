@@ -35,15 +35,15 @@ export const selectors = {
 export const actions = {
   fetchCreatedNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_CREATED_NFTS,
-    payload: API.getRequest('nfts/index_mint_request'),
+    payload: API.getRequest('intellart/nfts/index_mint_request'),
   }),
   approveCreatedNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_APPROVE_CREATED_NFT,
-    payload: API.putRequest(`nfts/${fingerprint}/accept_minting`),
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/accept_minting`),
   }),
   declineCreatedNft: (fingerprint: string): ReduxAction => ({
     type: types.NFT_DECLINE_CREATED_NFT,
-    payload: API.putRequest(`nfts/${fingerprint}/reject_minting`),
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/reject_minting`),
   }),
 };
 

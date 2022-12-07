@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   map, get, toNumber, isArray, isEqual, includes,
 } from 'lodash';
-import { disableWallet } from '../../../utils/helpers';
+import { disableWallet, constructAssetNameHex } from '../../../utils/helpers';
 import { submitSellRequest } from '../../../utils/plutus_helpers';
 import './WalletPage.scss';
 import '../NftItem/NftItem.scss';
@@ -14,12 +14,9 @@ import '../NftList/NftList.scss';
 import './session_pages.scss';
 import { actions } from '../../../store/walletStore';
 import type { Utxo, Nft } from '../../../store/walletStore';
-import {
-  postCloseSellBuildTx, postCloseSellSubmitTx, postSellBuildTx, postSellSubmitTx
-} from '../../../api';
-import NftItem from '../NftItem/NftItem';
 
 export type ReduxProps = {
+    walletIsEnabled: boolean,
     whichWalletSelected: string,
     walletName: string,
     balance: number,
@@ -29,20 +26,12 @@ export type ReduxProps = {
     network_id: number,
     changeAddress: string,
     rewardAddress: string,
-    protocolParams: Object,
-    addressScriptBech32: string,
-    datumStr: string,
-    assetNameHex: string,
-    assetPolicyIdHex: string,
-    assetAmountToSend: number,
-    lovelaceToSend: number,
-    plutusNfts: Object[],
-    policyId: string,
-    nftList: Nft[],
+    dispatch: function,
 }
 
 function WalletPage(): Node {
   const redux = useSelector((state) => ({
+    walletIsEnabled: get(state, 'wallet.walletIsEnabled', ''),
     whichWalletSelected: get(state, 'wallet.whichWalletSelected', ''),
     walletName: get(state, 'wallet.walletName', ''),
     balance: get(state, 'wallet.balance', 0),
@@ -52,23 +41,12 @@ function WalletPage(): Node {
     api_version: get(state, 'wallet.api_version', ''),
     changeAddress: get(state, 'wallet.changeAddress', ''),
     rewardAddress: get(state, 'wallet.rewardAddress', ''),
-    protocolParams: get(state, 'wallet.protocolParams', {}),
-    addressScriptBech32: get(state, 'wallet.addressScriptBech32', ''),
-    datumStr: get(state, 'wallet.datumStr', ''),
-    assetNameHex: get(state, 'wallet.assetNameHex', ''),
-    assetPolicyIdHex: get(state, 'wallet.assetPolicyIdHex', ''),
-    assetAmountToSend: get(state, 'wallet.assetAmountToSend', 0),
-    lovelaceToSend: get(state, 'wallet.lovelaceToSend', 0),
-    plutusNfts: get(state, 'wallet.plutusNfts', {}),
-    policyId: get(state, 'wallet.policyId', ''),
-    nftList: get(state, 'nfts', []),
+    dispatch: useDispatch(),
   }), isEqual);
   const dispatch = useDispatch();
   const [showHideMoreInfo, setShowHideMoreInfo] = useState(false);
   const nfts = redux.Nfts;
   const utxos = redux.Utxos;
-  const { plutusNfts, policyId, nftList } = redux;
-  const ourPolicy = '72b78f568429ff5375317b844b7224f30e3576cd53cde6296ddcf6ca';
 
   const hideComponent = () => {
     setShowHideMoreInfo(!showHideMoreInfo);
@@ -77,11 +55,6 @@ function WalletPage(): Node {
   const handleRefresh = () => {
     dispatch(actions.refreshData(redux));
   };
-
-  const findNft = () => {
-    const ind = includes(collection, target);
-    return nftList[ind];
-  }
 
   const getNftImage = (nftKey): Node => {
     if (nftKey.data?.onchain_metadata) {
@@ -186,7 +159,7 @@ function WalletPage(): Node {
                       )}
                       <div className="nft-item-bottom-info">
                         <div className="info-label column">Quantity: {nftKey.data?.quantity}</div>
-                        <button className='outline' onClick={() => submitSellRequest(nftKey.asset)}>Sell</button>
+                        <button className='outline' onClick={() => submitSellRequest(nftKey.data?.asset_name, nftKey, redux)}>Sell</button>
                       </div>
                     </div>
                   </div>

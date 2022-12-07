@@ -181,7 +181,7 @@ export const actions = {
   }),
   fetchAllUsers: (): ReduxAction => ({
     type: types.USR_FETCH_ALL_USERS,
-    payload: API.getRequest('users'),
+    payload: API.getRequest('intellart/users'),
   }),
   loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_LOGIN_USER,
@@ -205,7 +205,7 @@ export const actions = {
   }),
   updateUser: (payload: UpdatePayload): ReduxAction => ({
     type: types.USR_UPDATE_USER,
-    payload: API.putRequest(`users/${payload.userId}`, { user: payload.user }),
+    payload: API.putRequest(`intellart/users/${payload.userId}`, { user: payload.user }),
   }),
   clearUser: (): ReduxAction => ({
     type: types.USR_CLEAR_USER,
@@ -220,7 +220,7 @@ export const actions = {
   }),
   fetchUserById: (userId: string|number): ReduxAction => ({
     type: types.USR_FETCH_USER_BY_ID,
-    payload: API.getRequest('users/' + userId),
+    payload: API.getRequest('intellart/users/' + userId),
   }),
   clearCurrentSelectedUser: (): ReduxAction => ({
     type: types.USR_CLEAR_CURRENT_SELECTED_USER,

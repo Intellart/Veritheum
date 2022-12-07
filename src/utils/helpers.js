@@ -57,6 +57,7 @@ import { actions } from '../store/walletStore';
 import type { Nft, Utxo } from '../store/walletStore';
 import type { ReduxProps } from '../components/App/Pages/WalletPage';
 
+const AssetFingerprint = require('@emurgo/cip14-js');
 const { Buffer } = require('buffer/');
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -759,4 +760,17 @@ export const buildRedeemTokenFromPlutusScript = async (assetName: string, policy
   const submittedTxHash = await API.submitTx(Buffer.from(signedTx.to_bytes(), 'utf8').toString('hex'));
   // console.log(submittedTxHash);
   state.dispatch(actions.saveWallet({ submittedTxHash }));
+};
+
+export const constructAssetNameHex = (assetName: string) => {
+  return Buffer.from(assetName, 'utf8').toString('hex');
+};
+
+// DO NOT TOUCH THIS; WORKING AS IT SHOULD!
+export const constructFingerprint = (policyId: string, assetName: string) => {
+  const assetFingerprint = AssetFingerprint.default.fromParts(
+    Buffer.from(policyId, 'hex'),
+    Buffer.from(assetName, 'utf8')
+  );
+  return assetFingerprint.fingerprint();
 };

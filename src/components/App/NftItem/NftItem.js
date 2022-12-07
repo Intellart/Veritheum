@@ -49,16 +49,17 @@ class NftItem extends React.Component<ReduxProps> {
 
   render () {
     const {
-      data, trending, userId, exchangeRates,
+      data, trending, userId, exchangeRates
     } = this.props;
     const {
-      tradeable, category, name, verified, owner, price, asset_name, policy_id, url,
+      tradeable, category, name, verified, owner, price, asset_name, policy_id, url, state, fingerprint
     } = data;
     const like = findNftLike(data, userId);
+    const userIsOwner = userId === owner.id;
 
     let type;
     if (tradeable === true) {
-      type = 'Tradable';
+      type = 'Tradeable';
     } else {
       type = 'Endorsable';
     }
@@ -150,15 +151,27 @@ class NftItem extends React.Component<ReduxProps> {
                         - Buy should be visible only on Marketplace NFTs
                         - Sell should be visible only on WalletPage NFTs
                         - Close sell should be visible only on Marketplace NFTs, and only for owner of that NFT */}
-                    <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name)}>
-                      Buy
-                    </button>
-                    <button className='sell-nft-btn' onClick={() => submitSellRequest(asset_name)}>
-                      Sell
-                    </button>
-                    <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name)}>
-                      Close sale
-                    </button>
+                    { userIsOwner ? (
+                      <>
+                      { state === 'on_sale' ? (
+                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name)}>
+                          Close sale
+                        </button>
+                      ) : (
+                        <button className='sell-nft-btn' onClick={() => submitSellRequest(asset_name, fingerprint, this.props)}>
+                          Sell
+                        </button>
+                      ) }
+                      </>
+                    ) : (
+                      <>
+                      { state === 'on_sale' && (
+                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name)}>
+                          Buy
+                        </button>
+                      )}
+                      </>
+                    )}
                   </div>
                 </>
               ) : (

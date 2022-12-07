@@ -12,7 +12,6 @@ import { reducer as globalStoreReducer } from './globalStore';
 import { reducer as userStoreReducer, types as userStoreTypes } from './userStore';
 import { reducer as nftStoreReducer, types as nftStoreTypes } from './nftStore';
 import { reducer as createdNftStoreReducer, types as createdNftStoreTypes } from './createdNftStore';
-import { reducer as sellNftStoreReducer, types as sellNftStoreTypes } from './sellNftStore';
 import { reducer as categoryStoreReducer, types as categoriesStoreTypes } from './categoriesStore';
 import { reducer as studyFieldStoreReducer, types as studyFieldStoreTypes } from './studyFieldsStore';
 import { reducer as exchangeRatesStoreReducer, types as exchangeRatesTypes } from './exchangeRatesStore';
@@ -31,7 +30,6 @@ const ignoreErrors = [
   userStoreTypes.USR_FETCH_NFTS,
   nftStoreTypes.NFT_FETCH_NFTS,
   createdNftStoreTypes.NFT_FETCH_CREATED_NFTS,
-  sellNftStoreTypes.NFT_FETCH_SELL_NFTS,
   categoriesStoreTypes.CATEGORY_GET_CATEGORIES,
   studyFieldStoreTypes.STUDY_FIELD_GET_STUDY_FIELDS,
 ];
@@ -147,7 +145,6 @@ export const configureStore = (
       user: userStoreReducer,
       nfts: nftStoreReducer,
       createdNfts: createdNftStoreReducer,
-      sellNfts: sellNftStoreReducer,
       categories: categoryStoreReducer,
       studyFields: studyFieldStoreReducer,
       exchangeRates: exchangeRatesStoreReducer,
@@ -193,40 +190,7 @@ const initialReduxState: Object = {
     rewardAddress: undefined,
     usedAddress: undefined,
 
-    txBody: undefined,
-    txBodyCborHex_unsigned: '',
-    txBodyCborHex_signed: '',
-    submittedTxHash: '',
-
-    addressBech32SendADA: 'addr_test1qrt7j04dtk4hfjq036r2nfewt59q8zpa69ax88utyr6es2ar72l7vd6evxct69wcje5cs25ze4qeshejy828h30zkydsu4yrmm',
-    lovelaceToSend: 3000000,
-    assetNameHex: '',
-    assetPolicyIdHex: '',
-    assetAmountToSend: 1,
     addressScriptBech32: get(process.env, 'REACT_APP_PLUTUS_SCRIPT', 'addr_test1wp7gplg8rf90vu7mgmsnef5v2c7ss05aa6gfegazc9ta73c992cyw'),
-    datumStr: '12345678',
-    plutusScriptCborHex: '4e4d01000033222220051200120011',
-    transactionIdLocked: '',
-    transactionIndxLocked: 0,
-    lovelaceLocked: 3000000,
-    manualFee: 900000,
-
-    protocolParams: {
-      linearFee: {
-        minFeeA: '44',
-        minFeeB: '155381',
-      },
-      minUtxo: '34482',
-      poolDeposit: '500000000',
-      keyDeposit: '2000000',
-      maxValSize: 5000,
-      maxTxSize: 16384,
-      priceMem: 0.0577,
-      priceStep: 0.0000721,
-      coinsPerUtxoWord: '34482',
-    },
-
-    plutusNfts: {},
   },
 };
 

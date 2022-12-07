@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {
-  some, isEmpty, map, find,
+  some, isEmpty, map, find, get, isEqual
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import NftItem from '../NftItem/NftItem';
@@ -11,10 +11,15 @@ import Selectbox from '../Selectbox/Selectbox';
 import { actions as nftActions } from '../../../store/nftStore';
 import type { Category } from '../../../store/categoriesStore';
 import type { Profile as ProfileType } from '../../../store/userStore';
+import { selectors } from '../../../store/walletStore';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import type { ReduxState } from '../../../types';
 import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
 import { postMintBuildTx, postSubmitTx } from '../../../api'
+import { constructAssetNameHex, constructFingerprint } from '../../../utils/helpers';
+
+const { Buffer } = require('buffer/');
 
 type State = {
   tradeable: boolean,
@@ -25,8 +30,9 @@ type State = {
   description: string,
   categoryId: number|null,
   categoryText: string,
-  price: number|null,
   fingerprint: string,
+  nft_id: number|null,
+  policy_id: string,
 }
 
 type Props = {}
@@ -35,7 +41,9 @@ type ReduxProps = {
   ...Props,
   dispatch: Function,
   profile: ProfileType,
-  categories: Array<Category>
+  categories: Array<Category>,
+  walletIsEnabled: boolean,
+  nfts: Object
 }
 
 class MintingPage extends React.Component<ReduxProps, State> {
@@ -56,8 +64,10 @@ class MintingPage extends React.Component<ReduxProps, State> {
       description: '',
       categoryId: null,
       categoryText: '',
-      price: null,
       fingerprint: '',
+      policy_id: get(process.env, 'REACT_APP_PLUTUS_POLICY_ID', ''),
+      nft_id: null,
+      nfts: {}
     };
   }
 
@@ -95,22 +105,24 @@ class MintingPage extends React.Component<ReduxProps, State> {
     e.preventDefault();
 
     const {
-      tradeable, price, name, description, categoryId, file,
+      tradeable, name, description, categoryId, file, policy_id
     } = this.state;
 
-    const randomID = (): string => uuidv4();
-    const fingerprint = randomID();
-    this.setState({ fingerprint });
+    const fingerprint = constructFingerprint(policy_id, name);
+
+    // state is not updated
+    this.setState({ fingerprint: fingerprint });
+    console.log('fingerprint: ', fingerprint);
     this.props.dispatch(nftActions.createNft({
+      fingerprint,
       tradeable,
-      price,
       name,
       description,
+      // TODO: why is this commented?
       // category_id: categoryId,
       owner_id: this.props.profile.id,
-      fingerprint,
-      policy_id: randomID(),
-      asset_name: randomID(),
+      policy_id,
+      asset_name: name,
       file,
     }));
   };
@@ -129,9 +141,12 @@ class MintingPage extends React.Component<ReduxProps, State> {
   submitMintRequest(senders, change_address) {
     // TODO: get this data from the backend, still not implemented
     // NFT props not updating with new data
-    const { nft_id, asset_name, description, url } = this.props;
-    console.log(nft_id, asset_name, description, url);
-    const newNFTId = 111;
+    //console.log(this.props);
+    //const { nfts } = this.state.nfts;
+    //const this_nft = find(nfts, ['fingerprint', this.state.fingerprint]);
+    //const { nft_id, asset_name, description, url } = this_nft;
+    //console.log(nft_id, asset_name, description, url);
+    const newNFTId = 2;
     const newNFTName = this.state.name;
     const newNFTLongName = this.state.name;
     const newNFTDescription = this.state.description;
@@ -188,12 +203,12 @@ class MintingPage extends React.Component<ReduxProps, State> {
     }));
 
     const {
-      tradeable, owner, file, paperContent, name, description, categoryText, price,
+      tradeable, owner, file, paperContent, name, description, categoryText
     } = this.state;
 
     const fileUploaded = !isEmpty(file?.name);
 
-    const disabled = tradeable ? (!fileUploaded || some([name, description, categoryText, price], isEmpty)) : some([paperContent, name, description, categoryText, price], isEmpty);
+    const disabled = tradeable ? (!fileUploaded || some([name, description, categoryText], isEmpty)) : some([paperContent, name, description, categoryText], isEmpty);
 
     return (
       <div className="minting-page">
@@ -236,7 +251,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                     <label htmlFor="minting-nft-title">Title</label>
                     <input
                       id="minting-nft-title"
-                      placeholder="Please type the name of the item here"
+                      placeholder="Please type the name of the item here - must be unique"
                       onChange={(e) => this.setState({ name: e.target.value })}
                     />
                   </div>
@@ -258,7 +273,8 @@ class MintingPage extends React.Component<ReduxProps, State> {
                       placeholder="Select a category for your item"
                     />
                   </div>
-                  {tradeable ? (
+
+                  {/* {tradeable ? (
                     <div className="input-wrapper">
                       <label htmlFor="minting-nft-price">Price</label>
                       <input
@@ -278,7 +294,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
                         onChange={(e) => this.setState({ price: e.target.value })}
                       />
                     </div>
-                  )}
+                  )} */}
                   <button  id='start-minting-btn' disabled={disabled}>
                     Send request for minting
                   </button>
@@ -291,16 +307,14 @@ class MintingPage extends React.Component<ReduxProps, State> {
                 </div>
                 <NftItem
                   data={{
-                    status: '',
+                    state: '',
                     fingerprint: '',
                     tradeable,
                     name,
                     category: categoryText,
-                    price,
                     owner,
                     // eslint-disable-next-line camelcase
                     asset_name: '',
-                    cardano_address: '',
                     description,
                     // eslint-disable-next-line camelcase
                     policy_id: '',
@@ -310,7 +324,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
                     tags: [],
                     likes: [],
                     nft_collection: '',
-                    onchain_transaction: 0,
                     verified: false,
                     file,
                   }
@@ -327,8 +340,15 @@ class MintingPage extends React.Component<ReduxProps, State> {
 const mapStateToProps = (state: ReduxState) => {
   const { profile } = state.user;
   const { categories } = state;
+  const { walletIsEnabled } = state.wallet.walletIsEnabled;
+  // const { nfts } = state.nfts;
 
-  return { profile, categories };
+  // console.log(state);
+  // console.log('------------------------------------------------------------------------------');
+  // console.log(state.nfts);
+
+
+  return { profile, categories, walletIsEnabled };
 };
 
 export default (connect<ReduxProps, Props>(mapStateToProps)(MintingPage): React$ComponentType<Props>);

@@ -49,8 +49,8 @@ function Profile(): Node {
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -77,8 +77,8 @@ function Profile(): Node {
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
       setIsFetchingNfts(true);
     }
   }, [profile, userId, isFetchingNfts, userNfts, dispatch]);
@@ -104,8 +104,8 @@ function Profile(): Node {
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);

@@ -1,5 +1,6 @@
 import { postSellBuildTx, postSellSubmitTx, postBuyBuildTx, postBuySubmitTx,
          postCloseSellBuildTx, postCloseSellSubmitTx } from "../api";
+import { actions as nftActions } from '../store/nftStore';
 
 // Initiate sell
 const signSellTx = (tx) => {
@@ -21,7 +22,8 @@ const sendSellTxAndWitnessBack = (tx, witness, datum, address) => {
         });
 };
 
-export const submitSellRequest = (tokenName) => {
+export const submitSellRequest = (tokenName, fingerprint, props) => {
+    // TODO: should the user have the option to change price? How to implement this?
     let adaValue = prompt("Please enter token value (in ADA)", "2");
 
     if (adaValue == null) {
@@ -40,16 +42,21 @@ export const submitSellRequest = (tokenName) => {
             'nft_name': tokenName,
             'ada_lovelace': adaValue
         });
+        const updateSellerPayload = JSON.stringify({ 'seller_address': change_address });
 
         postSellBuildTx(payload)
             .then(response => {console.log(response); return response;})
-            .then(signSellTx);
+            .then(signSellTx)
+            .then(props.dispatch(
+                nftActions.updateStateToOnSale(fingerprint)))
+            .then(props.dispatch(
+                nftActions.updateSeller(updateSellerPayload, fingerprint)))
+            .then(window.location.replace('/marketplace'));
         });
     });
 };
 
 // Close sell
-// TODO: implement Close functionality on marketplace NFTs
 const closeSellSignTx = (tx) => {
     const witnessSet = tx['witness_set']
     const datum = tx['datum']
@@ -84,7 +91,7 @@ export const submitCloseSellRequest = (tokenName) => {
                 'senders': senders,
                 'change_address': change_address,
                 'nft_name': tokenName,
-                'nft_price': adaValue
+                'ada_lovelace': adaValue
             });
 
             postCloseSellBuildTx(payload)
@@ -110,7 +117,7 @@ export const submitBuyRequest = (tokenName) => {
             'senders': senders,
             'change_address': change_address,
             'nft_name': tokenName,
-            'nft_price': adaValue
+            'ada_lovelace': adaValue
             });
 
             postBuyBuildTx(payload)

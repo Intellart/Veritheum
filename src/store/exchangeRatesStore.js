@@ -30,7 +30,7 @@ export const selectors = {
 export const actions = {
   getRates: (): ReduxAction => ({
     type: types.ER_GET_RATES,
-    payload: API.getRequest('/exchange_rates'),
+    payload: API.getRequest('intellart/exchange_rates'),
   }),
 };
 

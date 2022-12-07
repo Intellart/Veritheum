@@ -31,26 +31,6 @@ type ReduxProps = {
     changeAddress: string,
     rewardAddress: string,
     usedAddress: string,
-
-    txBody: string,
-    txBodyCborHex_unsigned: string,
-    txBodyCborHex_signed: string,
-    submittedTxHash: string,
-
-    addressBech32SendADA: string,
-    lovelaceToSend: number,
-    assetNameHex: string,
-    assetPolicyIdHex: string,
-    assetAmountToSend: number,
-    addressScriptBech32: string,
-    datumStr: string,
-    plutusScriptCborHex: string,
-    transactionIdLocked: string,
-    transactionIndxLocked: number,
-    lovelaceLocked: number,
-    manualFee: number,
-
-    protocolParams: Object
 }
 
 const mapStateToProps = (state) => {
@@ -70,23 +50,6 @@ const mapStateToProps = (state) => {
   const changeAddress = get(state, 'wallet.changeAddress', '');
   const rewardAddress = get(state, 'wallet.rewardAddress', '');
   const usedAddress = get(state, 'wallet.usedAddress', '');
-  const txBody = get(state, 'wallet.txBody', '');
-  const txBodyCborHex_unsigned = get(state, 'wallet.txBodyCborHex_unsigned', '');
-  const txBodyCborHex_signed = get(state, 'wallet.txBodyCborHex_signed', '');
-  const submittedTxHash = get(state, 'wallet.submittedTxHash', '');
-  const addressBech32SendADA = get(state, 'wallet.addressBech32SendADA', '');
-  const lovelaceToSend = get(state, 'wallet.lovelaceToSend', 0);
-  const assetNameHex = get(state, 'wallet.assetNameHex', '');
-  const assetPolicyIdHex = get(state, 'wallet.assetPolicyIdHex', '');
-  const assetAmountToSend = get(state, 'wallet.assetAmountToSend', 0);
-  const addressScriptBech32 = get(state, 'wallet.addressScriptBech32', '');
-  const datumStr = get(state, 'wallet.datumStr', '');
-  const plutusScriptCborHex = get(state, 'wallet.plutusScriptCborHex', '');
-  const transactionIdLocked = get(state, 'wallet.transactionIdLocked', '');
-  const transactionIndxLocked = get(state, 'wallet.transactionIndxLocked', 0);
-  const lovelaceLocked = get(state, 'wallet.lovelaceLocked', 0);
-  const manualFee = get(state, 'wallet.manualFee', 0);
-  const protocolParams = get(state, 'wallet.protocolParams', {});
 
   return {
     isOpen,
@@ -105,23 +68,6 @@ const mapStateToProps = (state) => {
     changeAddress,
     rewardAddress,
     usedAddress,
-    txBody,
-    txBodyCborHex_unsigned,
-    txBodyCborHex_signed,
-    submittedTxHash,
-    addressBech32SendADA,
-    lovelaceToSend,
-    assetNameHex,
-    assetPolicyIdHex,
-    assetAmountToSend,
-    addressScriptBech32,
-    datumStr,
-    plutusScriptCborHex,
-    transactionIdLocked,
-    transactionIndxLocked,
-    lovelaceLocked,
-    manualFee,
-    protocolParams,
   };
 };
 

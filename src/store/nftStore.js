@@ -1,6 +1,6 @@
 // @flow
 import {
-  values, keyBy, get,
+  values, keyBy, get, filter
 } from 'lodash';
 import * as API from '../api';
 import { jsonToFormData } from '../utils';
@@ -41,15 +41,13 @@ export type Nft = {
   category: string,
   asset_name: string,
   policy_id: string,
-  onchain_transaction: Object,
-  cardano_address: string,
   tags: string[]|null,
   likes: NftLike[],
   endorsers: string[]|null,
   owner: Object,
   verified: boolean,
   url: string,
-  status: string,
+  state: string,
   nft_id: number,
   seller_address: string,
 }
@@ -63,6 +61,11 @@ export const types = {
   NFT_FETCH_NFTS_PENDING: 'NFT/FETCH_NFTS_PENDING',
   NFT_FETCH_NFTS_REJECTED: 'NFT/FETCH_NFTS_REJECTED',
   NFT_FETCH_NFTS_FULFILLED: 'NFT/FETCH_NFTS_FULFILLED',
+
+  NFT_FETCH_NFTS_ON_SALE: 'NFT/FETCH_NFTS_ON_SALE',
+  NFT_FETCH_NFTS_ON_SALE_PENDING: 'NFT/FETCH_NFTS_ON_SALE_PENDING',
+  NFT_FETCH_NFTS_ON_SALE_REJECTED: 'NFT/FETCH_NFTS_ON_SALE_REJECTED',
+  NFT_FETCH_NFTS_ON_SALE_FULFILLED: 'NFT/FETCH_NFTS_ON_SALE_FULFILLED',
 
   NFT_CREATE_NFT: 'NFT/CREATE_NFT',
   NFT_CREATE_NFT_PENDING: 'NFT/CREATE_NFT_PENDING',
@@ -79,6 +82,11 @@ export const types = {
   NFT_UPDATE_SELLER_REJECTED: 'NFT/UPDATE_SELLER_REJECTED',
   NFT_UPDATE_SELLER_FULFILLED: 'NFT/UPDATE_SELLER_FULFILLED',
 
+  NFT_UPDATE_STATE_TO_ON_SALE: 'NFT/UPDATE_STATE_TO_ON_SALE',
+  NFT_UPDATE_STATE_TO_ON_SALE_PENDING: 'NFT/UPDATE_STATE_TO_ON_SALE_PENDING',
+  NFT_UPDATE_STATE_TO_ON_SALE_REJECTED: 'NFT/UPDATE_STATE_TO_ON_SALE_REJECTED',
+  NFT_UPDATE_STATE_TO_ON_SALE_FULFILLED: 'NFT/UPDATE_STATE_TO_ON_SALE_FULFILLED',
+
   NFT_LIKE_NFT: 'NFT/LIKE_NFT',
   NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
   NFT_LIKE_NFT_REJECTED: 'NFT/LIKE_NFT_REJECTED',
@@ -92,32 +100,50 @@ export const types = {
 
 export const selectors = {
   getNfts: (state: ReduxState): Nft[] => values(state.nfts),
+  // TODO: filter NFTs by state on_sale
+  getNftsOnSale: (state: ReduxState): Nft[] => values(filter(state.nfts, (nft: Nft) => {
+
+    if(nft.state === 'on_sale') {
+      console.log(nft);
+      return true
+    };
+
+    return false;
+  })),
 };
 
 export const actions = {
   fetchNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_NFTS,
-    payload: API.getRequest('nfts'),
+    payload: API.getRequest('intellart/nfts/index_minted'),
+  }),
+  fetchNftsOnSale: (): ReduxAction => ({
+    type: types.NFT_FETCH_NFTS_ON_SALE,
+    payload: API.getRequest('intellart/nfts/index_on_sale'),
   }),
   createNft: (payload: CreatePayload): ReduxAction => ({
     type: types.NFT_CREATE_NFT,
-    payload: API.postRequest('nfts', jsonToFormData('nft', payload)),
+    payload: API.postRequest('intellart/nfts', jsonToFormData('nft', payload)),
   }),
   updateTxAndWitness: (payload: any, fingerprint: string): ReduxAction => ({
     type: types.NFT_UPDATE_TX_AND_WITNESS_NFT,
-    payload: API.putRequest(`/nfts/${fingerprint}/update_tx_and_witness`, jsonToFormData('nft', payload)),
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/update_tx_and_witness`, jsonToFormData('nft', payload)),
   }),
   updateSeller: (payload: any, fingerprint: string): ReduxAction => ({
     type: types.NFT_UPDATE_SELLER,
-    payload: API.putRequest(`/nfts/${fingerprint}/update_seller`, jsonToFormData('nft', payload)),
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/update_seller`, jsonToFormData('nft', payload)),
+  }),
+  updateStateToOnSale: (fingerprint: string): ReduxAction => ({
+    type: types.NFT_UPDATE_STATE_TO_ON_SALE,
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/initiate_sale`),
   }),
   likeNft: (payload: LikePayload): ReduxAction => ({
     type: types.NFT_LIKE_NFT,
-    payload: API.postRequest('nft_likes', { like: payload }),
+    payload: API.postRequest('intellart/nft_likes', { like: payload }),
   }),
   dislikeNft: (id: number): ReduxAction => ({
     type: types.NFT_DISLIKE_NFT,
-    payload: API.deleteRequest(`nft_likes/${id}`),
+    payload: API.deleteRequest(`intellart/nft_likes/${id}`),
   }),
 };
 
@@ -141,13 +167,19 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.NFT_FETCH_NFTS_FULFILLED:
       return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
+    case types.NFT_FETCH_NFTS_ON_SALE_FULFILLED:
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
+
     case types.NFT_CREATE_NFT_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
-      case types.NFT_UPDATE_SELLER_FULFILLED:
+    case types.NFT_UPDATE_SELLER_FULFILLED:
+      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+
+    case types.NFT_UPDATE_STATE_TO_ON_SALE_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_LIKE_NFT_FULFILLED:
