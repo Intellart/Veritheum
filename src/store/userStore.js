@@ -11,21 +11,21 @@ import type { ReduxAction, ReduxActionWithPayload, ReduxState } from '../types';
 import type { Nft } from './nftStore';
 import { getAllUserWalletAddresses } from '../utils';
 
-export type CardanoAddresses = {
-  id: number,
-  address: string,
-  dirty: boolean,
-  wallet_id: number,
-  created_at: string,
-  updated_at: string,
-}
+// export type CardanoAddresses = {
+//   id: number,
+//   address: string,
+//   dirty: boolean,
+//   wallet_id: number,
+//   created_at: string,
+//   updated_at: string,
+// }
 
-export type Wallet = {
-  id: number,
-  total: number,
-  used: number,
-  cardano_addresses: CardanoAddresses[],
-}
+// export type Wallet = {
+//   id: number,
+//   total: number,
+//   used: number,
+//   cardano_addresses: CardanoAddresses[],
+// }
 
 export type Profile = {
   id: number,
@@ -160,7 +160,10 @@ export const selectors = {
   getAdmin: (state: ReduxState): Admin|null => state.user.currentAdmin,
   getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
-  getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
+  getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] =>  {
+    const list = values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts);
+    return list
+  },
   getAllUsers: (state: ReduxState): Profile[] => values(state.user.allUsers),
 };
 
@@ -249,8 +252,6 @@ const handleDislikeResponse = (state: State, payload: Object): State => {
 
   // $FlowFixMe
   const isOwner = get(nft.owner.id) === get(state.profile.id);
-  // $FlowFixMe
-  const isAuthor = includes(getAllUserWalletAddresses(state.profile.wallets, 'address'), nft.cardano_address);
 
   if (isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
 

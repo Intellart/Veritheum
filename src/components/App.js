@@ -38,6 +38,7 @@ function App(): Node {
   const isAdmin: boolean = useSelector((state) => !isEmpty(userSelectors.getAdmin(state)), isEqual);
   const isLoading = useSelector(globalSelectors.checkIsLoading, isEqual);
   const NftsList = useSelector(state => nftSelectors.getNfts(state));
+  const NftsList2 = useSelector(state => nftSelectors.getNftsOnSale(state));
 
   return (
     <Router>

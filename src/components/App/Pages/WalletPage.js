@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import type { Node } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   map, get, toNumber, isArray, isEqual, includes,
 } from 'lodash';
@@ -10,10 +11,13 @@ import { disableWallet, constructAssetNameHex } from '../../../utils/helpers';
 import { submitSellRequest } from '../../../utils/plutus_helpers';
 import './WalletPage.scss';
 import '../NftItem/NftItem.scss';
+import NftList from '../NftList/NftList';
 import '../NftList/NftList.scss';
 import './session_pages.scss';
 import { actions } from '../../../store/walletStore';
 import type { Utxo, Nft } from '../../../store/walletStore';
+import { selectors as userSelectors } from '../../../store/userStore'
+import { selectors as nftSelectors } from '../../../store/nftStore';
 
 export type ReduxProps = {
     walletIsEnabled: boolean,
@@ -27,6 +31,7 @@ export type ReduxProps = {
     changeAddress: string,
     rewardAddress: string,
     dispatch: function,
+    userNfts: Nft[],
 }
 
 function WalletPage(): Node {
@@ -47,6 +52,8 @@ function WalletPage(): Node {
   const [showHideMoreInfo, setShowHideMoreInfo] = useState(false);
   const nfts = redux.Nfts;
   const utxos = redux.Utxos;
+  const userId = Boolean(useParams().id);
+  const userNfts = useSelector((state) => nftSelectors.getNftsOnSale(state));
 
   const hideComponent = () => {
     setShowHideMoreInfo(!showHideMoreInfo);
@@ -55,6 +62,9 @@ function WalletPage(): Node {
   const handleRefresh = () => {
     dispatch(actions.refreshData(redux));
   };
+
+  // TODO: write a method for comparing nfts in wallet with those in the database, using fingerprint
+  // -> then show sell/close sale button only on those NFTs
 
   const getNftImage = (nftKey): Node => {
     if (nftKey.data?.onchain_metadata) {
@@ -172,5 +182,13 @@ function WalletPage(): Node {
     </div>
   );
 }
+
+const mapStateToProps = (state: ReduxState) => {
+  const userNfts = userSelectors.getNftsOnSale(state);
+
+  return {
+    userNfts,
+  };
+};
 
 export default WalletPage;

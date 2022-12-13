@@ -154,7 +154,7 @@ class NftItem extends React.Component<ReduxProps> {
                     { userIsOwner ? (
                       <>
                       { state === 'on_sale' ? (
-                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name)}>
+                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name, price)}>
                           Close sale
                         </button>
                       ) : (
@@ -166,7 +166,7 @@ class NftItem extends React.Component<ReduxProps> {
                     ) : (
                       <>
                       { state === 'on_sale' && (
-                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name)}>
+                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name, price)}>
                           Buy
                         </button>
                       )}

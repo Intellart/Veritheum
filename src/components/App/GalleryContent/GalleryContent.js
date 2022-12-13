@@ -62,7 +62,7 @@ class GalleryContent extends React.Component<ReduxProps, State> {
     } = this.props;
     const { selectedTab } = this.state;
 
-    const list = isProfile ? userNfts : nftList;
+    const list = nftList;
     if (list) {
       const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
       const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
@@ -86,14 +86,12 @@ class GalleryContent extends React.Component<ReduxProps, State> {
       isProfile, profile, userNfts, nftList, tabs,
     } = this.props;
     const { selectedTab } = this.state;
-
-    const list = isProfile ? userNfts : nftList;
-    const prevList = isProfile ? prevProps.userNfts : prevProps.nftList;
+    const list = nftList;
+    const prevList = prevProps.nftList;
 
     if (!isEqual(list, prevList)) {
       const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
       const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
-
       const gallery = isProfile && tabs ? buildUserGalleryNftList(tabs, profile, list) : { list: { all: list }, tabs: [] };
 
       this.setState({

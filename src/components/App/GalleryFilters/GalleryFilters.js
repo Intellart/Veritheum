@@ -23,7 +23,7 @@ class GalleryFilters extends React.Component<Props> {
 
     const selectboxOptions = [
       { value: 0, text: 'All items' },
-      { value: 1, text: 'Tradable items' },
+      { value: 1, text: 'Tradeable items' },
       { value: 2, text: 'Endorsable items' },
     ];
 

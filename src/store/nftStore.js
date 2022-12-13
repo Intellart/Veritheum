@@ -9,12 +9,10 @@ import type { ReduxActionWithPayload, ReduxAction, ReduxState } from '../types';
 export type CreatePayload = {
   fingerprint: string,
   tradeable: boolean,
-  price: ?string|number,
   name: string,
   description: string,
   owner_id: number,
-  // category_id: ?number,
-  asset_name: string,
+  category_id: ?number,
   policy_id: string,
   file: string,
 }
@@ -77,10 +75,10 @@ export const types = {
   NFT_UPDATE_TX_AND_WITNESS_NFT_REJECTED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_REJECTED',
   NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED: 'NFT/UPDATE_TX_AND_WITNESS_NFT_FULFILLED',
 
-  NFT_UPDATE_SELLER: 'NFT/UPDATE_SELLER',
-  NFT_UPDATE_SELLER_PENDING: 'NFT/UPDATE_SELLER_PENDING',
-  NFT_UPDATE_SELLER_REJECTED: 'NFT/UPDATE_SELLER_REJECTED',
-  NFT_UPDATE_SELLER_FULFILLED: 'NFT/UPDATE_SELLER_FULFILLED',
+  NFT_UPDATE_SELLER_AND_PRICE: 'NFT/UPDATE_SELLER_AND_PRICE',
+  NFT_UPDATE_SELLER_AND_PRICE_PENDING: 'NFT/UPDATE_SELLER_AND_PRICE_PENDING',
+  NFT_UPDATE_SELLER_AND_PRICE_REJECTED: 'NFT/UPDATE_SELLER_AND_PRICE_REJECTED',
+  NFT_UPDATE_SELLER_AND_PRICE_FULFILLED: 'NFT/UPDATE_SELLER_AND_PRICE_FULFILLED',
 
   NFT_UPDATE_STATE_TO_ON_SALE: 'NFT/UPDATE_STATE_TO_ON_SALE',
   NFT_UPDATE_STATE_TO_ON_SALE_PENDING: 'NFT/UPDATE_STATE_TO_ON_SALE_PENDING',
@@ -100,11 +98,9 @@ export const types = {
 
 export const selectors = {
   getNfts: (state: ReduxState): Nft[] => values(state.nfts),
-  // TODO: filter NFTs by state on_sale
   getNftsOnSale: (state: ReduxState): Nft[] => values(filter(state.nfts, (nft: Nft) => {
 
     if(nft.state === 'on_sale') {
-      console.log(nft);
       return true
     };
 
@@ -115,7 +111,7 @@ export const selectors = {
 export const actions = {
   fetchNfts: (): ReduxAction => ({
     type: types.NFT_FETCH_NFTS,
-    payload: API.getRequest('intellart/nfts/index_minted'),
+    payload: API.getRequest('intellart/nfts'),
   }),
   fetchNftsOnSale: (): ReduxAction => ({
     type: types.NFT_FETCH_NFTS_ON_SALE,
@@ -130,7 +126,7 @@ export const actions = {
     payload: API.putRequest(`intellart/nfts/${fingerprint}/update_tx_and_witness`, jsonToFormData('nft', payload)),
   }),
   updateSeller: (payload: any, fingerprint: string): ReduxAction => ({
-    type: types.NFT_UPDATE_SELLER,
+    type: types.NFT_UPDATE_SELLER_AND_PRICE,
     payload: API.putRequest(`intellart/nfts/${fingerprint}/update_seller`, jsonToFormData('nft', payload)),
   }),
   updateStateToOnSale: (fingerprint: string): ReduxAction => ({
@@ -176,7 +172,7 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
     case types.NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
-    case types.NFT_UPDATE_SELLER_FULFILLED:
+    case types.NFT_UPDATE_SELLER_AND_PRICE_FULFILLED:
       return { ...state, ...keyBy([action.payload], 'fingerprint') };
 
     case types.NFT_UPDATE_STATE_TO_ON_SALE_FULFILLED:

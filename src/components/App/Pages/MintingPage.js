@@ -9,10 +9,10 @@ import NftItem from '../NftItem/NftItem';
 import FileUpload from '../FileUpload/FileUpload';
 import Selectbox from '../Selectbox/Selectbox';
 import { actions as nftActions } from '../../../store/nftStore';
+import { selectors as nftSelectors } from '../../../store/nftStore';
 import type { Category } from '../../../store/categoriesStore';
 import type { Profile as ProfileType } from '../../../store/userStore';
 import { selectors } from '../../../store/walletStore';
-import { selectors as nftSelectors } from '../../../store/nftStore';
 import type { ReduxState } from '../../../types';
 import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
@@ -31,7 +31,6 @@ type State = {
   categoryId: number|null,
   categoryText: string,
   fingerprint: string,
-  nft_id: number|null,
   policy_id: string,
 }
 
@@ -66,7 +65,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
       categoryText: '',
       fingerprint: '',
       policy_id: get(process.env, 'REACT_APP_PLUTUS_POLICY_ID', ''),
-      nft_id: null,
       nfts: {}
     };
   }
@@ -118,11 +116,9 @@ class MintingPage extends React.Component<ReduxProps, State> {
       tradeable,
       name,
       description,
-      // TODO: why is this commented?
-      // category_id: categoryId,
+      category_id: categoryId,
       owner_id: this.props.profile.id,
       policy_id,
-      asset_name: name,
       file,
     }));
   };
@@ -147,19 +143,23 @@ class MintingPage extends React.Component<ReduxProps, State> {
     //const { nft_id, asset_name, description, url } = this_nft;
     //console.log(nft_id, asset_name, description, url);
     const newNFTId = 2;
-    const newNFTName = this.state.name;
+    // TODO: this should be asset_name from the database, generated from the backend
+    // backend generated -> asset_name
+    const newNFTName = this.state.name; // this.props.asset_name
+    // user inputed -> name
     const newNFTLongName = this.state.name;
     const newNFTDescription = this.state.description;
+    // backend generated
     const newNFTImageIPFS = 'ipfs://QmRhTTbUrPYEw3mJGGhQqQST9k86v1DPBiTTWJGKDJsVFw';//this.props.url;
 
     const payload = JSON.stringify({
-      'senders': senders,
-      'change_address': change_address,
-      'nft_id': newNFTId,
-      'nft_name': newNFTName,
-      'nft_long_name': newNFTLongName,
-      'nft_description': newNFTDescription,
-      'nft_image_ipfs': newNFTImageIPFS
+      senders: senders,
+      change_address: change_address,
+      nft_id: newNFTId,
+      nft_name: newNFTName,
+      nft_long_name: newNFTLongName,
+      nft_description: newNFTDescription,
+      nft_image_ipfs: newNFTImageIPFS
     });
 
     postMintBuildTx(payload)
@@ -340,7 +340,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
 const mapStateToProps = (state: ReduxState) => {
   const { profile } = state.user;
   const { categories } = state;
-  const { walletIsEnabled } = state.wallet.walletIsEnabled;
+  const { walletIsEnabled } = selectors.getWalletEnabled(state);
   // const { nfts } = state.nfts;
 
   // console.log(state);

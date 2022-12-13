@@ -38,18 +38,15 @@ function Profile(): Node {
     }
 
     if (!userId && isEmpty(userNfts) && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
       dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,18 +63,15 @@ function Profile(): Node {
     }
 
     if (shouldFetchNfts && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
       dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
       setIsFetchingNfts(true);
     }
@@ -93,18 +87,15 @@ function Profile(): Node {
     }
 
     if (!userId && isEmpty(userNfts) && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('intellart/nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
       dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,8 +106,8 @@ function Profile(): Node {
       label: 'Created',
       value: {
         id: 'created',
-        nft: 'cardano_address',
-        user: 'wallets',
+        nft: 'owner',
+        user: 'id',
       },
       icon: <MdEdit />,
     },

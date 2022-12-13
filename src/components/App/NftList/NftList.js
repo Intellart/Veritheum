@@ -27,7 +27,7 @@ class NftList extends React.Component<Props> {
               <NftItem key={nft.fingerprint} data={nft} />
             ))}
             {isPlutus && map(nftList, (nft: Nft) => (
-              <MarketplaceNftItem key={nft.fingerprint} data={nft} />
+              <NftItem key={nft.fingerprint} data={nft} />
             ))}
           </div>
         )}

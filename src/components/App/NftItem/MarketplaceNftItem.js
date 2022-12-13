@@ -13,6 +13,7 @@ type Props = {
 },
 };
 
+// NOT USED ANYMORE; USE NftItem.js component
 function MarketplaceNftItem(props: Props): Node {
   // TODO: get the image directly from url if NFT image does not have ipfs image format
   const getNftImage = (): Node => {

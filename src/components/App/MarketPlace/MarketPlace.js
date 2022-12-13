@@ -12,11 +12,14 @@ import NftList from '../NftList/NftList';
 import { fetchPlutusContractNftData } from '../../../utils/helpers';
 import { actions } from '../../../store/walletStore';
 import type { Nft } from '../../../store/nftStore';
+import { selectors } from '../../../store/nftStore';
+import { actions as nftActions } from '../../../store/nftStore';
 
 function MarketPlace(): Node {
   const dispatch = useDispatch();
   const plutusNfts = useSelector((state) => (get(state, 'wallet.plutusNfts', {})), isEqual);
-  const [plutus, setPlutus] = useState(false);
+  const nftsForSale = useSelector((state) => selectors.getNftsOnSale(state));
+  const [plutus, setPlutus] = useState(true);
   const [state, setState] = useState<Object>({
     galleryNftList: {},
     searchText: '',
@@ -29,24 +32,24 @@ function MarketPlace(): Node {
   let filteredNftList: Nft[] = state.galleryNftList;
 
   // Filter by price
-  filteredNftList = filter(filteredNftList, (nft: Nft) => {
+  filteredNftList = filter(nftsForSale, (nft: Nft) => {
     if (state.minPrice && state.maxPrice) return Number(nft.price) >= state.minPrice && Number(nft.price) <= state.maxPrice;
 
     return true;
   });
 
-  useEffect(() => {
-    const handleAsync = async () => {
-      const plutusNftsNew = await fetchPlutusContractNftData();
-      dispatch(actions.saveWallet({ plutusNfts: keyBy(plutusNftsNew, 'unit') }));
-    };
-    if (isEmpty(plutusNfts)) handleAsync();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   const handleAsync = async () => {
+  //     const plutusNftsNew = await fetchPlutusContractNftData();
+  //     dispatch(actions.saveWallet({ plutusNfts: keyBy(nftsForSale, 'fingerprint') }));
+  //   };
+  //   if (isEmpty(nftsForSale)) handleAsync();
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const list = keyBy(filter(map(plutusNfts, 'data'), (data) => !isEmpty(data)), 'fingerprint');
+      const list = nftsForSale; //keyBy(filter(map(nftsForSale, 'data'), (data) => !isEmpty(data)), 'fingerprint');
 
       const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft?.price)));
       const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft?.price)));
@@ -63,7 +66,7 @@ function MarketPlace(): Node {
 
     return () => clearTimeout(timeout);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plutusNfts]);
+  }, [nftsForSale]);
 
   const handleFiltersChange = (key: string, value) => setState({ ...state, [key]: value });
 

@@ -34,10 +34,11 @@ export type Wallet = {
 
 export const types: Object = {
   WALLET_SAVE: 'WALLET_SAVE',
-  WALLET_FUNC: 'WALLET_FUNC',
-  WALLET_FUNC_FULFILLED: 'WALLET_FUNC_FULFILLED',
+  WALLET_SAVE_FULLFILLED: 'WALLET_SAVE_FULLFILLED',
+
   WALLET_REFRESH_DATA: 'WALLET_REFRESH_DATA',
   WALLET_REFRESH_DATA_FULFILLED: 'WALLET_REFRESH_DATA_FULFILLED',
+
   WALLET_NFT_DATA: 'WALLET_NFT_DATA',
   WALLET_NFT_DATA_FULFILLED: 'WALLET_NFT_DATA_FULFILLED',
 };
@@ -50,10 +51,6 @@ export const actions = {
   saveWallet: (state: any): ReduxAction => ({
     type: types.WALLET_SAVE,
     payload: state,
-  }),
-  funcWallet: (state: any): ReduxAction => ({
-    type: types.WALLET_FUNC,
-    payload: buildSendTokenToPlutusScript(state),
   }),
   refreshData: (state: any): ReduxAction => ({
     type: types.WALLET_REFRESH_DATA,
@@ -70,7 +67,7 @@ export const reducer = (state: Wallet, action: ReduxActionWithPayload): Wallet =
     case types.WALLET_NFT_DATA_FULFILLED:
       return { ...state, ...{ Nfts: action.payload } };
     case types.WALLET_REFRESH_DATA_FULFILLED:
-    case types.WALLET_SAVE:
+    case types.WALLET_SAVE_FULLFILLED:
       return { ...state, ...action.payload };
 
     default:

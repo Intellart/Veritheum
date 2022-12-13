@@ -3,6 +3,16 @@ import { postSellBuildTx, postSellSubmitTx, postBuyBuildTx, postBuySubmitTx,
 import { actions as nftActions } from '../store/nftStore';
 
 // Initiate sell
+const sendSellTxAndWitnessBack = (tx, witness, datum, address) => {
+    const payload = JSON.stringify({ tx: tx, witness: witness, datum: datum, address: address });
+
+    postSellSubmitTx(payload)
+        .then(response => response)
+        .then(data => {
+            alert("Transaction: " + data["tx_id"] + " submitted!");
+        });
+};
+
 const signSellTx = (tx) => {
     const datum = tx['datum']
     const address = tx['address']
@@ -12,51 +22,56 @@ const signSellTx = (tx) => {
     });
 };
 
-const sendSellTxAndWitnessBack = (tx, witness, datum, address) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'datum': datum, 'address': address });
 
-    postSellSubmitTx(payload)
+export const submitSellRequest = (tokenName, fingerprint, props) => {
+    // TODO: should the user have the option to change price? How to implement this?
+    let adaValue = prompt('Please enter token value (in ADA)', '2');
+    let adaValueLovelace;
+
+    if (adaValue == null) {
+        return
+    } else {
+        adaValueLovelace = adaValue * 1000000;
+    }
+
+    window.cardano.getUsedAddresses().then((senders) => {
+        window.cardano.getChangeAddress().then((change_address) => {
+
+        // TODO: change_address should be in readable (utf8) format, currently in cbor hex
+        const payload = JSON.stringify({
+            senders: senders,
+            change_address: change_address,
+            nft_name: tokenName,
+            ada_lovelace: adaValueLovelace
+        });
+
+        console.log(payload);
+
+        const updateSellerPayload = { 'seller_address': change_address, 'price': adaValue };
+
+        postSellBuildTx(payload)
+            .then(response => response)
+            .then(signSellTx)
+            .then(props.dispatch(
+                nftActions.updateStateToOnSale(fingerprint)))
+            .then(props.dispatch(
+                nftActions.updateSeller(updateSellerPayload, fingerprint)))
+            //.then(window.location.replace('/marketplace'));
+        });
+    });
+};
+
+// Close sell
+const closeSellSendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
+    const payload = JSON.stringify({ tx: tx, witness: witness, witness_set: witnessSet, datum: datum });
+
+    postCloseSellSubmitTx(payload)
         .then(response => response)
         .then(data => {
             alert("Transaction: " + data["tx_id"] + " submitted!");
         });
 };
 
-export const submitSellRequest = (tokenName, fingerprint, props) => {
-    // TODO: should the user have the option to change price? How to implement this?
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
-
-    window.cardano.getUsedAddresses().then((senders) => {
-        window.cardano.getChangeAddress().then((change_address) => {
-
-        // TODO: add change_address to the NFTs table into sell_address field
-        const payload = JSON.stringify({
-            'senders': senders,
-            'change_address': change_address,
-            'nft_name': tokenName,
-            'ada_lovelace': adaValue
-        });
-        const updateSellerPayload = JSON.stringify({ 'seller_address': change_address });
-
-        postSellBuildTx(payload)
-            .then(response => {console.log(response); return response;})
-            .then(signSellTx)
-            .then(props.dispatch(
-                nftActions.updateStateToOnSale(fingerprint)))
-            .then(props.dispatch(
-                nftActions.updateSeller(updateSellerPayload, fingerprint)))
-            .then(window.location.replace('/marketplace'));
-        });
-    });
-};
-
-// Close sell
 const closeSellSignTx = (tx) => {
     const witnessSet = tx['witness_set']
     const datum = tx['datum']
@@ -66,32 +81,17 @@ const closeSellSignTx = (tx) => {
     });
 };
 
-const closeSellSendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
 
-    postCloseSellSubmitTx(payload)
-        .then(response => response)
-        .then(data => {
-            alert("Transaction: " + data["tx_id"] + " submitted!");
-        });
-};
-
-export const submitCloseSellRequest = (tokenName) => {
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
+export const submitCloseSellRequest = (tokenName, price) => {
+    let adaValue = price ? price * 1000000 : 0;
 
     window.cardano.getUsedAddresses().then((senders) => {
         window.cardano.getChangeAddress().then((change_address) => {
             const payload = JSON.stringify({
-                'senders': senders,
-                'change_address': change_address,
-                'nft_name': tokenName,
-                'ada_lovelace': adaValue
+                senders: senders,
+                change_address: change_address,
+                nft_name: tokenName,
+                ada_lovelace: adaValue
             });
 
             postCloseSellBuildTx(payload)
@@ -102,22 +102,16 @@ export const submitCloseSellRequest = (tokenName) => {
 };
 
 // Buy
-export const submitBuyRequest = (tokenName) => {
-    let adaValue = prompt("Please enter token value (in ADA)", "2");
-
-    if (adaValue == null) {
-        return
-    } else {
-        adaValue = adaValue * 1000000;
-    }
+export const submitBuyRequest = (tokenName, price) => {
+    let adaValue = price ? price * 1000000 : 0;
 
     window.cardano.getUsedAddresses().then((senders) => {
         window.cardano.getChangeAddress().then((change_address) => {
             const payload = JSON.stringify({
-            'senders': senders,
-            'change_address': change_address,
-            'nft_name': tokenName,
-            'ada_lovelace': adaValue
+            senders: senders,
+            change_address: change_address,
+            nft_name: tokenName,
+            ada_lovelace: adaValue
             });
 
             postBuyBuildTx(payload)
@@ -137,7 +131,7 @@ const buySignTx = (tx) => {
 };
 
 const buySendTxAndWitnessBack = (tx, witness, witnessSet, datum) => {
-    const payload = JSON.stringify({ 'tx': tx, 'witness': witness, 'witness_set': witnessSet, 'datum': datum });
+    const payload = JSON.stringify({ tx: tx, witness: witness, witness_set: witnessSet, datum: datum });
 
     postBuySubmitTx(payload)
         .then(response => response)
