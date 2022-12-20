@@ -146,11 +146,11 @@ class GalleryContent extends React.Component<ReduxProps, State> {
     // Filter by search input or type
     filteredNftList = filter(filteredNftList, (nft: Nft) => {
       if (selectedOption === 1) {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
       } else if (selectedOption === 2) {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === false;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === false;
       } else {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
       }
     });
 

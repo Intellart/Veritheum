@@ -138,7 +138,6 @@ export const configureStore = (
   const sanitizers = get(process.env, 'REACT_APP_REDUX_SANITIZER') !== 'false' && { actionSanitizer, stateSanitizer };
   const composeEnhancers = composeWithDevTools({ ...sanitizers, actionsDenylist: actionsDenylist() });
   const middlewareApplier = composeEnhancers(applyMiddleware(...middleware));
-  console.log('INIT STATE' ,initialState);
 
   return createStore(
     combineReducers({

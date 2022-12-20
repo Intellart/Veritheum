@@ -45,17 +45,15 @@ export const submitSellRequest = (tokenName, fingerprint, props) => {
             ada_lovelace: adaValueLovelace
         });
 
-        console.log(payload);
-
         const updateSellerPayload = { 'seller_address': change_address, 'price': adaValue };
 
         postSellBuildTx(payload)
             .then(response => response)
             .then(signSellTx)
             .then(props.dispatch(
-                nftActions.updateStateToOnSale(fingerprint)))
+                nftActions.checkSellStatus(fingerprint)))
             .then(props.dispatch(
-                nftActions.updateSeller(updateSellerPayload, fingerprint)))
+                nftActions.updateSeller(updateSellerPayload, fingerprint)));
             //.then(window.location.replace('/marketplace'));
         });
     });
@@ -76,13 +74,13 @@ const closeSellSignTx = (tx) => {
     const witnessSet = tx['witness_set']
     const datum = tx['datum']
 
-    window.cardano.signTx(tx['tx']).then((witness) => {
+    window.cardano.signTx(tx['tx'], true).then((witness) => {
         closeSellSendTxAndWitnessBack(tx['tx'], witness, witnessSet, datum);
     });
 };
 
 
-export const submitCloseSellRequest = (tokenName, price) => {
+export const submitCloseSellRequest = (tokenName, fingerprint, price, props) => {
     let adaValue = price ? price * 1000000 : 0;
 
     window.cardano.getUsedAddresses().then((senders) => {
@@ -95,14 +93,17 @@ export const submitCloseSellRequest = (tokenName, price) => {
             });
 
             postCloseSellBuildTx(payload)
-                .then(response => response)
-                .then(closeSellSignTx);
+            .then(response => response)
+            .then(closeSellSignTx)
+            .then(props.dispatch(
+                nftActions.checkBuyStatus(fingerprint)
+            ));
         });
     });
 };
 
 // Buy
-export const submitBuyRequest = (tokenName, price) => {
+export const submitBuyRequest = (tokenName, fingerprint, price, props) => {
     let adaValue = price ? price * 1000000 : 0;
 
     window.cardano.getUsedAddresses().then((senders) => {
@@ -116,7 +117,10 @@ export const submitBuyRequest = (tokenName, price) => {
 
             postBuyBuildTx(payload)
             .then(response => response)
-            .then(buySignTx);
+            .then(buySignTx)
+            .then(props.dispatch(
+                nftActions.checkBuyStatus(fingerprint)
+            ));
         });
     });
 };

@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import {
-  some, isEmpty, map, find, get, isEqual
+  some, isEmpty, map, find, get, isEqual, orderBy
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import NftItem from '../NftItem/NftItem';
@@ -18,6 +18,8 @@ import 'reactjs-popup/dist/index.css';
 import './MintingPage.scss';
 import { postMintBuildTx, postSubmitTx } from '../../../api'
 import { constructAssetNameHex, constructFingerprint } from '../../../utils/helpers';
+import * as API from '../../../api';
+import { jsonToFormData } from '../../../utils';
 
 const { Buffer } = require('buffer/');
 
@@ -32,6 +34,9 @@ type State = {
   categoryText: string,
   fingerprint: string,
   policy_id: string,
+  nft_id: number|null,
+  asset_name: string,
+  url: string,
 }
 
 type Props = {}
@@ -42,7 +47,6 @@ type ReduxProps = {
   profile: ProfileType,
   categories: Array<Category>,
   walletIsEnabled: boolean,
-  nfts: Object
 }
 
 class MintingPage extends React.Component<ReduxProps, State> {
@@ -65,7 +69,9 @@ class MintingPage extends React.Component<ReduxProps, State> {
       categoryText: '',
       fingerprint: '',
       policy_id: get(process.env, 'REACT_APP_PLUTUS_POLICY_ID', ''),
-      nfts: {}
+      url: '',
+      asset_name: '',
+      nft_id: null,
     };
   }
 
@@ -94,7 +100,6 @@ class MintingPage extends React.Component<ReduxProps, State> {
     e.preventDefault();
 
     this.createNft(e);
-    this.prepareSender();
   };
 
   // here we first save the NFT to the db, then build the tx and ask the user to sign
@@ -108,10 +113,9 @@ class MintingPage extends React.Component<ReduxProps, State> {
 
     const fingerprint = constructFingerprint(policy_id, name);
 
-    // state is not updated
     this.setState({ fingerprint: fingerprint });
-    console.log('fingerprint: ', fingerprint);
-    this.props.dispatch(nftActions.createNft({
+
+    const payload = {
       fingerprint,
       tradeable,
       name,
@@ -120,37 +124,32 @@ class MintingPage extends React.Component<ReduxProps, State> {
       owner_id: this.props.profile.id,
       policy_id,
       file,
-    }));
+    };
+
+    API.postRequest('intellart/nfts', jsonToFormData('nft', payload))
+    .then(response => {this.prepareSender(response)});
   };
 
   // 0.
-  prepareSender() {
+  prepareSender(response) {
     // TODO: check which wallet is selected and use that one
     window.cardano.getUsedAddresses().then((senders) => {
       window.cardano.getChangeAddress().then((change_address) => {
-        this.submitMintRequest(senders, change_address);
+        this.submitMintRequest(senders, change_address, response);
       })
     });
   }
 
   // 1.
-  submitMintRequest(senders, change_address) {
-    // TODO: get this data from the backend, still not implemented
-    // NFT props not updating with new data
-    //console.log(this.props);
-    //const { nfts } = this.state.nfts;
-    //const this_nft = find(nfts, ['fingerprint', this.state.fingerprint]);
-    //const { nft_id, asset_name, description, url } = this_nft;
-    //console.log(nft_id, asset_name, description, url);
-    const newNFTId = 2;
-    // TODO: this should be asset_name from the database, generated from the backend
+  submitMintRequest(senders, change_address, response) {
+    const newNFTId = 1;
     // backend generated -> asset_name
-    const newNFTName = this.state.name; // this.props.asset_name
+    const newNFTName = response.asset_name;
     // user inputed -> name
     const newNFTLongName = this.state.name;
     const newNFTDescription = this.state.description;
-    // backend generated
-    const newNFTImageIPFS = 'ipfs://QmRhTTbUrPYEw3mJGGhQqQST9k86v1DPBiTTWJGKDJsVFw';//this.props.url;
+    // backend generated -> url
+    const newNFTImageIPFS = response.url;
 
     const payload = JSON.stringify({
       senders: senders,
@@ -182,7 +181,7 @@ class MintingPage extends React.Component<ReduxProps, State> {
     };
 
     this.props.dispatch(nftActions.updateTxAndWitness(payload, this.state.fingerprint))
-      .then(window.location.replace('/profile'));
+    .then(window.location.replace('/profile'));
   }
 
   render () {
@@ -341,12 +340,6 @@ const mapStateToProps = (state: ReduxState) => {
   const { profile } = state.user;
   const { categories } = state;
   const { walletIsEnabled } = selectors.getWalletEnabled(state);
-  // const { nfts } = state.nfts;
-
-  // console.log(state);
-  // console.log('------------------------------------------------------------------------------');
-  // console.log(state.nfts);
-
 
   return { profile, categories, walletIsEnabled };
 };

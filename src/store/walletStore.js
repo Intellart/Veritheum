@@ -34,7 +34,6 @@ export type Wallet = {
 
 export const types: Object = {
   WALLET_SAVE: 'WALLET_SAVE',
-  WALLET_SAVE_FULLFILLED: 'WALLET_SAVE_FULLFILLED',
 
   WALLET_REFRESH_DATA: 'WALLET_REFRESH_DATA',
   WALLET_REFRESH_DATA_FULFILLED: 'WALLET_REFRESH_DATA_FULFILLED',
@@ -67,7 +66,7 @@ export const reducer = (state: Wallet, action: ReduxActionWithPayload): Wallet =
     case types.WALLET_NFT_DATA_FULFILLED:
       return { ...state, ...{ Nfts: action.payload } };
     case types.WALLET_REFRESH_DATA_FULFILLED:
-    case types.WALLET_SAVE_FULLFILLED:
+    case types.WALLET_SAVE:
       return { ...state, ...action.payload };
 
     default:

@@ -1,6 +1,6 @@
 // @flow
 import {
-  values, keyBy, get, filter
+  values, keyBy, get, filter, orderBy
 } from 'lodash';
 import * as API from '../api';
 import { jsonToFormData } from '../utils';
@@ -80,10 +80,15 @@ export const types = {
   NFT_UPDATE_SELLER_AND_PRICE_REJECTED: 'NFT/UPDATE_SELLER_AND_PRICE_REJECTED',
   NFT_UPDATE_SELLER_AND_PRICE_FULFILLED: 'NFT/UPDATE_SELLER_AND_PRICE_FULFILLED',
 
-  NFT_UPDATE_STATE_TO_ON_SALE: 'NFT/UPDATE_STATE_TO_ON_SALE',
-  NFT_UPDATE_STATE_TO_ON_SALE_PENDING: 'NFT/UPDATE_STATE_TO_ON_SALE_PENDING',
-  NFT_UPDATE_STATE_TO_ON_SALE_REJECTED: 'NFT/UPDATE_STATE_TO_ON_SALE_REJECTED',
-  NFT_UPDATE_STATE_TO_ON_SALE_FULFILLED: 'NFT/UPDATE_STATE_TO_ON_SALE_FULFILLED',
+  NFT_CHECK_SELL_STATUS: 'NFT/CHECK_SELL_STATUS',
+  NFT_CHECK_SELL_STATUS_PENDING: 'NFT/CHECK_SELL_STATUS_PENDING',
+  NFT_CHECK_SELL_STATUS_REJECTED: 'NFT/CHECK_SELL_STATUS_REJECTED',
+  NFT_CHECK_SELL_STATUS_FULFILLED: 'NFT/CHECK_SELL_STATUS_FULFILLED',
+
+  NFT_CHECK_BUY_STATUS: 'NFT/CHECK_BUY_STATUS',
+  NFT_CHECK_BUY_STATUS_PENDING: 'NFT/CHECK_BUY_STATUS_PENDING',
+  NFT_CHECK_BUY_STATUS_REJECTED: 'NFT/CHECK_BUY_STATUS_REJECTED',
+  NFT_CHECK_BUY_STATUS_FULFILLED: 'NFT/CHECK_BUY_STATUS_FULFILLED',
 
   NFT_LIKE_NFT: 'NFT/LIKE_NFT',
   NFT_LIKE_NFT_PENDING: 'NFT/LIKE_NFT_PENDING',
@@ -102,7 +107,7 @@ export const selectors = {
 
     if(nft.state === 'on_sale') {
       return true
-    };
+    }
 
     return false;
   })),
@@ -129,9 +134,13 @@ export const actions = {
     type: types.NFT_UPDATE_SELLER_AND_PRICE,
     payload: API.putRequest(`intellart/nfts/${fingerprint}/update_seller`, jsonToFormData('nft', payload)),
   }),
-  updateStateToOnSale: (fingerprint: string): ReduxAction => ({
-    type: types.NFT_UPDATE_STATE_TO_ON_SALE,
-    payload: API.putRequest(`intellart/nfts/${fingerprint}/initiate_sale`),
+  checkSellStatus: (fingerprint: string): ReduxAction => ({
+    type: types.NFT_CHECK_SELL_STATUS,
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/check_sale_status`),
+  }),
+  checkBuyStatus: (fingerprint: string): ReduxAction => ({
+    type: types.NFT_CHECK_BUY_STATUS,
+    payload: API.putRequest(`intellart/nfts/${fingerprint}/check_buy_status`),
   }),
   likeNft: (payload: LikePayload): ReduxAction => ({
     type: types.NFT_LIKE_NFT,
@@ -167,16 +176,19 @@ export const reducer = (state: State, action: ReduxActionWithPayload): State => 
       return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_CREATE_NFT_FULFILLED:
-      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_UPDATE_TX_AND_WITNESS_NFT_FULFILLED:
-      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_UPDATE_SELLER_AND_PRICE_FULFILLED:
-      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
-    case types.NFT_UPDATE_STATE_TO_ON_SALE_FULFILLED:
-      return { ...state, ...keyBy([action.payload], 'fingerprint') };
+    case types.NFT_CHECK_SELL_STATUS_FULFILLED:
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
+
+    case types.NFT_CHECK_BUY_STATUS_FULFILLED:
+      return { ...state, ...keyBy(action.payload, 'fingerprint') };
 
     case types.NFT_LIKE_NFT_FULFILLED:
       return handleLikeResponse(state, action.payload);

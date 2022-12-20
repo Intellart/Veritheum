@@ -146,15 +146,12 @@ class NftItem extends React.Component<ReduxProps> {
                       {owner.full_name}
                     </Link>
                   </div>
-                  <div className='group'>
-                    {/* Implement filtering based on NFT owner and tradeable attributes:
-                        - Buy should be visible only on Marketplace NFTs
-                        - Sell should be visible only on WalletPage NFTs
-                        - Close sell should be visible only on Marketplace NFTs, and only for owner of that NFT */}
+                  { userId && (
+                    <div className='group'>
                     { userIsOwner ? (
                       <>
                       { state === 'on_sale' ? (
-                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name, price)}>
+                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name, fingerprint, price, this.props)}>
                           Close sale
                         </button>
                       ) : (
@@ -166,13 +163,14 @@ class NftItem extends React.Component<ReduxProps> {
                     ) : (
                       <>
                       { state === 'on_sale' && (
-                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name, price)}>
+                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name, fingerprint, price, this.props)}>
                           Buy
                         </button>
                       )}
                       </>
                     )}
                   </div>
+                  )}
                 </>
               ) : (
                 <>
