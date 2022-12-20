@@ -169,7 +169,7 @@ function WalletPage(): Node {
                       )}
                       <div className="nft-item-bottom-info">
                         <div className="info-label column">Quantity: {nftKey.data?.quantity}</div>
-                        <button className='outline' onClick={() => submitSellRequest(nftKey.data?.asset_name, nftKey, redux)}>Sell</button>
+                        <button className='outline' onClick={() => submitSellRequest(nftKey.data?.asset_name, nftKey.data?.fingerprint, redux)}>Sell</button>
                       </div>
                     </div>
                   </div>
