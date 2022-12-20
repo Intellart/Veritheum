@@ -1,5 +1,6 @@
 // @flow
 import React, { useEffect, useState } from 'react';
+import type { Node } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty, isEqual, map } from 'lodash';
@@ -37,19 +38,16 @@ function Profile(): Node {
     }
 
     if (!userId && isEmpty(userNfts) && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -65,19 +63,16 @@ function Profile(): Node {
     }
 
     if (shouldFetchNfts && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
       setIsFetchingNfts(true);
     }
   }, [profile, userId, isFetchingNfts, userNfts, dispatch]);
@@ -92,39 +87,27 @@ function Profile(): Node {
     }
 
     if (!userId && isEmpty(userNfts) && profile) {
-      const addressIDs = getAllUserWalletAddresses(profile.wallets, 'id');
       const nftsQuery: QueryParam[] = [
-        { key: 'match_any', query: 'true' },
         // $FlowFixMe
         { key: 'owner_id', query: String(profile.id) },
-        ...map(addressIDs, (addr) => ({ key: 'cardano_address_id[]', query: String(addr) })),
       ];
       const likesQuery: QueryParam[] = [
         // $FlowFixMe
         { key: 'user_id', query: String(profile.id) },
       ];
-      dispatch(actions.fetchUserNfts('nfts', nftsQuery));
-      dispatch(actions.fetchUserNfts('nft_likes', likesQuery));
+      dispatch(actions.fetchUserNfts('intellart/nfts/index_user_nfts', nftsQuery));
+      dispatch(actions.fetchUserNfts('intellart/nft_likes', likesQuery));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   const tabs = [
     {
-      label: 'Collected',
-      value: {
-        id: 'collected',
-        nft: 'owner.id',
-        user: 'id',
-      },
-      icon: <MdCollectionsBookmark />,
-    },
-    {
       label: 'Created',
       value: {
         id: 'created',
-        nft: 'cardano_address',
-        user: 'wallets',
+        nft: 'owner',
+        user: 'id',
       },
       icon: <MdEdit />,
     },
@@ -170,15 +153,21 @@ function Profile(): Node {
       </div>
       <div className="lower-profile-page-wrapper">
         <div className="toolbar-links">
-          <Link to={window.location.pathname}>
-            <VscGlobe />
-          </Link>
-          <Link to={window.location.pathname}>
-            <IoLogoTwitter />
-          </Link>
-          <Link to={window.location.pathname}>
-            <FaDiscord />
-          </Link>
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <VscGlobe />
+            </Link>
+          ) : null}
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <IoLogoTwitter />
+            </Link>
+          ) : null}
+          {profile.social_links ? (
+            <Link to={window.location.pathname}>
+              <FaDiscord />
+            </Link>
+          ) : null}
           {!userId && (
             <Link to="/settings">
               <IoSettings />

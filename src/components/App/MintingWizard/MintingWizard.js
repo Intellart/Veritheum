@@ -1,14 +1,10 @@
 // @flow
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Selectbox from '../Selectbox/Selectbox';
 import './MintingWizard.scss';
 
 type State = {
   stepNumber: number,
-  step1Answer: string,
-  step2Answer: string,
-  step3Answer: string,
 }
 
 class MintingWizard extends React.Component<{}, State> {
@@ -16,9 +12,6 @@ class MintingWizard extends React.Component<{}, State> {
     super();
     this.state = {
       stepNumber: 1,
-      step1Answer: '',
-      step2Answer: '',
-      step3Answer: '',
     };
   }
 

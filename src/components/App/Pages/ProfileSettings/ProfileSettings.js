@@ -2,9 +2,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { map, isEmpty } from 'lodash';
+import Select from 'react-select';
 import { actions } from '../../../../store/userStore';
 import { actions as studyFieldActions, selectors as studyFieldsSelectors } from '../../../../store/studyFieldsStore';
-import Selectbox from '../../Selectbox/Selectbox';
+//import Selectbox from '../../Selectbox/Selectbox';
 import type { ReduxState } from '../../../../types';
 import type { Profile as ProfileType } from '../../../../store/userStore';
 import type { StudyField } from '../../../../store/studyFieldsStore';
@@ -14,6 +15,9 @@ type State = {
   firstName: string,
   lastName: string,
   studyField: string,
+  twitterLink: string,
+  websiteLink: string,
+  discordLink: string,
 }
 
 type Props = {
@@ -29,6 +33,9 @@ class ProfileSettings extends React.Component<Props, State> {
       firstName: this.props.profile.first_name,
       lastName: this.props.profile.last_name,
       studyField: this.props.profile.study_field,
+      twitterLink: this.props.profile?.twitter_link,
+      websiteLink: this.props.profile?.website_link,
+      discordLink: this.props.profile?.discord_link,
     };
   }
 
@@ -57,14 +64,17 @@ class ProfileSettings extends React.Component<Props, State> {
   }
 
   render () {
-    const { firstName, lastName, studyField } = this.state;
+    const {
+      firstName, lastName, studyField,
+      twitterLink, discordLink, websiteLink,
+    } = this.state;
     const { studyFields } = this.props;
 
-    let studyFieldsOptions: Object[] = [{ value: null, text: 'None' }];
+    let studyFieldsOptions: Object[] = [];
     if (studyFields) {
       studyFieldsOptions = [...studyFieldsOptions, ...map(studyFields, (sf: StudyField) => ({
         value: sf.id,
-        text: sf.field_name,
+        label: sf.field_name,
       }))];
     }
 
@@ -94,16 +104,48 @@ class ProfileSettings extends React.Component<Props, State> {
               onChange={(e) => this.setState({ lastName: e.target.value })}
             />
           </div>
+
           <div className="input-wrapper">
             <label htmlFor="edit-field-of-study-input">Field of study</label>
             <div className="selectbox-wrapper" id="edit-field-of-study-input">
-              <Selectbox
+              <Select
+                isMulti
+                defaultValue={studyField}
+                name="studyFieldOptions"
                 options={studyFieldsOptions}
+                className="basic-multi-select"
+                classNamePrefix="select"
                 onChange={this.onOptionSelect}
-                preselected
-                preselectedWithValue={studyField}
               />
             </div>
+          </div>
+          <div className="input-wrapper">
+            <label htmlFor="website-input-link">Website link</label>
+            <input
+              id="website-input-link"
+              placeholder="Please input your website link"
+              value={websiteLink}
+              onChange={(e) => this.setState({ websiteLink: e.target.value })}
+            />
+          </div>
+          <div className="input-wrapper">
+            <label htmlFor="discord-link-input">Discord link</label>
+            <input
+              id="discord-link-input"
+              autoComplete="given-name"
+              placeholder="Please input your Discord link"
+              value={discordLink}
+              onChange={(e) => this.setState({ discordLink: e.target.value })}
+            />
+          </div>
+          <div className="input-wrapper">
+            <label htmlFor="twitter-link-input">Twitter link</label>
+            <input
+              id="twitter-link-input"
+              placeholder="Please input your Twitter link"
+              value={twitterLink}
+              onChange={(e) => this.setState({ twitterLink: e.target.value })}
+            />
           </div>
           <button>
             Save changes

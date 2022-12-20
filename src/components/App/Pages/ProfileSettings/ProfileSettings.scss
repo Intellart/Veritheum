@@ -104,6 +104,23 @@
       }
     }
 
+    .basic-multi-select {
+      background: #fff;
+      border-radius: 4px;
+      color: #11273f;
+      font-size: 14px;
+      letter-spacing: -0.14px;
+      .select__input {
+        min-height: 36px;
+      }
+      .select__placeholder {
+        margin-left: 10px;
+      }
+      .select__value-container {
+        padding: 2px 15px;
+      }
+    }
+
     .password-field-wrapper {
       position: relative;
 

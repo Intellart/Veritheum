@@ -2,7 +2,7 @@
 import {
   isEmpty, join, map, has, trimEnd,
 } from 'lodash';
-import apiClient from './axios';
+import { apiClient, apiCopsClient } from './axios';
 
 export type QueryParam = {
   key: string,
@@ -53,4 +53,53 @@ export const orcidOAuth = async (finalEndpoint: string, payload: any): Promise<a
 
     return response.data;
   }
+};
+
+// CardanoOps
+export const postMintBuildTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/build_tx/', payload);
+
+  return response.data;
+};
+
+export const postSubmitTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/submit_tx/', payload);
+
+  return response.data;
+};
+
+export const postSellBuildTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/sell/build_tx/', payload);
+
+  return response.data;
+};
+
+export const postSellSubmitTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/sell/submit_tx/', payload);
+
+  return response.data;
+};
+
+export const postCloseSellBuildTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/close/build_tx/', payload);
+
+  return response.data;
+};
+
+export const postCloseSellSubmitTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/close/submit_tx/', payload);
+
+  return response.data;
+};
+
+export const postBuyBuildTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/buy/build_tx/', payload);
+
+  return response.data;
+};
+
+export const postBuySubmitTx = async (payload: any): Promise<any> => {
+  const response: any = await apiCopsClient.post('/nfts/buy/submit_tx/', payload);
+
+  return response.data;
 };

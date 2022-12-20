@@ -1,4 +1,6 @@
 // @flow
+/* eslint-disable camelcase */
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import { IoHeart, IoHeartOutline, IoShieldCheckmarkSharp } from 'react-icons/io5';
 import { connect } from 'react-redux';
@@ -8,7 +10,9 @@ import User from '../../../assets/icons/user.svg';
 import { actions } from '../../../store/nftStore';
 import { calcExchangeRate, findNftLike } from '../../../utils';
 import { selectors as exchangeRatesSelectors } from '../../../store/exchangeRatesStore';
+import { submitSellRequest, submitCloseSellRequest, submitBuyRequest } from '../../../utils/plutus_helpers';
 import type { Nft, NftLike } from '../../../store/nftStore';
+import type { Utxo } from '../../../store/walletStore';
 import type { State as ExchangeRates } from '../../../store/exchangeRatesStore';
 import type { ReduxState } from '../../../types';
 import './NftItem.scss';
@@ -45,16 +49,17 @@ class NftItem extends React.Component<ReduxProps> {
 
   render () {
     const {
-      data, trending, userId, exchangeRates,
+      data, trending, userId, exchangeRates
     } = this.props;
     const {
-      tradeable, category, name, verified, owner, price,
+      tradeable, category, name, verified, owner, price, asset_name, policy_id, url, state, fingerprint
     } = data;
     const like = findNftLike(data, userId);
+    const userIsOwner = userId === owner.id;
 
     let type;
     if (tradeable === true) {
-      type = 'Tradable';
+      type = 'Tradeable';
     } else {
       type = 'Endorsable';
     }
@@ -66,6 +71,9 @@ class NftItem extends React.Component<ReduxProps> {
             <div className="trending-nft-item-top-info">
               <div className="name">
                 {name}
+              </div>
+              <div className="nft-image">
+                <img src={url} height={200} width={200} alt="nft"></img>
               </div>
             </div>
             <div className="trending-nft-item-bottom-info">
@@ -89,6 +97,9 @@ class NftItem extends React.Component<ReduxProps> {
             <div className="nft-item-name-wrapper">
               <div className="nft-item-name">
                 {name}
+              </div>
+              <div className="nft-image">
+                <img src={url}></img>
               </div>
             </div>
             <div className="nft-item-top-info">
@@ -135,10 +146,36 @@ class NftItem extends React.Component<ReduxProps> {
                       {owner.full_name}
                     </Link>
                   </div>
+                  { userId && (
+                    <div className='group'>
+                    { userIsOwner ? (
+                      <>
+                      { state === 'on_sale' ? (
+                        <button className='close-nft-btn' onClick={() => submitCloseSellRequest(asset_name, fingerprint, price, this.props)}>
+                          Close sale
+                        </button>
+                      ) : (
+                        <button className='sell-nft-btn' onClick={() => submitSellRequest(asset_name, fingerprint, this.props)}>
+                          Sell
+                        </button>
+                      ) }
+                      </>
+                    ) : (
+                      <>
+                      { state === 'on_sale' && (
+                        <button className='buy-nft-btn' onClick={() => submitBuyRequest(asset_name, fingerprint, price, this.props)}>
+                          Buy
+                        </button>
+                      )}
+                      </>
+                    )}
+                  </div>
+                  )}
                 </>
               ) : (
                 <>
                   <div className="group">
+                    {/* TODO: implement endorsers on an NFT */}
                     <div className="info-label">
                       Endorsed by
                     </div>
@@ -177,4 +214,4 @@ const mapStateToProps = (state: ReduxState) => ({
   exchangeRates: exchangeRatesSelectors.getExchangeRates(state),
 });
 
-export default (connect<ReduxProps, Props>(mapStateToProps)(NftItem): React$ComponentType<Props>);
+export default (connect(mapStateToProps)(NftItem): React$ComponentType<Props>);

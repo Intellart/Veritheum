@@ -63,8 +63,7 @@ class GallerySideMenu extends React.Component<Props, State> {
             initialMinPrice={initialMinPrice}
             initialMaxPrice={initialMaxPrice}
           />
-          <GallerySideMenuItem label="Status" />
-          <GallerySideMenuItem label="Collections" />
+          {/* <GallerySideMenuItem label="Collections" /> */}
           <GallerySideMenuItem label="Categories" filterNftsByCategory={filterNftsByCategory} />
         </div>
       </div>

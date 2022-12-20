@@ -22,7 +22,7 @@ nav {
       align-items: center;
       display: flex;
       height: 100%;
-
+      position: relative;
       @media screen and (max-width: 767px) {
         flex: 1;
         height: auto;
@@ -241,7 +241,7 @@ nav {
           margin-top: 180px;
           width: 100%;
 
-          a {
+          a, #wallet-connector > div > div > div > a {
             border-bottom: 1px solid rgba(207, 217, 221, 0.6);
             margin: 0 !important;
             padding: 12px 20px;

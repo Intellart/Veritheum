@@ -23,7 +23,7 @@ export const selectors = {
 export const actions = {
   getStudyFields: (): ReduxAction => ({
     type: types.STUDY_FIELD_GET_STUDY_FIELDS,
-    payload: API.getRequest('study_fields'),
+    payload: API.getRequest('intellart/study_fields'),
   }),
 };
 

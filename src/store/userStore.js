@@ -11,21 +11,21 @@ import type { ReduxAction, ReduxActionWithPayload, ReduxState } from '../types';
 import type { Nft } from './nftStore';
 import { getAllUserWalletAddresses } from '../utils';
 
-export type CardanoAddresses = {
-  id: number,
-  address: string,
-  dirty: boolean,
-  wallet_id: number,
-  created_at: string,
-  updated_at: string,
-}
+// export type CardanoAddresses = {
+//   id: number,
+//   address: string,
+//   dirty: boolean,
+//   wallet_id: number,
+//   created_at: string,
+//   updated_at: string,
+// }
 
-export type Wallet = {
-  id: number,
-  total: number,
-  used: number,
-  cardano_addresses: CardanoAddresses[],
-}
+// export type Wallet = {
+//   id: number,
+//   total: number,
+//   used: number,
+//   cardano_addresses: CardanoAddresses[],
+// }
 
 export type Profile = {
   id: number,
@@ -39,7 +39,14 @@ export type Profile = {
   social_links: string[],
   created_at: string,
   updated_at: string,
-  wallets: Wallet[],
+}
+
+type Admin = {
+  id: number,
+  email: string,
+  role: number,
+  created_at: string,
+  updated_at: string,
 }
 
 type LoginCredentials = {
@@ -72,14 +79,34 @@ type UpdatePayload = {
 }
 
 export type State = {
-  profile: Profile,
+  profile: Profile|null,
   orcidAccount: Object,
   userNfts: { [string]: Nft },
   currentSelectedUser: Profile|null,
   currentSelectedUserNfts: { [string]: Nft }|null,
+  currentAdmin: Admin|null,
+  allUsers: { [string]: Profile },
 };
 
 export const types = {
+  USR_LOGIN_ADMIN: 'USR/LOGIN_ADMIN',
+  USR_LOGIN_ADMIN_PENDING: 'USR/LOGIN_ADMIN_PENDING',
+  USR_LOGIN_ADMIN_REJECTED: 'USR/LOGIN_ADMIN_REJECTED',
+  USR_LOGIN_ADMIN_FULFILLED: 'USR/LOGIN_ADMIN_FULFILLED',
+
+  USR_LOGOUT_ADMIN: 'USR/LOGOUT_ADMIN',
+  USR_LOGOUT_ADMIN_PENDING: 'USR/LOGOUT_ADMIN_PENDING',
+  USR_LOGOUT_ADMIN_REJECTED: 'USR/LOGOUT_ADMIN_REJECTED',
+  USR_LOGOUT_ADMIN_FULFILLED: 'USR/LOGOUT_ADMIN_FULFILLED',
+
+  USR_CLEAR_ADMIN: 'USR/CLEAR_ADMIN',
+  USR_CLEAR_CURRENT_ADMIN: 'USR/CLEAR_CURRENT_ADMIN',
+
+  USR_FETCH_ALL_USERS: 'USR/FETCH_ALL_USERS',
+  USR_FETCH_ALL_USERS_PENDING: 'USR/FETCH_ALL_USERS_PENDING',
+  USR_FETCH_ALL_USERS_REJECTED: 'USR/FETCH_ALL_USERS_REJECTED',
+  USR_FETCH_ALL_USERS_FULFILLED: 'USR/FETCH_ALL_USERS_FULFILLED',
+
   USR_LOGIN_USER: 'USR/LOGIN_USER',
   USR_LOGIN_USER_PENDING: 'USR/LOGIN_USER_PENDING',
   USR_LOGIN_USER_REJECTED: 'USR/LOGIN_USER_REJECTED',
@@ -130,19 +157,42 @@ export const types = {
 };
 
 export const selectors = {
+  getAdmin: (state: ReduxState): Admin|null => state.user.currentAdmin,
   getUser: (state: ReduxState, isCurrentSelectedUser?: boolean): Profile|null => (isCurrentSelectedUser ? state.user.currentSelectedUser : state.user.profile),
   getOrcid: (state: ReduxState): Profile => state.user.orcidAccount,
-  getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] => values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts),
+  getUserNfts: (state: ReduxState, isCurrentSelectedUser?: boolean): Nft[] =>  {
+    const list = values(isCurrentSelectedUser ? state.user.currentSelectedUserNfts : state.user.userNfts);
+    return list
+  },
+  getAllUsers: (state: ReduxState): Profile[] => values(state.user.allUsers),
 };
 
 export const actions = {
+  loginAdmin: (payload: LoginCredentials): ReduxAction => ({
+    type: types.USR_LOGIN_ADMIN,
+    payload: API.postRequest('admin/session', { admin: payload }),
+  }),
+  logoutAdmin: (): ReduxAction => ({
+    type: types.USR_LOGOUT_ADMIN,
+    payload: API.deleteRequest('admin/session'),
+  }),
+  clearAdmin: (): ReduxAction => ({
+    type: types.USR_CLEAR_ADMIN,
+  }),
+  clearCurrentAdmin: (): ReduxAction => ({
+    type: types.USR_CLEAR_CURRENT_ADMIN,
+  }),
+  fetchAllUsers: (): ReduxAction => ({
+    type: types.USR_FETCH_ALL_USERS,
+    payload: API.getRequest('intellart/users'),
+  }),
   loginUser: (payload: LoginCredentials): ReduxAction => ({
     type: types.USR_LOGIN_USER,
     payload: API.postRequest('auth/session', { user: payload }),
   }),
   loginUserORCID: (payload: CredentialsORCID): ReduxAction => ({
     type: types.USR_LOGIN_USER_ORCID,
-    payload: API.orcidOAuth('auth/session/orcid', { orcid: payload }),
+    payload: API.orcidOAuth('auth/orcid/session', { orcid: payload }),
   }),
   logoutUser: (): ReduxAction => ({
     type: types.USR_LOGOUT_USER,
@@ -154,11 +204,11 @@ export const actions = {
   }),
   registerUserORCID: (payload: CredentialsORCID): ReduxAction => ({
     type: types.USR_CONNECT_ORCID,
-    payload: API.orcidOAuth('auth/user/orcid', { orcid: payload }),
+    payload: API.orcidOAuth('auth/orcid/user', { orcid: payload }),
   }),
   updateUser: (payload: UpdatePayload): ReduxAction => ({
     type: types.USR_UPDATE_USER,
-    payload: API.putRequest(`users/${payload.userId}`, { user: payload.user }),
+    payload: API.putRequest(`intellart/users/${payload.userId}`, { user: payload.user }),
   }),
   clearUser: (): ReduxAction => ({
     type: types.USR_CLEAR_USER,
@@ -173,7 +223,7 @@ export const actions = {
   }),
   fetchUserById: (userId: string|number): ReduxAction => ({
     type: types.USR_FETCH_USER_BY_ID,
-    payload: API.getRequest('users/' + userId),
+    payload: API.getRequest('intellart/users/' + userId),
   }),
   clearCurrentSelectedUser: (): ReduxAction => ({
     type: types.USR_CLEAR_CURRENT_SELECTED_USER,
@@ -187,16 +237,23 @@ const logoutUser = (): State => {
   return {};
 };
 
+const logoutAdmin = (): State => {
+  removeItem('_jwt');
+  removeItem('admin');
+
+  return {};
+};
+
 const handleLikeResponse = (state: State, payload: Object): State => ({ ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } });
 
 const handleDislikeResponse = (state: State, payload: Object): State => {
   const nft: ?Nft = get(state, `userNfts.${payload.fingerprint}`);
   if (!nft) return state;
 
+  // $FlowFixMe
   const isOwner = get(nft.owner.id) === get(state.profile.id);
-  const isAuthor = includes(getAllUserWalletAddresses(state.profile.wallets, 'address'), nft.cardano_address);
 
-  if (isAuthor || isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
+  if (isOwner) return { ...state, userNfts: { ...state.userNfts, [payload.fingerprint]: payload } };
 
   return { ...state, userNfts: omit(state.userNfts, payload.fingerprint) };
 };
@@ -208,13 +265,45 @@ const handleUserNfts = (state: State, payload: Nft[]): State => {
   return { ...state, ...{ [saveToState]: { ...state[saveToState], ...keyBy(payload, 'fingerprint') } } };
 };
 
+const handleSilentLogin = (state: State, payload: {user: Profile|Admin, is_admin: boolean}): State => {
+  if (payload.is_admin) {
+    // $FlowFixMe
+    return { ...state, currentAdmin: payload.user };
+  }
+
+  // $FlowFixMe
+  return { ...state, profile: payload.user };
+};
+
 export const reducer = (state: State, action: ReduxActionWithPayload): State => {
   switch (action.type) {
+    case types.USR_VALIDATE_USER_FULFILLED:
+      return handleSilentLogin(state, action.payload);
+
+    case types.USR_LOGIN_ADMIN_FULFILLED:
+      toast.success('Admin successfully logged in!');
+
+      return { ...state, ...{ currentAdmin: action.payload, profile: null } };
+
+    case types.USR_LOGOUT_ADMIN_FULFILLED:
+      toast.success('Admin successfully logged out!');
+
+      return logoutAdmin();
+
+    case types.USR_CLEAR_ADMIN:
+      return logoutAdmin();
+
+    case types.USR_CLEAR_CURRENT_ADMIN:
+      return { ...state, currentAdmin: null };
+
+    case types.USR_FETCH_ALL_USERS_FULFILLED:
+      return { ...state, ...{ allUsers: { ...state.allUsers, ...keyBy(action.payload, 'id') } } };
+
     case types.USR_LOGIN_USER_FULFILLED:
     case types.USR_LOGIN_USER_ORCID_FULFILLED:
       toast.success('User successfully logged in!');
 
-      return { ...state, ...{ profile: action.payload } };
+      return { ...state, ...{ profile: action.payload, currentAdmin: null } };
 
     case types.USR_CONNECT_ORCID_FULFILLED:
       toast.success('Thank you for connecting your ORCID iD!');

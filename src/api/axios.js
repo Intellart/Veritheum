@@ -10,12 +10,23 @@ import { actions } from '../store/userStore';
 
 export const requestTimeoutMs: number = 120000;
 const baseURL = isDevelopment ? 'http://localhost:' + get(process.env, 'REACT_APP_LOCAL_API_PORT', '3000') : get(process.env, 'REACT_APP_API_BASE_URL', '');
+const baseCopsURL = isDevelopment ? 'http://127.0.0.1:' + get(process.env, 'COPS_APP_LOCAL_API_PORT', '5000') : get(process.env, 'COPS_APP_API_BASE_URL', '');
 
-const apiClient: any = axios.create({
+export const apiClient: any = axios.create({
   baseURL: baseURL + '/api/' + get(process.env, 'REACT_APP_API_VERSION', 'v1'),
   timeout: requestTimeoutMs,
   headers: {
     'Content-Type': 'application/json',
+  },
+});
+
+export const apiCopsClient: any = axios.create({
+  baseURL: baseCopsURL + '/api/' + get(process.env, 'COPS_APP_API_VERSION', 'v1'),
+  timeout: requestTimeoutMs,
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Accept': '*/*'
   },
 });
 
@@ -50,5 +61,3 @@ apiClient.interceptors.response.use((response) => {
   return Promise.reject(error);
 },
 );
-
-export default apiClient;

@@ -2,7 +2,7 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
-  filter, get, reduce, some, includes, map, find, floor,
+  filter, get, reduce, some, includes, map, find, floor, isObject, forEach, isArray,
 } from 'lodash';
 import type { Nft } from '../store/nftStore';
 import type { Profile } from '../store/userStore';
@@ -31,6 +31,7 @@ export const orcidOAuthLink = (path: string): string => {
   return `${baseURL}/oauth/authorize?client_id=${clientId}&response_type=code&scope=/authenticate&redirect_uri=${buildRedirectLink(path)}`;
 };
 
+// TODO: wallets table does not exist anymore, no need for addresses
 export const getAllUserWalletAddresses = (wallets: Object[], key: string): number[] => {
   const list = reduce(wallets, (result, wallet) => {
     const addresses = map(wallet.cardano_addresses, (address: Object) => address[key]);
@@ -45,14 +46,12 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
   const newTabs = tabs.slice();
   const list = reduce(newTabs, (result, tab) => {
     const tabNftList = filter(initialNftList, (nft: Nft) => {
+      // owner object or nft liked object based on given tabs
       const nftVal = get(nft, tab.value.nft);
+      // user id
       const userVal = get(profile, tab.value.user);
 
-      if (tab.value.id === 'created') {
-        const addresses = getAllUserWalletAddresses(userVal, 'address');
-
-        return includes(addresses, nftVal);
-      }
+      if (tab.value.id === 'created') return nftVal.id === userVal;
 
       if (tab.value.id === 'liked') return some(nftVal, ['user_id', userVal]);
 
@@ -71,3 +70,27 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
 export const findNftLike = (nft: Nft, userId: ?number): ?Object => find(nft.likes, ['user_id', userId]);
 
 export const calcExchangeRate = (exchangeRates: ?State, coin: number, currency?: 'usd'|'cad'|'eur'|'gbp' = 'usd'): number => floor(exchangeRates ? exchangeRates[currency] * coin : 1.00, 6);
+
+export const jsonToFormData = (rootParam: string, payload: Object): FormData => {
+  const formData = new FormData();
+
+  const buildFormData = (data: any, parentKey?: string) => {
+    const isValidObject = !(data instanceof Date) && !(data instanceof File) && !(data instanceof Blob);
+
+    if (data && isObject(data) && isValidObject) {
+      forEach(data, (val: any, key: string|number) => {
+        const propertyPath = isArray(data) ? '[]' : `[${key}]`;
+
+        buildFormData(data[key], parentKey ? parentKey + propertyPath : String(key));
+      });
+
+      return;
+    }
+
+    if (parentKey) formData.append(parentKey, data);
+  };
+
+  buildFormData({ [rootParam]: payload });
+
+  return formData;
+};

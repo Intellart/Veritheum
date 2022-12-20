@@ -9,8 +9,10 @@ import { ToastContainer } from 'react-toastify';
 import { isEmpty, isEqual } from 'lodash';
 import Home from './App/Pages/Home';
 import Gallery from './App/Pages/Gallery';
+import MarketPlace from './App/MarketPlace/MarketPlace';
 import Navigation from './App/Navigation/Navigation';
 import Signin from './App/Pages/Signin';
+import AdminSignin from './App/Pages/AdminSignin';
 import Register from './App/Pages/Register';
 import ForgotPassword from './App/Pages/ForgotPassword';
 import Profile from './App/Pages/Profile';
@@ -19,17 +21,24 @@ import MintingPage from './App/Pages/MintingPage';
 import TermsOfUse from './App/Pages/TermsOfUse';
 import CookiePolicy from './App/Pages/CookiePolicy';
 import PrivacyPolicy from './App/Pages/PrivacyPolicy';
+import WalletPage from './App/Pages/WalletPage';
+import AdminPage from './App/AdminPage/AdminPage';
 import CatchAllRoute from './App/Pages/CatchAllRoute';
 import ScrollToTop from './App/ScrollToTop/ScrollToTop';
 import Loader from './App/Loader/Loader';
 import WebSocketElement from './App/WebSocket/WebSocketElement';
 import { selectors as userSelectors } from '../store/userStore';
 import { selectors as globalSelectors } from '../store/globalStore';
+import { selectors as nftSelectors } from '../store/nftStore';
 import 'react-toastify/dist/ReactToastify.min.css';
+import '../styles/index.scss';
 
 function App(): Node {
   const isAuthorized: boolean = useSelector((state) => !isEmpty(userSelectors.getUser(state)), isEqual);
+  const isAdmin: boolean = useSelector((state) => !isEmpty(userSelectors.getAdmin(state)), isEqual);
   const isLoading = useSelector(globalSelectors.checkIsLoading, isEqual);
+  const NftsList = useSelector(state => nftSelectors.getNfts(state));
+  const NftsList2 = useSelector(state => nftSelectors.getNftsOnSale(state));
 
   return (
     <Router>
@@ -43,22 +52,30 @@ function App(): Node {
         rtl={false}
       />
       <ScrollToTop />
-      <Navigation isAuthorized={isAuthorized} />
+      <Navigation isAuthorized={isAuthorized} isAdmin={isAdmin} NftsList={NftsList} />
       <div className="main-content">
         <Routes>
           <Route index element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          {isAuthorized && <Route path="/minting-page" element={<MintingPage />} />}
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {!isAuthorized && <Route path="/sign_in" element={<Signin />} />}
-          {isAuthorized && <Route path="/profile" element={<Profile />} />}
+          {!isAdmin && <Route path="/admin" element={<AdminSignin />} />}
+          {isAdmin && <Route path='/admin-page' element={<AdminPage />} />}
+          {isAuthorized && (
+            <>
+              <Route path="/wallet-page" element={<WalletPage />} />
+              <Route path="/minting-page" element={<MintingPage />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<ProfileSettings />} />
+            </>
+          )}
           <Route path="/profile/:id" element={<Profile />} />
-          {isAuthorized && <Route path="/settings" element={<ProfileSettings />} />}
-          <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} />} />
+          <Route path="*" element={<CatchAllRoute isAuthorized={isAuthorized} isAdmin={isAdmin} />} />
         </Routes>
       </div>
     </Router>

@@ -62,7 +62,7 @@ class GalleryContent extends React.Component<ReduxProps, State> {
     } = this.props;
     const { selectedTab } = this.state;
 
-    const list = isProfile ? userNfts : nftList;
+    const list = nftList;
     if (list) {
       const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
       const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
@@ -86,14 +86,12 @@ class GalleryContent extends React.Component<ReduxProps, State> {
       isProfile, profile, userNfts, nftList, tabs,
     } = this.props;
     const { selectedTab } = this.state;
-
-    const list = isProfile ? userNfts : nftList;
-    const prevList = isProfile ? prevProps.userNfts : prevProps.nftList;
+    const list = nftList;
+    const prevList = prevProps.nftList;
 
     if (!isEqual(list, prevList)) {
       const minPrice = Math.min.apply(null, map(list, (nft: Nft) => Number(nft.price)));
       const maxPrice = Math.max.apply(null, map(list, (nft: Nft) => Number(nft.price)));
-
       const gallery = isProfile && tabs ? buildUserGalleryNftList(tabs, profile, list) : { list: { all: list }, tabs: [] };
 
       this.setState({
@@ -143,16 +141,16 @@ class GalleryContent extends React.Component<ReduxProps, State> {
       galleryTabs,
     } = this.state;
 
-    let filteredNftList = get(galleryNftList, selectedTab, []);
+    let filteredNftList: Nft[] = get(galleryNftList, selectedTab, []);
 
     // Filter by search input or type
     filteredNftList = filter(filteredNftList, (nft: Nft) => {
       if (selectedOption === 1) {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === true;
       } else if (selectedOption === 2) {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === false;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0 && nft.tradeable === false;
       } else {
-        return nft.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
+        return nft?.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >= 0;
       }
     });
 
