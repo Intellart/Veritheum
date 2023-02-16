@@ -33,7 +33,10 @@ class Signin extends React.Component<Props, State> {
   }
 
   loginUser() {
-    this.props.dispatch(actions.loginUser({ email: this.state.email, password: this.state.password, domain: 'Intellart' }));
+    this.props.dispatch(actions.loginUser({
+      email: this.state.email,
+      password: this.state.password,
+      domain: 'Intellart' }));
   }
 
   handleORCID() {
