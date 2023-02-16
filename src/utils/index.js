@@ -46,14 +46,20 @@ export const buildUserGalleryNftList = (tabs: Object[], profile: Profile, initia
   const newTabs = tabs.slice();
   const list = reduce(newTabs, (result, tab) => {
     const tabNftList = filter(initialNftList, (nft: Nft) => {
-      // owner object or nft liked object based on given tabs
-      const nftVal = get(nft, tab.value.nft);
       // user id
-      const userVal = get(profile, tab.value.user);
+      const userVal = get(profile, 'id');
 
-      if (tab.value.id === 'created') return nftVal.id === userVal;
-
-      if (tab.value.id === 'liked') return some(nftVal, ['user_id', userVal]);
+      if (tab.value.id === 'created') {
+        console.log('tab: ', tab);
+        console.log('nft: ', nft);
+        const nftVal = get(nft, 'owner.id');
+        return nftVal === userVal
+      };
+      // owner object or nft liked object based on given tabs
+      if (tab.value.id === 'liked') {
+        const nftVal = get(nft, 'likes');
+        return some(nftVal, ['user_id', userVal])
+      };
 
       return nftVal === userVal;
     });
